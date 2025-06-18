@@ -23,8 +23,52 @@ Stránka, která bude mít materiály k maturitě.
 - Nevěděl jsem co udělat, tak mě napadlo tohle. (👉ﾟヮﾟ)👉
 - A teď vážně. Tento projekt jsem si vybral, protože náš pan učitel to navrhl a já jsem si řekl, že by to nemuselo být tak těžké, a kvůli toho, že mě moc nic jiného nenapadlo, co bych mohl dělat.
 
-## **Harmonogram:**
-- Zatím nemám ＼( °□° )／.
+## Harmonogram maturitního projektu
+
+### **Červen 2025**
+- Vypracování základního návrhu (co bude na kterých stránkách)  
+- Návrh struktury databáze (pokud budeš používat databázi)  
+- Rozběh základního Django projektu a otestování, že všechno běží
+
+### **Červenec 2025**
+- Vytvoření základního HTML/CSS layoutu (hlavní stránka, navigace)  
+- Základní přesměrování mezi stránkami v Django  
+- Začátek práce na stránce **Literatura**  
+  - Navigace mezi autory, směry, žánry  
+  - Vložení několika zkušebních materiálů
+
+### **Srpen 2025**
+- Stránka **Programové vybavení**  
+  - Návrh rozvržení obsahu  
+  - Přidání zkušebních materiálů  
+- Stránka **Programování počítačů**  
+  - Navigace mezi C a C++  
+  - Základní obsah (např. syntaxe, ukázky kódu)
+
+### **Září 2025**
+- Stránka **Počítačové sítě**  
+  - Vložení materiálů a příkazů pro Cisco Packet Tracer  
+  - Možná přidání jednoduchého testu (např. poznávání příkazů)
+
+### **Říjen 2025**
+- Dopracování a zprovoznění **všech hlavních stránek**  
+- Doladění vzhledu pomocí Bootstrapu  
+- **Začátek volitelných stránek**:  
+  - **Matematika**  
+  - **Angličtina**  
+  - **Operační systémy**
+
+### **Listopad 2025**
+- Dokončení volitelných stránek (pokud bude čas)  
+- Přidání **interaktivních prvků** – např. jednoduché testy nebo kvízy  
+- Průběžné testování a oprava chyb
+
+### **Prosinec 2025**
+- Záverečný úklid a doladění celého webu  
+- Přidání všech potřebných textů k maturitnímu projektu (např. proč ses rozhodl pro tento projekt, technologie atd.)  
+- **Zálohování a odevzdání projektu**  
+- Vyzkoušení nasazení na server (např. PythonAnywhere, Vercel, nebo jen lokálně)
+
 
 ## Technologie 
 - Django
