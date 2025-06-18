@@ -1,7 +1,7 @@
 # Maturitní projekt  ＼( °□° )／
 Stránka, která bude mít materiály k maturitě.
 
-## Funkce 
+## Funkce  ✍️(◔◡◔) 
 #### **Hlavní stránka:**
 - Tohle bude hlavní stránka, kde se bude moct pomocí navigace překlikávat mezi stránce bude navigace, kde se bude moct překlikávat mezi stránkami.
 #### **Literatura:**
@@ -17,11 +17,11 @@ Stránka, která bude mít materiály k maturitě.
 - **Stránka na matematiku**: Stránka na materiály z matiky, tohle budu dělat jako poslední.
 - **Stránka na angličtinu**: Stránka na materiály z angličtiny, buď tohle bude tak na 30min a nebude tam skoro nic a nebo tohle bude na měsíc a bude tam toho fakt hodně.
 - **Stránka na operační systémy**: Stránka na různé příkazy.
+- **Udělat tam něco interaktivního**: Budou tam třeba nějaké úkoly, které bude moct uživatel plnit a zjistit jak na tom je. 
 
 #### **Proč jsem si vybral tento projekt:**
 - Nevěděl jsem co udělat, tak mě napadlo tohle. (👉ﾟヮﾟ)👉
 - A teď vážně. Tento projekt jsem si vybral, protože náš pan učitel to navrhl a já jsem si řekl, že by to nemuselo být tak těžké, a kvůli toho, že mě moc nic jiného nenapadlo, co bych mohl dělat.
-- Tahle stránka, bude lepší verze mojeho repozitáře django-filmy.
 
 #### **Harmonogram:**
 - Zatím nemám ＼( °□° )／.
@@ -30,3 +30,4 @@ Stránka, která bude mít materiály k maturitě.
 - Django
 - HTML
 - CSS
+- Bootstrap
