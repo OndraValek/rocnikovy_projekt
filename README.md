@@ -3,7 +3,7 @@ Stránka, která bude mít materiály k maturitě.
 
 ## Funkce  ✍️(◔◡◔) 
 #### **Hlavní stránka:**
-- Tohle bude hlavní stránka, kde se bude moct pomocí navigace překlikávat mezi stránce bude navigace, kde se bude moct překlikávat mezi stránkami.
+- Tohle bude hlavní stránka, kde se bude moct pomocí navigace překlikávat mezi stránkami.
 #### **Literatura:**
 - Na téhle stránce budou různé materiály ohledně literatury. Na hlavní stránce bude nějaký text o čem je ta stránka a bude tam nová navigace kde se bude moct překlikávat mezi autory, uměleckými směry, literární druhy a žánry, atd...
 #### **Programové vybavení:**
