@@ -23,7 +23,7 @@ Stránka, která bude mít materiály k maturitě.
 - Nevěděl jsem co udělat, tak mě napadlo tohle. (👉ﾟヮﾟ)👉
 - A teď vážně. Tento projekt jsem si vybral, protože náš pan učitel to navrhl a já jsem si řekl, že by to nemuselo být tak těžké, a kvůli toho, že mě moc nic jiného nenapadlo, co bych mohl dělat.
 
-## Harmonogram maturitního projektu
+## Harmonogram maturitního projektu  ( ﾉ ﾟｰﾟ)ﾉ
 
 ### **Červen 2025**
 - Vypracování základního návrhu (co bude na kterých stránkách)  
