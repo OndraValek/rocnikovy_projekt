@@ -13,17 +13,17 @@ Stránka, která bude mít materiály k maturitě.
 #### **Počítačové sítě:**
 - Stránka na různé materiály na cisco packet tracer, kde budou různé příkazy a možná něco jiného.
 
-#### **Pokud stihnu:** 👈(ﾟヮﾟ👈)
+## **Pokud stihnu:** 👈(ﾟヮﾟ👈)
 - **Stránka na matematiku**: Stránka na materiály z matiky, tohle budu dělat jako poslední.
 - **Stránka na angličtinu**: Stránka na materiály z angličtiny, buď tohle bude tak na 30min a nebude tam skoro nic a nebo tohle bude na měsíc a bude tam toho fakt hodně.
 - **Stránka na operační systémy**: Stránka na různé příkazy.
 - **Udělat tam něco interaktivního**: Budou tam třeba nějaké úkoly, které bude moct uživatel plnit a zjistit jak na tom je. 
 
-#### **Proč jsem si vybral tento projekt:**
+## **Proč jsem si vybral tento projekt:**
 - Nevěděl jsem co udělat, tak mě napadlo tohle. (👉ﾟヮﾟ)👉
 - A teď vážně. Tento projekt jsem si vybral, protože náš pan učitel to navrhl a já jsem si řekl, že by to nemuselo být tak těžké, a kvůli toho, že mě moc nic jiného nenapadlo, co bych mohl dělat.
 
-#### **Harmonogram:**
+## **Harmonogram:**
 - Zatím nemám ＼( °□° )／.
 
 ## Technologie 
