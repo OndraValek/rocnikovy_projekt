@@ -12,12 +12,12 @@ Stránka, která bude mít materiály k maturitě.
 - Tady budou taky různé materiály ohledně  PRP, asi tam bude taky nová navigace, kde bude stránka na C a druhá bude na C++.
 #### **Počítačové sítě:**
 - Stránka na různé materiály na cisco packet tracer, kde budou různé příkazy a možná něco jiného.
+#### **Udělat tam něco interaktivního:** Budou tam třeba nějaké úkoly, které bude moct uživatel plnit a zjistit jak na tom je. 
 
 ## **Pokud stihnu:** 👈(ﾟヮﾟ👈)
 - **Stránka na matematiku**: Stránka na materiály z matiky, tohle budu dělat jako poslední.
 - **Stránka na angličtinu**: Stránka na materiály z angličtiny, buď tohle bude tak na 30min a nebude tam skoro nic a nebo tohle bude na měsíc a bude tam toho fakt hodně.
 - **Stránka na operační systémy**: Stránka na různé příkazy.
-- **Udělat tam něco interaktivního**: Budou tam třeba nějaké úkoly, které bude moct uživatel plnit a zjistit jak na tom je. 
 
 ## **Proč jsem si vybral tento projekt:**
 - Nevěděl jsem co udělat, tak mě napadlo tohle. (👉ﾟヮﾟ)👉
