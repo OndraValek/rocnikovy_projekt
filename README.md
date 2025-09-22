@@ -28,3 +28,4 @@ Stránka, která bude mít materiály k maturitě.
 - HTML
 - CSS
 - Bootstrap
+- Wagtail CMS
