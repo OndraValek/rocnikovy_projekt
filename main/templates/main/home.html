@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maturitní Projekt</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Levý sidebar -->
+        <div class="sidebar">
+            <div class="search-section">
+                <h3>Vyhledávání</h3>
+                <div class="search-box">
+                    <input type="text" placeholder="Hledat..." class="search-input">
+                    <button class="search-btn">
+                        <i class="fas fa-search"></i>
+                        Hledat
+                    </button>
+                </div>
+            </div>
+            
+            <div class="filter-section">
+                <h3>Maturitní otázky</h3>
+                <div class="question-list">
+                    <div class="question-item active">1</div>
+                    <div class="question-item">2</div>
+                    <div class="question-item">3</div>
+                    <div class="question-item">4</div>
+                    <div class="question-item">5</div>
+                    <div class="question-item">6</div>
+                    <div class="question-item">7</div>
+                    <div class="question-item">8</div>
+                    <div class="question-item">9</div>
+                    <div class="question-item">10</div>
+                    <div class="question-item">11</div>
+                    <div class="question-item">12</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hlavní obsah -->
+        <div class="main-content">
+            <div class="content-header">
+                <h1>Seznam témat</h1>
+                <button class="add-btn">
+                    <i class="fas fa-plus"></i>
+                    Přidat nové téma
+                </button>
+            </div>
+
+            <div class="content-grid">
+                <div class="content-item">
+                    <div class="item-header">
+                        <h3>Úvod do programování</h3>
+                        <span class="tag">Základy</span>
+                    </div>
+                    <p>Programování je proces vytváření počítačových programů pomocí programovacích jazyků. Zahrnuje analýzu problému, návrh řešení, implementaci kódu a testování. Moderní programování se zaměřuje na čitelnost, udržitelnost a efektivitu kódu.</p>
+                    <button class="detail-btn">Detail tématu</button>
+                </div>
+
+                <div class="content-item">
+                    <div class="item-header">
+                        <h3>Datové struktury</h3>
+                        <span class="tag">Algoritmy</span>
+                    </div>
+                    <p>Datové struktury jsou způsoby organizace a ukládání dat v počítači tak, aby s nimi bylo možné efektivně pracovat. Mezi základní datové struktury patří pole, seznamy, zásobníky, fronty, stromy a grafy.</p>
+                    <button class="detail-btn">Detail tématu</button>
+                </div>
+
+                <div class="content-item">
+                    <div class="item-header">
+                        <h3>Webové technologie</h3>
+                        <span class="tag">Frontend</span>
+                    </div>
+                    <p>Moderní webové aplikace využívají kombinaci HTML, CSS a JavaScriptu pro vytváření interaktivních uživatelských rozhraní. Backend technologie jako Django, Flask nebo Node.js zajišťují serverovou logiku a databázové operace.</p>
+                    <button class="detail-btn">Detail tématu</button>
+                </div>
+
+                <div class="content-item">
+                    <div class="item-header">
+                        <h3>Databáze a SQL</h3>
+                        <span class="tag">Backend</span>
+                    </div>
+                    <p>Databáze jsou systémy pro ukládání, organizaci a správu dat. SQL (Structured Query Language) je standardní jazyk pro práci s relačními databázemi. Umožňuje vytváření, čtení, aktualizaci a mazání dat pomocí různých příkazů.</p>
+                    <button class="detail-btn">Detail tématu</button>
+                </div>
+
+                <div class="content-item">
+                    <div class="item-header">
+                        <h3>Objektově orientované programování</h3>
+                        <span class="tag">OOP</span>
+                    </div>
+                    <p>OOP je programovací paradigma založené na konceptu objektů, které obsahují data (atributy) a kód (metody). Hlavní principy OOP zahrnují zapouzdření, dědičnost, polymorfismus a abstrakci, což umožňuje vytváření modulárního a znovupoužitelného kódu.</p>
+                    <button class="detail-btn">Detail tématu</button>
+                </div>
+
+                <div class="content-item">
+                    <div class="item-header">
+                        <h3>Bezpečnost aplikací</h3>
+                        <span class="tag">Security</span>
+                    </div>
+                    <p>Bezpečnost je kritickým aspektem vývoje aplikací. Zahrnuje ochranu před běžnými útoky jako SQL injection, XSS, CSRF a dalšími. Důležité je implementovat autentizaci, autorizaci, šifrování dat a pravidelné bezpečnostní aktualizace.</p>
+                    <button class="detail-btn">Detail tématu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
