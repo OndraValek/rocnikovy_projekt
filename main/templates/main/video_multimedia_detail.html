@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digitální video a multimediální prezentace - Maturitní Projekt</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Levý sidebar -->
+        <div class="sidebar">
+            <div class="search-section">
+                <h3>Vyhledávání</h3>
+                <div class="search-box">
+                    <input type="text" placeholder="Hledat..." class="search-input">
+                    <button class="search-btn">
+                        <i class="fas fa-search"></i>
+                        Hledat
+                    </button>
+                </div>
+            </div>
+            
+        </div>
+
+        <!-- Hlavní obsah -->
+        <div class="main-content">
+            <div class="page-title">
+                <h1>Digitální video a multimediální prezentace</h1>
+            </div>
+
+            <!-- Navigace zpět -->
+            <div class="back-navigation">
+                <a href="/" class="back-btn">
+                    <i class="fas fa-arrow-left"></i>
+                    Zpět na seznam témat
+                </a>
+            </div>
+
+            <!-- Obsah tématu -->
+            <div class="topic-content">
+                <!-- 1. Principy analogového a digitálního videa -->
+                <div class="content-section full-width">
+                    <h2><i class="fas fa-video"></i> Principy analogového a digitálního videa, technické vybavení, parametry digitálního videa</h2>
+                    
+                    <div class="video-types-section">
+                        <h3><i class="fas fa-film"></i> Analogové vs. digitální video</h3>
+                        <div class="video-types-grid">
+                            <div class="video-type-card">
+                                <h4><i class="fas fa-tape"></i> Analogové video</h4>
+                                <p>Vyvinulo se v 2. polovině 20. století, zaznamenává obraz pomocí elektrických signálů většinou na magnetický pásek (videokazet - VHS).</p>
+                                <p>Vycházelo z principu televizního signálu a různých telekomunikačních standardů (<strong>PAL, NTSC, SECAM</strong>).</p>
+                            </div>
+                            <div class="video-type-card">
+                                <h4><i class="fas fa-digital-tachograph"></i> Digitální video</h4>
+                                <p>Převádí obraz do binární podoby, což umožňuje vyšší kvalitu, snadné zpracování a přenos beze ztrát.</p>
+                                <p>Digitální obraz je snímán pomocí snímačů (<strong>CCD, CMOS</strong>) a ukládán v digitální podobě (soubory, streamy).</p>
+                                <div class="video-details">
+                                    <div class="detail-item">Snímače jsou tvořeny z miliónů miniaturních fotodiod, které převádějí světelné signály na elektrické napětí (analogový signál)</div>
+                                    <div class="detail-item">Analogový signál je digitalizován pomocí analogově-digitálního převodníku (<strong>ADC</strong>), který signál převádí na digitální podobu (binární kód)</div>
+                                    <div class="detail-item">Barevné informace jsou zaznamenány díky barevným filtrům (<strong>Bayerův filtr</strong>)</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="equipment-section">
+                        <h3><i class="fas fa-camera"></i> Technické vybavení pro práci s videem</h3>
+                        <div class="equipment-grid">
+                            <div class="equipment-card">
+                                <h4><i class="fas fa-video"></i> Kamerová technika</h4>
+                                <p>Digitální kamery, zrcadlovky, drony s kamerou, akční kamery, webkamery, mobilní telefony, 360° kamery</p>
+                            </div>
+                            <div class="equipment-card">
+                                <h4><i class="fas fa-database"></i> Záznamová média</h4>
+                                <p>Paměťové karty (SD, CF), pevné disky, SSD, optická média (DVD, Blu-ray)</p>
+                            </div>
+                            <div class="equipment-card">
+                                <h4><i class="fas fa-balance-scale"></i> Stabilizace obrazu</h4>
+                                <p>Optická stabilizace (posuv čoček), elektronická stabilizace (posun snímku), mechanická stabilizace (stativy, gimbaly, princip gyroskopu)</p>
+                            </div>
+                            <div class="equipment-card">
+                                <h4><i class="fas fa-search-plus"></i> Zoom</h4>
+                                <p>Optický zoom (fyzické pohyby čoček), digitální zoom (softwarové zvětšení, snižuje kvalitu)</p>
+                            </div>
+                            <div class="equipment-card">
+                                <h4><i class="fas fa-crosshairs"></i> Ostření</h4>
+                                <p>Manuální zaostřování (<strong>MF</strong>) - pomocí ostřícího kroužku, automatické zaostřování (<strong>AF</strong>) - detekce kontrastu, detekce obličeje</p>
+                            </div>
+                            <div class="equipment-card">
+                                <h4><i class="fas fa-adjust"></i> Vyvážení bílé (White Balancing - WB)</h4>
+                                <p>Nastavení teploty v Kelvinech pro správné vyvážení barev v různých světelných podmínkách. Používají se různé režimy (auto, denní světlo, žárovka, zářivka)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="video-parameters-section">
+                        <h3><i class="fas fa-sliders-h"></i> Parametry digitálního videa</h3>
+                        <div class="parameters-video-grid">
+                            <div class="parameter-video-card">
+                                <h4><i class="fas fa-film"></i> Snímková frekvence (frame rate)</h4>
+                                <p>Počet snímků za sekundu (např. <strong>24 fps, 60 fps</strong>). Vyšší snímková frekvence znamená plynulejší obraz</p>
+                            </div>
+                            <div class="parameter-video-card">
+                                <h4><i class="fas fa-exchange-alt"></i> Bitrate</h4>
+                                <p>Množství dat za sekundu, určuje kvalitu videa (Kbps, Mbps). Vyšší bitrate znamená lepší kvalitu, ale i větší velikost souboru</p>
+                                <div class="bitrate-types">
+                                    <div class="bitrate-item"><strong>CBR</strong> (konstantní bitrate – stejný bitrate po celou dobu)</div>
+                                    <div class="bitrate-item"><strong>VBR</strong> (variabilní bitrate – měnící se bitrate podle složitosti scény)</div>
+                                </div>
+                            </div>
+                            <div class="parameter-video-card">
+                                <h4><i class="fas fa-expand"></i> Rozlišení videa</h4>
+                                <p>Určuje počet pixelů ve snímku (např. SD, FullHD - <strong>1920x1080 px, 4K</strong>). Vyšší rozlišení znamená lepší kvalitu, ale i vyšší nároky na výkon a úložiště</p>
+                            </div>
+                            <div class="parameter-video-card">
+                                <h4><i class="fas fa-arrows-alt"></i> Poměr stran (aspect ratio)</h4>
+                                <p>Poměr šířky a výšky obrazu (např. <strong>16:9, 4:3</strong>)</p>
+                            </div>
+                            <div class="parameter-video-card">
+                                <h4><i class="fas fa-layer-group"></i> Prokládání obrazu (interlacing)</h4>
+                                <p>Způsob záznamu obrazu, kdy jsou liché a sudé řádky zaznamenány střídavě. Postupně se nahrazuje progresivním záznamem (zaznamenán vždy celý snímek). Označuje se jako <strong>i nebo p</strong> (např. 1080i, 1080p)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Kodeky a formáty videa -->
+                <div class="content-section full-width">
+                    <h2><i class="fas fa-code"></i> Kodeky a formáty videa, multimediální kontejnery</h2>
+                    
+                    <div class="codecs-section">
+                        <h3><i class="fas fa-compress"></i> Kodeky</h3>
+                        <p class="section-intro"><strong>Kodek = encoder + decoder</strong>. Kodek je program, který provádí kompresi a dekompresi videa.</p>
+                        
+                        <div class="codecs-types-grid">
+                            <div class="codec-type-card">
+                                <h4><i class="fas fa-check-double"></i> Bezztrátové kodeky</h4>
+                                <p>Zachovávají kvalitu, snadno se dekódují i editují, ale tvoří velké soubory</p>
+                            </div>
+                            <div class="codec-type-card">
+                                <h4><i class="fas fa-times"></i> Ztrátové kodeky</h4>
+                                <p>Využívají kompresi s redukcí dat (<strong>H.264, HEVC/H.265, VP9</strong>). Komprese videa může být:</p>
+                                <div class="compression-types-video">
+                                    <div class="compression-item"><strong>Intraframe</strong> – každý snímek je komprimován samostatně, vhodné pro editaci</div>
+                                    <div class="compression-item"><strong>Interframe</strong> – komprese využívá podobnosti mezi snímky a ukládá pouze změny mezi klíčovými snímky. Vhodné pro distribuci, streamování</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="formats-section">
+                        <h3><i class="fas fa-file-video"></i> Multimediální formáty</h3>
+                        <div class="formats-video-grid">
+                            <div class="format-video-card">
+                                <h4><i class="fas fa-file-video"></i> MP4 (MPEG-4)</h4>
+                                <p>Univerzální formát pro online distribuci, podporuje různé kodeky (H.264, H.265). Může obsahovat video, zvuk, titulky, metadata</p>
+                            </div>
+                            <div class="format-video-card">
+                                <h4><i class="fas fa-file-video"></i> AVI (Audio Video Interleave)</h4>
+                                <p>Starší formát od Microsoftu, podporuje různé kodeky (DivX, XviD). Obsahuje pouze video a zvuk, bez titulků</p>
+                            </div>
+                            <div class="format-video-card">
+                                <h4><i class="fas fa-file-video"></i> MKV (Matroska Video)</h4>
+                                <p>Moderní kontejner s podporou vícestopého zvuku i titulků, podporuje různé kodeky (H.264, H.265, VP9)</p>
+                            </div>
+                            <div class="format-video-card">
+                                <h4><i class="fas fa-file-video"></i> MOV</h4>
+                                <p>Formát Apple QuickTime, vhodný pro editaci videa</p>
+                            </div>
+                            <div class="format-video-card">
+                                <h4><i class="fas fa-file-video"></i> WEBM</h4>
+                                <p>Otevřený formát pro web, využívá kodek VP9 nebo AV1</p>
+                            </div>
+                            <div class="format-video-card">
+                                <h4><i class="fas fa-file-video"></i> WMV (Windows Media Video)</h4>
+                                <p>Formát i kodek od Microsoftu, dobrá účinnost, ale omezení licencí</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="containers-section">
+                        <h3><i class="fas fa-box"></i> Multimediální kontejnery</h3>
+                        <p class="section-intro">Kombinují video, zvuk, titulky a metadata do jednoho souboru.</p>
+                        <div class="containers-grid">
+                            <div class="container-item">MP4</div>
+                            <div class="container-item">MKV</div>
+                            <div class="container-item">AVI</div>
+                            <div class="container-item">MOV</div>
+                            <div class="container-item">FLV (Flash Video)</div>
+                            <div class="container-item">WEBM</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Proces produkce videa -->
+                <div class="content-section full-width">
+                    <h2><i class="fas fa-video"></i> Proces produkce videa, zásady pořizování záběrů, typy záběrů</h2>
+                    
+                    <div class="production-phases-section">
+                        <h3><i class="fas fa-list-ol"></i> Fáze produkce videa</h3>
+                        <div class="phases-grid">
+                            <div class="phase-card">
+                                <h4><i class="fas fa-clipboard-list"></i> Preprodukce</h4>
+                                <p>Plánování, scénář, příprava natáčení</p>
+                            </div>
+                            <div class="phase-card">
+                                <h4><i class="fas fa-video"></i> Produkce</h4>
+                                <p>Samotné natáčení záběrů včetně zvuků</p>
+                            </div>
+                            <div class="phase-card">
+                                <h4><i class="fas fa-edit"></i> Postprodukce</h4>
+                                <p>Dodatečná úprava videa pomocí různých programů</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="recording-principles-section">
+                        <h3><i class="fas fa-lightbulb"></i> Zásady pořizování záběrů</h3>
+                        <div class="recording-principles-grid">
+                            <div class="principle-card">
+                                <h4><i class="fas fa-sun"></i> Osvětlení</h4>
+                                <p>Přirozené vs. umělé osvětlení, použití více světel je důležité pro vyvážení stínů (např. zadní světlo, klíčové světlo, fill light)</p>
+                            </div>
+                            <div class="principle-card">
+                                <h4><i class="fas fa-th"></i> Kompozice</h4>
+                                <p>Symetrická vs. asymetrická kompozice, <strong>pravidlo třetin</strong> (rozdělení obrazu na třetiny a umístění hlavních prvků do těchto částí kvůli estetickému působení). <strong>Zlatý řez</strong> - kompozice využívaná již renesančními umělci</p>
+                            </div>
+                            <div class="principle-card">
+                                <h4><i class="fas fa-clock"></i> Délka záběru</h4>
+                                <p>Délka záběru ovlivňuje tempo a napětí ve scéně (dlouhé záběry pro atmosféru, krátké záběry pro akční scény). Klidný dokumentární záběr by měl mít aspoň <strong>4 s</strong></p>
+                            </div>
+                            <div class="principle-card">
+                                <h4><i class="fas fa-arrows-alt"></i> Pohyb kamery</h4>
+                                <p>Statická vs. pohyblivá kamera, v každém záběru videa by se měl vyskytovat nějaký druh pohybu (panoramatický, zoom, jízda apod.)</p>
+                            </div>
+                            <div class="principle-card">
+                                <h4><i class="fas fa-eye"></i> Pravidlo zorné osy</h4>
+                                <p>Dodržení zorné osy mezi postavami, aby divák měl přehled o prostoru a vztazích mezi postavami</p>
+                            </div>
+                            <div class="principle-card">
+                                <h4><i class="fas fa-key"></i> Klíčování</h4>
+                                <p>Vytvoření zeleného nebo modrého pozadí pro následné vložení digitálních efektů nebo animací (<strong>chroma key</strong>)</p>
+                            </div>
+                            <div class="principle-card">
+                                <h4><i class="fas fa-microphone"></i> Zvuk</h4>
+                                <p>Kvalitní zvuk je stejně důležitý jako obraz, použití externího mikrofonu, eliminace šumu, postprodukce zvuku</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="shot-types-section">
+                        <h3><i class="fas fa-camera"></i> Typy záběrů</h3>
+                        <p class="section-intro">Pro zvýraznění důležitých momentů ve scéně se používají různé typy záběrů:</p>
+                        <div class="shot-types-grid">
+                            <div class="shot-type-card">
+                                <h4><i class="fas fa-expand-arrows-alt"></i> Velký celek</h4>
+                                <p>Rozsáhlý prostor, řada postav, celá scéna</p>
+                            </div>
+                            <div class="shot-type-card">
+                                <h4><i class="fas fa-user"></i> Celek</h4>
+                                <p>Postava od hlavy po paty, část prostředí</p>
+                            </div>
+                            <div class="shot-type-card">
+                                <h4><i class="fas fa-user-circle"></i> Polocelek</h4>
+                                <p>Postava po pás, část místnosti</p>
+                            </div>
+                            <div class="shot-type-card">
+                                <h4><i class="fas fa-search"></i> Detail</h4>
+                                <p>Detaily obličeje, objektů</p>
+                            </div>
+                            <div class="shot-type-card">
+                                <h4><i class="fas fa-eye"></i> Velký detail</h4>
+                                <p>Například oči, ruce. Zvýrazňuje emoce postav</p>
+                            </div>
+                            <div class="shot-type-card">
+                                <h4><i class="fas fa-route"></i> Pohyblivé záběry</h4>
+                                <p>Sledování postav, panoramatické záběry, záběry z různých úhlů</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. Postprodukce a publikování -->
+                <div class="content-section full-width">
+                    <h2><i class="fas fa-cut"></i> Proces postprodukce, DVD authoring, možnosti publikování videa na Internetu</h2>
+                    
+                    <div class="postproduction-section">
+                        <h3><i class="fas fa-edit"></i> Postprodukce</h3>
+                        <p class="section-intro">Fáze zpracování a úpravy videa po natočení.</p>
+                        
+                        <div class="postproduction-tasks-grid">
+                            <div class="postproduction-task-card">
+                                <h4><i class="fas fa-laptop-code"></i> Software pro postprodukci</h4>
+                                <p>Adobe Premiere Pro, Sony Vegas, DaVinci Resolve, open-source software (OpenShot)</p>
+                            </div>
+                            <div class="postproduction-task-card">
+                                <h4><i class="fas fa-scissors"></i> Střih videa</h4>
+                                <p>Úprava záběrů, odstranění chyb zejména na začátku a konci záběrů, vytvoření vhodné sekvence různých typů záběrů</p>
+                            </div>
+                            <div class="postproduction-task-card">
+                                <h4><i class="fas fa-palette"></i> Barevná korekce</h4>
+                                <p>Úprava barevnosti videa, kontrastu, jasu</p>
+                            </div>
+                            <div class="postproduction-task-card">
+                                <h4><i class="fas fa-magic"></i> Aplikace efektů</h4>
+                                <p>Filtry, přechody, animace</p>
+                            </div>
+                            <div class="postproduction-task-card">
+                                <h4><i class="fas fa-volume-up"></i> Zvuková editace</h4>
+                                <p>Přidání hudby, zvukových efektů, hlasového komentáře</p>
+                            </div>
+                            <div class="postproduction-task-card">
+                                <h4><i class="fas fa-closed-captioning"></i> Vytváření titulků</h4>
+                                <p>Textové informace, titulky, popisky</p>
+                            </div>
+                            <div class="postproduction-task-card">
+                                <h4><i class="fas fa-file-export"></i> Export videa</h4>
+                                <p>Volba vhodného formátu, kodeků, nastavení rozlišení a bitrate, přizpůsobení možnostem publikace (internetové streamování, uložení na disková média)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dvd-authoring-section">
+                        <h3><i class="fas fa-compact-disc"></i> DVD authoring</h3>
+                        <div class="dvd-info-grid">
+                            <div class="dvd-info-card">
+                                <h4><i class="fas fa-info-circle"></i> Co je DVD authoring?</h4>
+                                <p>Proces tvorby DVD nebo Blu-ray disků</p>
+                            </div>
+                            <div class="dvd-info-card">
+                                <h4><i class="fas fa-list"></i> Funkce</h4>
+                                <p>Interaktivní menu, kapitoly, titulky</p>
+                            </div>
+                            <div class="dvd-info-card">
+                                <h4><i class="fas fa-star"></i> Výhody</h4>
+                                <p>Možnost vyšší kvality videa a zvuku</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="publishing-section">
+                        <h3><i class="fas fa-globe"></i> Možnosti publikování videa na internetu</h3>
+                        <div class="publishing-grid">
+                            <div class="publishing-card">
+                                <h4><i class="fab fa-youtube"></i> Video platformy</h4>
+                                <p>YouTube, Vimeo – nejrozšířenější platformy pro online distribuci</p>
+                            </div>
+                            <div class="publishing-card">
+                                <h4><i class="fas fa-broadcast-tower"></i> Streaming</h4>
+                                <p>Přímý přenos videa (YouTube Live, Twitch)</p>
+                                <div class="streaming-details">
+                                    <div class="detail-item">Streamovací servery využívají <strong>RTMP</strong> (Real-Time Messaging Protocol), který rozděluje video na menší části (chunks) a posílá je postupně uživatelům</div>
+                                    <div class="detail-item">Klientské aplikace mají buffer pro vyrovnání zpoždění a možnost přednačítání obsahu</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. Počítačová animace -->
+                <div class="content-section full-width">
+                    <h2><i class="fas fa-film"></i> Počítačová animace - základní typy, animační techniky, využití AI</h2>
+                    
+                    <div class="animation-types-section">
+                        <h3><i class="fas fa-play-circle"></i> Základní typy animace</h3>
+                        <div class="animation-types-grid">
+                            <div class="animation-type-card">
+                                <h4><i class="fas fa-square"></i> 2D animace</h4>
+                                <p>Tradiční kreslená animace je založena na postupném kreslení snímků <strong>Frame by Frame</strong>. Dnes se využívají digitální nástroje (Adobe Animate, Toon Boom)</p>
+                            </div>
+                            <div class="animation-type-card">
+                                <h4><i class="fas fa-cube"></i> 3D animace</h4>
+                                <p><strong>CGI animace</strong>, využívá prostorové modely (Blender, Maya, Cinema 4D). Založena na vytváření 3D modelů, textur, osvětlení a kamer</p>
+                            </div>
+                            <div class="animation-type-card">
+                                <h4><i class="fas fa-vector-square"></i> Vektorová animace</h4>
+                                <p>Využívá matematické vzorce pro tvorbu grafických objektů, lze libovolně měnit velikost objektů bez ztráty kvality</p>
+                                <div class="animation-details">
+                                    <div class="detail-item">Používají se techniky jako <strong>tweening</strong> - propočítané plynulé přechody mezi dvěma klíčovými snímky</div>
+                                    <div class="detail-item"><strong>Motion tween</strong> - zachycení pohybu v čase</div>
+                                    <div class="detail-item"><strong>Shape tween</strong> - změny tvaru v čase</div>
+                                </div>
+                            </div>
+                            <div class="animation-type-card">
+                                <h4><i class="fas fa-stop"></i> Stop-motion animace</h4>
+                                <p>Práce s reálnými objekty snímanými po jednotlivých snímcích (Lego, modely, loutky). Využívá se animační software (Dragonframe)</p>
+                            </div>
+                            <div class="animation-type-card">
+                                <h4><i class="fas fa-running"></i> Motion capture</h4>
+                                <p>Snímání pohybu reálných herců a přenos do 3D modelu s využitím speciálních snímačů (optické, inerciální)</p>
+                            </div>
+                            <div class="animation-type-card">
+                                <h4><i class="fas fa-pencil-alt"></i> Rotoskopie</h4>
+                                <p>Technika animace, kdy se kreslí přes reálné záběry</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ai-animation-section">
+                        <h3><i class="fas fa-robot"></i> Využití AI v animaci</h3>
+                        <div class="ai-animation-grid">
+                            <div class="ai-animation-card">
+                                <h4><i class="fas fa-user-friends"></i> Automatizace pohybu postav</h4>
+                                <p>AI predikce přirozených pohybů postav, snížení náročnosti animace</p>
+                            </div>
+                            <div class="ai-animation-card">
+                                <h4><i class="fas fa-brain"></i> Generativní modely</h4>
+                                <p>Tvorba nových vizuálních prvků (obličejů, postav) pomocí neuronových sítí</p>
+                            </div>
+                            <div class="ai-animation-card">
+                                <h4><i class="fas fa-sliders-h"></i> Interpolace snímků</h4>
+                                <p>Je vytváření nových snímků mezi existujícími snímky, AI může predikovat pohyb mezi dvěma klíčovými snímky</p>
+                            </div>
+                            <div class="ai-animation-card">
+                                <h4><i class="fas fa-paint-brush"></i> Stylizace videa</h4>
+                                <p>Přenos výtvarného stylu na reálné záběry (např. DeepArt, NeuralStyle)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

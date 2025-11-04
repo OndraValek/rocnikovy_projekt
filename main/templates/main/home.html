@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maturitní Projekt</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Levý sidebar -->
+        <div class="sidebar">
+            <div class="search-section">
+                <h3>Vyhledávání</h3>
+                <div class="search-box">
+                    <input type="text" placeholder="Hledat..." class="search-input">
+                    <button class="search-btn">
+                        <i class="fas fa-search"></i>
+                        Hledat
+                    </button>
+                </div>
+            </div>
+            
+        </div>
+
+        <!-- Hlavní obsah -->
+        <div class="main-content">
+            <div class="page-title">
+                <h1>Programové vybavení</h1>
+            </div>
+            <div class="content-header">
+                <h2>Seznam témat</h2>
+                <button class="add-btn">
+                    <i class="fas fa-plus"></i>
+                    Přidat nové téma
+                </button>
+            </div>
+
+            <div class="content-grid">
+                <div class="content-item">
+                    <div class="item-header">
+                        <h3>Základy informatiky</h3>
+                        <span class="tag tag-large">1</span>
+                    </div>
+                    <p>Informatika je vědní obor zabývající se získáváním, zpracováním, ukládáním a přenosem informací. Zahrnuje teoretické i praktické aspekty výpočetní techniky, programování, algoritmů a databází. Zkoumá pojmy jako informace, data, signály, digitalizace a číselné soustavy.</p>
+                    <button class="detail-btn" onclick="location.href='/topic/1/'">Detail tématu</button>
+                </div>
+
+                <div class="content-item">
+                    <div class="item-header">
+                        <h3>Programy a data</h3>
+                        <span class="tag tag-large">2</span>
+                    </div>
+                    <p>Programy a data zahrnují programové a datové soubory, systémové a aplikační programy, utility, softwarové licence, instalaci a zálohování programů a dat, cloudová řešení, emulaci a virtualizaci. Pokrývá veškeré aspekty práce se softwarem.</p>
+                    <button class="detail-btn" onclick="location.href='/topic/2/'">Detail tématu</button>
+                </div>
+
+                <div class="content-item">
+                    <div class="item-header">
+                        <h3>Informační systémy a databázové systémy</h3>
+                        <span class="tag tag-large">3</span>
+                    </div>
+                    <p>Informační systémy jsou soubory technologií, pravidel a dat sloužících ke sběru, zpracování, ukládání a distribuci informací. Pokrývá komponenty IS, základní typy systémů (TPS, MIS, DSS), ERP, CRM, GIS a životní cyklus vývoje IS.</p>
+                    <button class="detail-btn" onclick="location.href='/topic/3/'">Detail tématu</button>
+                </div>
+
+                <div class="content-item">
+                    <div class="item-header">
+                        <h3>Rastrová grafika a digitální fotografie</h3>
+                        <span class="tag tag-large">4</span>
+                    </div>
+                    <p>Rastrová grafika je grafický formát tvořený mřížkou pixelů. Zahrnuje principy rastrové grafiky, vlastnosti obrazu, rastrové formáty, vnímání barev, barevné modely (RGB, CMYK, HSB), funkce rastrových editorů a digitální fotografii s expozicí a zpracováním.</p>
+                    <button class="detail-btn" onclick="location.href='/topic/4/'">Detail tématu</button>
+                </div>
+
+                <div class="content-item">
+                    <div class="item-header">
+                        <h3>Vektorová grafika</h3>
+                        <span class="tag tag-large">5</span>
+                    </div>
+                    <p>Vektorová grafika využívá matematické rovnice pro definici tvarů místo pixelů. Zahrnuje principy vektorové grafiky, vektorizaci a rasterizaci, oblasti využití, vektorové formáty, pomůcky pro přesné kreslení, manipulace s křivkami, CAD, 3D modelování, VR a AR.</p>
+                    <button class="detail-btn" onclick="location.href='/topic/5/'">Detail tématu</button>
+                </div>
+
+                <div class="content-item">
+                    <div class="item-header">
+                        <h3>Zpracování textů na počítači</h3>
+                        <span class="tag tag-large">6</span>
+                    </div>
+                    <p>Zpracování textů zahrnuje programy pro práci s textem (editory, procesory, DTP), formáty textových dokumentů, typografii, typy fontů, strukturu dokumentu, styly a šablony, pokročilé nástroje MS Word, předtiskovou přípravu a elektronické knihy.</p>
+                    <button class="detail-btn" onclick="location.href='/topic/6/'">Detail tématu</button>
+                </div>
+
+                <div class="content-item">
+                    <div class="item-header">
+                        <h3>Počítačové zpracování zvuku</h3>
+                        <span class="tag tag-large">8</span>
+                    </div>
+                    <p>Počítačové zpracování zvuku zahrnuje vlastnosti zvuku a jeho digitalizaci, kompresi zvuku pomocí psychoakustických modelů, audio kodeky a formáty, zvukovou syntézu a MIDI, tvorbu digitální hudby, programy pro editaci zvuku a využití umělé inteligence při práci se zvukem.</p>
+                    <button class="detail-btn" onclick="location.href='/topic/8/'">Detail tématu</button>
+                </div>
+
+                <div class="content-item">
+                    <div class="item-header">
+                        <h3>Digitální video a multimediální prezentace</h3>
+                        <span class="tag tag-large">9</span>
+                    </div>
+                    <p>Digitální video a multimediální prezentace zahrnují principy analogového a digitálního videa, technické vybavení, parametry digitálního videa, kodeky a formáty videa, proces produkce a postprodukce videa, zásady pořizování záběrů, typy záběrů, DVD authoring, publikování videa na internetu a počítačovou animaci s využitím AI.</p>
+                    <button class="detail-btn" onclick="location.href='/topic/9/'">Detail tématu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
