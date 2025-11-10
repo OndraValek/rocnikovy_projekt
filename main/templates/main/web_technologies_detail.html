@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webové technologie - Maturitní Projekt</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Levý sidebar -->
+        <div class="sidebar">
+            <div class="search-section">
+                <h3>Vyhledávání</h3>
+                <div class="search-box">
+                    <input type="text" placeholder="Hledat..." class="search-input">
+                    <button class="search-btn">
+                        <i class="fas fa-search"></i>
+                        Hledat
+                    </button>
+                </div>
+            </div>
+            
+        </div>
+
+        <!-- Hlavní obsah -->
+        <div class="main-content">
+            <div class="page-title">
+                <h1>Webové technologie</h1>
+            </div>
+
+            <!-- Navigace zpět -->
+            <div class="back-navigation">
+                <a href="/" class="back-btn">
+                    <i class="fas fa-arrow-left"></i>
+                    Zpět na seznam témat
+                </a>
+            </div>
+
+            <!-- Obsah tématu -->
+            <div class="topic-content">
+                <!-- 1. Webové technologie na straně klienta a serveru -->
+                <div class="content-section full-width">
+                    <h2><i class="fas fa-network-wired"></i> Webové technologie na straně klienta a serveru, frontend a backend</h2>
+                    
+                    <div class="client-server-section">
+                        <h3><i class="fas fa-exchange-alt"></i> Model klient-server, frontend a backend</h3>
+                        <p class="section-intro">Služba WWW funguje na principu <strong>klient-server modelu</strong>, kde klient a server komunikují prostřednictvím protokolu HTTP.</p>
+                        
+                        <div class="client-server-grid">
+                            <div class="client-server-card">
+                                <h4><i class="fas fa-desktop"></i> Frontend (klient)</h4>
+                                <p>Odesílá HTTP požadavky (URL, metody GET, POST, PUT, DELETE) a zobrazuje odpovědi v prohlížeči, obvykle ve formě HTML stránek. Frontend tvoří veřejnou část aplikace, se kterou pracuje uživatel</p>
+                            </div>
+                            <div class="client-server-card">
+                                <h4><i class="fas fa-server"></i> Backend (server)</h4>
+                                <p>Přijímá požadavky, zpracovává data a vrací odpověď v podobě stavového kódu a obsahu (HTML, JSON, XML, obrázky, atd.). Backend zajišťuje logiku aplikace, komunikaci s databází a dalšími službami</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="web-clients-section">
+                        <h3><i class="fas fa-users"></i> Weboví klienti a servery</h3>
+                        <div class="web-clients-grid">
+                            <div class="web-client-card">
+                                <h4><i class="fas fa-globe"></i> Weboví klienti</h4>
+                                <p>Webovými klienty mohou být prohlížeče, mobilní aplikace nebo desktopové aplikace</p>
+                            </div>
+                            <div class="web-client-card">
+                                <h4><i class="fas fa-cloud"></i> Webový server</h4>
+                                <p>Webový server může být fyzický nebo virtuální server, cloudová služba nebo serverless funkce</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="client-technologies-section">
+                        <h3><i class="fas fa-laptop-code"></i> Klientské technologie</h3>
+                        <div class="client-technologies-grid">
+                            <div class="client-tech-card">
+                                <h4><i class="fab fa-html5"></i> HTML</h4>
+                                <p>HyperText Markup Language – popisuje strukturu webové stránky</p>
+                            </div>
+                            <div class="client-tech-card">
+                                <h4><i class="fab fa-css3"></i> CSS</h4>
+                                <p>Cascading Style Sheets – definuje vzhled a rozvržení stránky</p>
+                            </div>
+                            <div class="client-tech-card">
+                                <h4><i class="fab fa-js"></i> JavaScript</h4>
+                                <p>Programovací jazyk pro přidání interaktivity na stránku</p>
+                            </div>
+                            <div class="client-tech-card">
+                                <h4><i class="fas fa-book"></i> Knihovny a frameworky</h4>
+                                <p><strong>jQuery, React, Angular, Vue.js</strong></p>
+                            </div>
+                            <div class="client-tech-card">
+                                <h4><i class="fas fa-history"></i> Starší technologie</h4>
+                                <p><strong>Flash, Silverlight, Java applety</strong> – dnes již zastaralé, vyžadují pluginy</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="server-technologies-section">
+                        <h3><i class="fas fa-server"></i> Serverové technologie</h3>
+                        <div class="server-technologies-grid">
+                            <div class="server-tech-card">
+                                <h4><i class="fas fa-server"></i> HTTP server</h4>
+                                <p><strong>Apache</strong> (open source), <strong>NGINX</strong> (vysoký výkon), <strong>IIS</strong> (Microsoft Internet Information Services)</p>
+                            </div>
+                            <div class="server-tech-card">
+                                <h4><i class="fab fa-node-js"></i> Node.js</h4>
+                                <p>JavaScriptové runtime prostředí umožňující backendový vývoj</p>
+                            </div>
+                            <div class="server-tech-card">
+                                <h4><i class="fab fa-php"></i> PHP</h4>
+                                <p>Populární jazyk pro dynamické webové aplikace, podporuje mnoho knihoven a frameworků, využívá se např. ve WordPressu nebo e-shopových systémech (Magento, WooCommerce)</p>
+                            </div>
+                            <div class="server-tech-card">
+                                <h4><i class="fab fa-python"></i> Python</h4>
+                                <p>Jednoduchý jazyk, využívá se např. ve frameworku <strong>Django</strong> nebo microframeworku <strong>Flask</strong></p>
+                            </div>
+                            <div class="server-tech-card">
+                                <h4><i class="fab fa-java"></i> Java</h4>
+                                <p>Robustní řešení pro podnikové aplikace, využití v <strong>JSP</strong> (JavaServer Pages) nebo <strong>Spring</strong> frameworku</p>
+                            </div>
+                            <div class="server-tech-card">
+                                <h4><i class="fab fa-microsoft"></i> C#</h4>
+                                <p>Využití v <strong>ASP.NET</strong> pro webové aplikace, vývoj v Microsoft Visual Studio</p>
+                            </div>
+                            <div class="server-tech-card">
+                                <h4><i class="fas fa-database"></i> Databáze</h4>
+                                <p><strong>MySQL, PostgreSQL</strong> (relační), <strong>MongoDB, Redis</strong> (NoSQL)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Základy JavaScriptu -->
+                <div class="content-section full-width">
+                    <h2><i class="fab fa-js"></i> Základy jazyka JavaScript a tvorba klientských webových aplikací</h2>
+                    
+                    <div class="js-history-section">
+                        <h3><i class="fas fa-history"></i> Vývoj JavaScriptu</h3>
+                        <div class="js-history-grid">
+                            <div class="js-history-card">
+                                <h4><i class="fas fa-calendar"></i> Vznik</h4>
+                                <p>Vznikl v roce <strong>1995</strong> jako skriptovací jazyk pro interaktivní a dynamické webové stránky</p>
+                            </div>
+                            <div class="js-history-card">
+                                <h4><i class="fas fa-code"></i> ECMAScript</h4>
+                                <p>Standardizován jako <strong>ECMAScript</strong>, nejnovější verze přidávají nové funkce, bývají označeny podle roku (např. ES2015 = ES6, ES2020)</p>
+                            </div>
+                            <div class="js-history-card">
+                                <h4><i class="fas fa-play"></i> Interpretace</h4>
+                                <p>JS je interpretovaný jazyk, běží v prohlížeči a může být také použit na serveru (<strong>Node.js</strong>); v současnosti využívá kompilaci do mezikódu (bytecode) kvůli větší rychlosti</p>
+                            </div>
+                            <div class="js-history-card">
+                                <h4><i class="fas fa-shield-alt"></i> TypeScript</h4>
+                                <p>Programovací jazyk rozšiřující JS o statické typování, pokročilé funkce a OOP, kompiluje se do JS, umožňuje psát robustnější kód</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="js-properties-section">
+                        <h3><i class="fas fa-list"></i> Vlastnosti jazyka JavaScript</h3>
+                        <div class="js-properties-grid">
+                            <div class="js-property-card">
+                                <h4><i class="fas fa-exchange-alt"></i> Dynamické typování</h4>
+                                <p>Datový typ proměnné se může měnit za běhu programu, proměnné jsou typově nezávislé</p>
+                            </div>
+                            <div class="js-property-card">
+                                <h4><i class="fas fa-sync"></i> Asynchronní programování</h4>
+                                <p>Využívá se tzv. callback funkcí, <strong>Promises</strong> a <strong>Async/Await</strong> pro efektivní zpracování asynchronních operací</p>
+                            </div>
+                            <div class="js-property-card">
+                                <h4><i class="fas fa-mouse-pointer"></i> Událostmi řízené programování</h4>
+                                <p>Reakce na uživatelské akce (kliknutí, načtení stránky) pomocí event listenerů</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="js-syntax-section">
+                        <h3><i class="fas fa-code"></i> Základy syntaxe a datové typy v JS</h3>
+                        <div class="js-syntax-grid">
+                            <div class="js-syntax-card">
+                                <h4><i class="fas fa-keyboard"></i> Syntaxe</h4>
+                                <p>JS je <strong>case-sensitive</strong>, používá se <strong>camelCase</strong> syntaxe, komentáře se píšou <code>//</code> nebo <code>/* ... */</code>, nejsou povinné středníky na konci příkazů (ovšem jsou doporučeny pro čitelnost)</p>
+                            </div>
+                            <div class="js-syntax-card">
+                                <h4><i class="fas fa-variable"></i> Proměnné</h4>
+                                <p><code>let</code>, <code>const</code>, <code>var</code>. Rozdíl mezi nimi je v oblasti platnosti (scope), <code>let</code> a <code>const</code> jsou blokové (platí pouze v daném bloku kódu), <code>var</code> je funkční (platí v rámci funkce). Proměnné <code>const</code> nelze měnit, <code>let</code> a <code>var</code> ano</p>
+                            </div>
+                            <div class="js-syntax-card">
+                                <h4><i class="fas fa-list"></i> Datové typy</h4>
+                                <p><code>number</code>, <code>string</code>, <code>boolean</code>, <code>null</code>, <code>undefined</code>, <code>object</code>, <code>symbol</code></p>
+                            </div>
+                            <div class="js-syntax-card">
+                                <h4><i class="fas fa-terminal"></i> Příkazy</h4>
+                                <p>Používají se obdobně jako v jazyce C, např. <code>if</code>, <code>else</code>, <code>for</code>, <code>while</code></p>
+                            </div>
+                            <div class="js-syntax-card">
+                                <h4><i class="fas fa-function"></i> Funkce</h4>
+                                <p>Definice pomocí <code>function</code>, volání pomocí názvu a závorek</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dom-bom-section">
+                        <h3><i class="fas fa-sitemap"></i> Manipulace s DOM a interaktivita stránek, BOM</h3>
+                        <div class="dom-bom-grid">
+                            <div class="dom-bom-card">
+                                <h4><i class="fas fa-tree"></i> DOM (Document Object Model)</h4>
+                                <p>Reprezentace HTML stránky jako stromové struktury, umožňuje manipulaci s obsahem stránky</p>
+                                <div class="dom-details">
+                                    <div class="detail-item"><strong>Selektory:</strong> výběr elementů pomocí <code>document.querySelector()</code>, <code>document.getElementById()</code>, apod.</div>
+                                    <div class="detail-item"><strong>Manipulace:</strong> změna obsahu, stylů, tříd, atributů elementů pomocí vlastností <code>innerHTML</code>, <code>style</code>, <code>classList</code>, <code>setAttribute</code></div>
+                                    <div class="detail-item"><strong>Události:</strong> reakce na uživatelské akce (kliknutí, načtení stránky) pomocí event listenerů</div>
+                                    <div class="detail-item"><strong>Vytváření:</strong> možnost vytvářet nové elementy, mazat existující, měnit jejich vlastnosti</div>
+                                </div>
+                            </div>
+                            <div class="dom-bom-card">
+                                <h4><i class="fas fa-window-maximize"></i> BOM (Browser Object Model)</h4>
+                                <p>Reprezentuje okno prohlížeče, umožňuje manipulaci s URL, historií prohlížení, informace o prohlížeči</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Node.js a serverové aplikace -->
+                <div class="content-section full-width">
+                    <h2><i class="fab fa-node-js"></i> Tvorba webových serverových aplikací s využitím Node.js, synchronní a asynchronní programování</h2>
+                    
+                    <div class="nodejs-section">
+                        <h3><i class="fab fa-node-js"></i> Node.js a npm</h3>
+                        <div class="nodejs-info-grid">
+                            <div class="nodejs-info-card">
+                                <h4><i class="fas fa-code"></i> Node.js</h4>
+                                <p>Open-source JavaScriptové runtime prostředí postavené na <strong>V8 JavaScript enginu</strong> od Google</p>
+                            </div>
+                            <div class="nodejs-info-card">
+                                <h4><i class="fas fa-exchange-alt"></i> Sdílení kódu</h4>
+                                <p>Umožňuje vývoj backendových aplikací v JavaScriptu, sdílení kódu mezi frontendem a backendem</p>
+                            </div>
+                            <div class="nodejs-info-card">
+                                <h4><i class="fas fa-box"></i> npm (Node Package Manager)</h4>
+                                <p>Správce balíčků pro Node.js, umožňuje instalaci a správu knihoven</p>
+                            </div>
+                            <div class="nodejs-info-card">
+                                <h4><i class="fas fa-puzzle-piece"></i> Moduly</h4>
+                                <p>V Node.js jsou knihovny a balíčky importovány pomocí <code>require()</code>, novější verze podporují <code>import</code> a <code>export</code></p>
+                            </div>
+                            <div class="nodejs-info-card">
+                                <h4><i class="fas fa-folder"></i> Projekt</h4>
+                                <p>Nový projekt se vytváří pomocí <code>npm init</code>, instalace balíčků pomocí <code>npm install</code>. Součástí projektu je soubor <code>package.json</code>, kde jsou definovány závislosti, skripty a metadata projektu</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="server-apps-section">
+                        <h3><i class="fas fa-server"></i> Serverové aplikace v Node.js</h3>
+                        <p class="section-intro">Nejčastěji se Node.js používá pro tvorbu webových serverů, API, real-time aplikací.</p>
+                        
+                        <div class="server-apps-grid">
+                            <div class="server-app-card">
+                                <h4><i class="fas fa-rocket"></i> Express.js</h4>
+                                <p>Pro rozsáhlejší serverové aplikace se obvykle využívá framework <strong>Express.js</strong>, který usnadňuje vytvoření serveru, routování a zpracování požadavků</p>
+                            </div>
+                            <div class="server-app-card">
+                                <h4><i class="fas fa-route"></i> Routing</h4>
+                                <p>Definice cest (endpoints) a handlerů pro zpracování požadavků</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="express-example-section">
+                        <h3><i class="fas fa-code"></i> Příklad routingu v Express.js</h3>
+                        <div class="code-example">
+                            <code>const express = require('express');<br>const app = express();<br><br>/* GET metoda pro získání dat */<br>/* Parametr req obsahuje objekt požadavku, objekt res slouží k odeslání odpovědi */<br>app.get('/', (req, res) => {<br>&nbsp;&nbsp;res.send('Vítejte na serveru!');<br>});<br><br>app.listen(3000, () => console.log('Server běží na portu 3000'));</code>
+                        </div>
+                    </div>
+
+                    <div class="sync-async-section">
+                        <h3><i class="fas fa-sync"></i> Principy synchronního vs. asynchronního programování</h3>
+                        <div class="sync-async-grid">
+                            <div class="sync-async-card">
+                                <h4><i class="fas fa-pause"></i> Synchronní kód</h4>
+                                <p>Blokuje běh programu a čeká na dokončení operace</p>
+                            </div>
+                            <div class="sync-async-card">
+                                <h4><i class="fas fa-play"></i> Asynchronní kód</h4>
+                                <p>Umožňuje efektivnější zpracování požadavků, protože dokončení operace se provádí až když jsou dostupné výsledky a program může pokračovat v dalších úkolech</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="restaurant-analogy-section">
+                        <h3><i class="fas fa-utensils"></i> Analogie s restaurací</h3>
+                        <div class="analogy-grid">
+                            <div class="analogy-card">
+                                <h4><i class="fas fa-clock"></i> Synchronní restaurace</h4>
+                                <p>Číšník čeká na přípravu jídla a teprve poté přinese další objednávku</p>
+                            </div>
+                            <div class="analogy-card">
+                                <h4><i class="fas fa-running"></i> Asynchronní restaurace</h4>
+                                <p>Číšník přijme objednávku, předá ji kuchaři a mezitím může přijmout další objednávku</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="async-js-section">
+                        <h3><i class="fas fa-code"></i> Asynchronní programování v JS</h3>
+                        <p class="section-intro">V JS se asynchronní programování využívá např. pro načítání dat ze serveru, zpracování souborů, časované úkoly.</p>
+                        
+                        <div class="async-methods-grid">
+                            <div class="async-method-card">
+                                <h4><i class="fas fa-phone"></i> Callback funkce</h4>
+                                <p>Funkce, která se zavolá po dokončení asynchronní operace</p>
+                            </div>
+                            <div class="async-method-card">
+                                <h4><i class="fas fa-handshake"></i> Promises</h4>
+                                <p>Objekt reprezentující hodnotu, která může být dostupná ihned, později nebo nikdy</p>
+                            </div>
+                            <div class="async-method-card">
+                                <h4><i class="fas fa-hourglass-half"></i> Async/Await</h4>
+                                <p>Moderní způsob práce s asynchronním kódem, umožňuje psát asynchronní kód podobně jako synchronní</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="async-example-section">
+                        <h3><i class="fas fa-code"></i> Použití Promises a Async/Await</h3>
+                        <div class="code-example">
+                            <code>/* Promises - zpracování asynchronní operace načtení dat */<br>async function fetchData() {<br>&nbsp;&nbsp;/* čekání na dokončení operace funkce fetch() a získání dat z API */<br>&nbsp;&nbsp;let response = await fetch('https://api.example.com/data');<br>&nbsp;&nbsp;/* čekání na dokončení operace a získání dat ve formátu JSON */<br>&nbsp;&nbsp;let data = await response.json();<br>&nbsp;&nbsp;console.log(data);<br>}</code>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. Webová API a AJAX -->
+                <div class="content-section full-width">
+                    <h2><i class="fas fa-plug"></i> Webová API, komunikace mezi frontendem a backendem, AJAX</h2>
+                    
+                    <div class="rest-api-section">
+                        <h3><i class="fas fa-exchange-alt"></i> REST API a využití ve webových aplikacích</h3>
+                        <p class="section-intro"><strong>REST (Representational State Transfer)</strong> využívá standardní HTTP metody pro výměnu dat mezi klientem a serverem.</p>
+                        
+                        <div class="rest-api-grid">
+                            <div class="rest-api-card">
+                                <h4><i class="fas fa-tools"></i> HTTP metody</h4>
+                                <p><strong>GET</strong> (načtení dat), <strong>POST</strong> (odeslání dat), <strong>PUT</strong> (aktualizace dat), <strong>DELETE</strong> (odstranění dat)</p>
+                            </div>
+                            <div class="rest-api-card">
+                                <h4><i class="fas fa-link"></i> Endpoints</h4>
+                                <p>Zdroje jsou identifikovány pomocí URL adresy, např. <code>/api/users</code>, <code>/api/products</code> – tzv. endpoints</p>
+                            </div>
+                            <div class="rest-api-card">
+                                <h4><i class="fas fa-list-ol"></i> Stavové kódy</h4>
+                                <p>Informují o stavu požadavku, např. <strong>200</strong> (OK), <strong>404</strong> (Not Found), <strong>500</strong> (Internal Server Error)</p>
+                            </div>
+                            <div class="rest-api-card">
+                                <h4><i class="fas fa-check-circle"></i> Zásady REST API</h4>
+                                <p>Jednotné rozhraní, bezestavovost, možnost cachování, vrácení dat ve formátu <strong>JSON</strong> nebo <strong>XML</strong></p>
+                            </div>
+                            <div class="rest-api-card">
+                                <h4><i class="fas fa-mobile-alt"></i> Využití</h4>
+                                <p>Ve webových aplikacích, mobilních aplikacích, IoT zařízení</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modern-api-section">
+                        <h3><i class="fas fa-rocket"></i> Moderní technologie pro práci s API</h3>
+                        <div class="modern-api-grid">
+                            <div class="modern-api-card">
+                                <h4><i class="fas fa-project-diagram"></i> GraphQL</h4>
+                                <p>Moderní dotazovací jazyk pro API, umožňuje klientovi specifikovat požadovaná data a získat je v jediném dotazu</p>
+                            </div>
+                            <div class="modern-api-card">
+                                <h4><i class="fas fa-wifi"></i> WebSockets</h4>
+                                <p>Obousměrná komunikace v reálném čase mezi klientem a serverem, využívá se pro chatovací aplikace, online hry, notifikace</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ajax-section">
+                        <h3><i class="fas fa-sync"></i> AJAX (Asynchronous JavaScript and XML)</h3>
+                        <p class="section-intro">Technika pro asynchronní načítání dat ze serveru bez nutnosti obnovení celé stránky (např. aktualizace obsahu zpráv v chatu, načtení nových položek v seznamu).</p>
+                        
+                        <div class="ajax-info-grid">
+                            <div class="ajax-info-card">
+                                <h4><i class="fas fa-code"></i> fetch()</h4>
+                                <p>Příkladem je použití funkce <code>fetch()</code> pro získání dat z API</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. Webové knihovny, frameworky a nástroje -->
+                <div class="content-section full-width">
+                    <h2><i class="fas fa-toolbox"></i> Webové knihovny, frameworky a nástroje, jejich využití v praxi</h2>
+                    
+                    <div class="web-libraries-section">
+                        <h3><i class="fas fa-book"></i> Webové knihovny</h3>
+                        <p class="section-intro">Knihovna – soubor předem napsaných funkcí usnadňujících vývoj, řada knihoven je dostupná pro JavaScript:</p>
+                        
+                        <div class="libraries-grid">
+                            <div class="library-card">
+                                <h4><i class="fab fa-js"></i> jQuery</h4>
+                                <p>Knihovna pro manipulaci s DOM, AJAX, animace</p>
+                            </div>
+                            <div class="library-card">
+                                <h4><i class="fas fa-chart-bar"></i> D3.js</h4>
+                                <p>Knihovna pro vizualizaci dat, tvorbu grafů a diagramů</p>
+                            </div>
+                            <div class="library-card">
+                                <h4><i class="fas fa-paint-brush"></i> P5.js</h4>
+                                <p>Knihovna pro tvorbu grafických aplikací, animací</p>
+                            </div>
+                            <div class="library-card">
+                                <h4><i class="fas fa-cube"></i> Three.js</h4>
+                                <p>Knihovna pro tvorbu 3D grafiky v prohlížeči</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="web-frameworks-section">
+                        <h3><i class="fas fa-cogs"></i> Webové frameworky</h3>
+                        <p class="section-intro">Framework – soubor pravidel, nástrojů a knihoven usnadňujících vývoj aplikací, často využívají návrhové vzory a konvence.</p>
+                        
+                        <div class="frameworks-categories-grid">
+                            <div class="framework-category-card">
+                                <h4><i class="fas fa-desktop"></i> Frontendové frameworky</h4>
+                                <div class="framework-list">
+                                    <div class="framework-item"><strong>React</strong> – knihovna pro tvorbu uživatelského rozhraní, využívá komponenty a virtuální DOM</div>
+                                    <div class="framework-item"><strong>Bootstrap</strong> – CSS framework pro responzivní design, využívá grid systém a komponenty, umožňuje rychlé formátování pomocí tříd. (Alternativy: Tailwind CSS, Materialize)</div>
+                                </div>
+                            </div>
+                            <div class="framework-category-card">
+                                <h4><i class="fas fa-server"></i> Backendové frameworky</h4>
+                                <div class="framework-list">
+                                    <div class="framework-item"><strong>Express.js</strong> – minimalistický framework pro tvorbu webových serverů v Node.js</div>
+                                    <div class="framework-item"><strong>Django</strong> – framework pro tvorbu webových aplikací v Pythonu</div>
+                                    <div class="framework-item"><strong>Flask</strong> – mikroframework v Pythonu, jednoduchý a flexibilní</div>
+                                    <div class="framework-item"><strong>Laravel</strong> – populární framework pro tvorbu webových aplikací v PHP</div>
+                                </div>
+                            </div>
+                            <div class="framework-category-card">
+                                <h4><i class="fas fa-layer-group"></i> Full-stack frameworky</h4>
+                                <div class="framework-list">
+                                    <div class="framework-item"><strong>MEAN</strong> – MongoDB, Express.js, Angular, Node.js</div>
+                                    <div class="framework-item"><strong>MERN</strong> – MongoDB, Express.js, React, Node.js</div>
+                                    <div class="framework-item"><strong>Next.js</strong> – framework pro React, umožňuje server-side rendering, statické generování stránek, routování</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dev-tools-section">
+                        <h3><i class="fas fa-wrench"></i> Nástroje pro vývoj webových aplikací</h3>
+                        <div class="dev-tools-grid">
+                            <div class="dev-tool-card">
+                                <h4><i class="fas fa-code"></i> Visual Studio Code</h4>
+                                <p>Open-source editor od Microsoftu, podpora pro JavaScript, HTML, CSS, rozšíření pro React, Node.js</p>
+                            </div>
+                            <div class="dev-tool-card">
+                                <h4><i class="fab fa-chrome"></i> Chrome Developer Tools</h4>
+                                <p>Nástroje pro ladění a testování webových stránek, zobrazení konzole, sítě, zdrojových kódů</p>
+                            </div>
+                            <div class="dev-tool-card">
+                                <h4><i class="fas fa-paper-plane"></i> Postman</h4>
+                                <p>Nástroj pro testování API, odesílání HTTP požadavků, zobrazení odpovědí</p>
+                            </div>
+                            <div class="dev-tool-card">
+                                <h4><i class="fas fa-box"></i> Webpack</h4>
+                                <p>Nástroj pro balení (bundling) JavaScriptových souborů, optimalizace, zpracování CSS, obrázků</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

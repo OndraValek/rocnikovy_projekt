@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programy a data - Maturitní Projekt</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Levý sidebar -->
+        <div class="sidebar">
+            <div class="search-section">
+                <h3>Vyhledávání</h3>
+                <div class="search-box">
+                    <input type="text" placeholder="Hledat..." class="search-input">
+                    <button class="search-btn">
+                        <i class="fas fa-search"></i>
+                        Hledat
+                    </button>
+                </div>
+            </div>
+            
+        </div>
+
+        <!-- Hlavní obsah -->
+        <div class="main-content">
+            <div class="page-title">
+                <h1>Programy a data</h1>
+            </div>
+
+            <!-- Navigace zpět -->
+            <div class="back-navigation">
+                <a href="/" class="back-btn">
+                    <i class="fas fa-arrow-left"></i>
+                    Zpět na seznam témat
+                </a>
+            </div>
+
+            <!-- Obsah tématu -->
+            <div class="topic-content">
+                <!-- 1. Programové a datové soubory -->
+                <div class="content-section full-width">
+                    <h2><i class="fas fa-file-code"></i> Programové a datové soubory</h2>
+                    
+                    <div class="file-types-section">
+                        <h3><i class="fas fa-cogs"></i> Programové soubory</h3>
+                        <p class="section-intro">Programové soubory obsahují instrukce a kód potřebné k běhu aplikací.</p>
+                        
+                        <div class="file-type-grid">
+                            <div class="file-type-card">
+                                <div class="file-type-icon">
+                                    <i class="fas fa-play-circle"></i>
+                                </div>
+                                <h4>Spustitelné soubory</h4>
+                                <p>Spouštějí program nebo skript</p>
+                                <div class="file-extensions">
+                                    <code>.exe</code>, <code>.com</code>, <code>.bat</code>, <code>.sh</code>
+                                </div>
+                            </div>
+                            <div class="file-type-card">
+                                <div class="file-type-icon">
+                                    <i class="fas fa-book"></i>
+                                </div>
+                                <h4>Knihovny</h4>
+                                <p>Obsahují kód, který může být použit jinými programy</p>
+                                <div class="file-details">
+                                    <p><strong>Statické knihovny</strong> – připojují se při kompilaci (např. <code>.lib</code> v C++)</p>
+                                    <p><strong>Dynamické knihovny</strong> – načítají se za běhu programu (např. <code>.dll</code> v Windows, <code>.so</code> v Linuxu)</p>
+                                </div>
+                            </div>
+                            <div class="file-type-card">
+                                <div class="file-type-icon">
+                                    <i class="fas fa-terminal"></i>
+                                </div>
+                                <h4>Skriptovací soubory</h4>
+                                <p>Obsahují instrukce pro interpretované jazyky</p>
+                                <div class="file-extensions">
+                                    Python (<code>.py</code>), JavaScript (<code>.js</code>), Shell (<code>.sh</code>)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="file-types-section">
+                        <h3><i class="fas fa-database"></i> Datové soubory</h3>
+                        <p class="section-intro">Obsahují informace pro programy, nikoliv instrukce k jejich běhu.</p>
+                        
+                        <div class="data-file-types">
+                            <div class="data-file-type">
+                                <h4><i class="fas fa-file-alt"></i> Textové soubory</h4>
+                                <div class="file-extensions">
+                                    <code>.txt</code>, <code>.csv</code>, <code>.json</code>, <code>.xml</code>
+                                </div>
+                            </div>
+                            <div class="data-file-type">
+                                <h4><i class="fas fa-file-binary"></i> Binární soubory</h4>
+                                <div class="file-extensions">
+                                    <code>.dat</code>, <code>.bin</code>, <code>.db</code>
+                                </div>
+                            </div>
+                            <div class="data-file-type">
+                                <h4><i class="fas fa-file-image"></i> Multimediální soubory</h4>
+                                <div class="file-extensions">
+                                    <code>.jpg</code>, <code>.mp3</code>, <code>.mp4</code>, <code>.gif</code>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Systémové a aplikační programy -->
+                <div class="content-section full-width">
+                    <h2><i class="fas fa-desktop"></i> Systémové a aplikační programy, utility a speciální software</h2>
+                    
+                    <div class="software-types-section">
+                        <h3><i class="fas fa-server"></i> Systémové programy</h3>
+                        <p class="section-intro">Zajišťují správu a komunikaci mezi hardwarem a softwarem. Jsou nezbytné pro běh počítače a spouštění aplikací.</p>
+                        
+                        <div class="software-grid">
+                            <div class="software-card">
+                                <div class="software-icon">
+                                    <i class="fas fa-laptop-code"></i>
+                                </div>
+                                <h4>Operační systémy</h4>
+                                <p>Základní software pro běh počítače (Windows, macOS, Linux) nebo mobilních zařízení (Android, iOS).</p>
+                                <div class="software-details">
+                                    <p><strong>Real-time systémy (RTOS)</strong> – speciální typ OS pro řízení průmyslových procesů, autonomních vozidel, vesmírných sond apod. Na rozdíl od klasických OS, které mají garantovanou odezvu na události v řádu milisekund, RTOS reagují na události v řádu mikrosekund.</p>
+                                </div>
+                            </div>
+                            <div class="software-card">
+                                <div class="software-icon">
+                                    <i class="fas fa-plug"></i>
+                                </div>
+                                <h4>Ovladače zařízení</h4>
+                                <p>Software umožňující komunikaci mezi OS a hardwarem (např. ovladač tiskárny).</p>
+                                <div class="software-details">
+                                    <p>Ovladače mohou být součástí OS nebo se instalují dodatečně, např. při připojení nového zařízení (technologie <strong>Plug and Play</strong>).</p>
+                                </div>
+                            </div>
+                            <div class="software-card">
+                                <div class="software-icon">
+                                    <i class="fas fa-microchip"></i>
+                                </div>
+                                <h4>Firmware</h4>
+                                <p>Software uložený v paměti hardware, který zajišťuje základní funkce zařízení.</p>
+                                <div class="software-details">
+                                    <p>Příklady: <strong>BIOS</strong>, <strong>UEFI</strong>, mikrokontroléry</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="software-types-section">
+                        <h3><i class="fas fa-window-maximize"></i> Aplikační programy</h3>
+                        <p class="section-intro">Software pro konkrétní uživatelské úlohy. Mohou být určeny pro konkrétní platformu (OS) nebo běžet na více platformách (multiplatformní software).</p>
+                        
+                        <div class="application-types">
+                            <div class="application-type">
+                                <h4><i class="fas fa-briefcase"></i> Kancelářské balíky</h4>
+                                <p>Sady programů pro kancelářskou práci, obvykle obsahují textový editor, tabulkový procesor, prezentaci.</p>
+                                <div class="software-examples">
+                                    <strong>Příklady:</strong> MS Office, LibreOffice
+                                </div>
+                            </div>
+                            <div class="application-type">
+                                <h4><i class="fas fa-paint-brush"></i> Grafické programy</h4>
+                                <p>Programy pro úpravu a tvorbu grafiky a návrh modelů.</p>
+                                <div class="software-details">
+                                    <p><strong>Rastrová grafika:</strong> Adobe Photoshop, GIMP</p>
+                                    <p><strong>Vektorová grafika:</strong> Adobe Illustrator, Inkscape</p>
+                                    <p><strong>CAD (Computer-Aided Design):</strong> AutoCAD, SolidWorks</p>
+                                    <p><strong>DTP (Desktop Publishing):</strong> Adobe InDesign, Scribus</p>
+                                </div>
+                            </div>
+                            <div class="application-type">
+                                <h4><i class="fas fa-music"></i> Multimediální programy</h4>
+                                <p>Pro přehrávání a úpravu zvuku a videa.</p>
+                                <div class="software-examples">
+                                    <strong>Příklady:</strong> VLC, Audacity, Adobe Premiere, DaVinci Resolve
+                                </div>
+                            </div>
+                            <div class="application-type">
+                                <h4><i class="fas fa-network-wired"></i> Síťové aplikace</h4>
+                                <p>Pro komunikaci a práci s daty na internetu.</p>
+                                <div class="software-examples">
+                                    <strong>Příklady:</strong> prohlížeče, e-mailové klienty, FTP klienty
+                                </div>
+                            </div>
+                            <div class="application-type">
+                                <h4><i class="fas fa-code"></i> Vývojová prostředí</h4>
+                                <p>Programy pro vývoj software (IDE – Integrated Development Environment) pro různé programovací jazyky.</p>
+                                <div class="software-examples">
+                                    <strong>Příklady:</strong> Visual Studio Code, PyCharm
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="software-types-section">
+                        <h3><i class="fas fa-tools"></i> Utility</h3>
+                        <p class="section-intro">Pomocné programy pro správu a údržbu systému, zpravidla dodávané s OS nebo instalované dodatečně. Většinou jde o menší programy s jednoduchým rozhraním a omezeným účelem.</p>
+                        
+                        <div class="utility-types">
+                            <div class="utility-item">
+                                <i class="fas fa-folder-open"></i>
+                                <strong>Správa souborů a disků</strong> – Průzkumník souborů, Disk Cleanup
+                            </div>
+                            <div class="utility-item">
+                                <i class="fas fa-cog"></i>
+                                <strong>Správa systému</strong> – Správce úloh, Správce zařízení
+                            </div>
+                            <div class="utility-item">
+                                <i class="fas fa-shield-alt"></i>
+                                <strong>Antiviry</strong> – Avast, Windows Defender
+                            </div>
+                            <div class="utility-item">
+                                <i class="fas fa-database"></i>
+                                <strong>Zálohovací programy</strong> – Acronis, Macrium Reflect
+                            </div>
+                            <div class="utility-item">
+                                <i class="fas fa-file-archive"></i>
+                                <strong>Komprimační programy</strong> – WinRAR, 7-Zip
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Programy a autorský zákon -->
+                <div class="content-section full-width">
+                    <h2><i class="fas fa-gavel"></i> Programy a autorský zákon, softwarové licence</h2>
+                    
+                    <div class="legal-section">
+                        <h3><i class="fas fa-scale-balanced"></i> Autorský zákon a software</h3>
+                        <p class="section-intro">Software je autorské dílo, chráněné zákonem o duševním vlastnictví. V ČR je autorské právo upraveno <strong>autorským zákonem č. 121/2000 Sb.</strong></p>
+                        
+                        <div class="legal-info">
+                            <div class="legal-card">
+                                <h4><i class="fas fa-copyright"></i> Autorská práva</h4>
+                                <p>Majitel software má právo rozhodovat o kopírování, distribuci a modifikaci programu.</p>
+                            </div>
+                            <div class="legal-card warning">
+                                <h4><i class="fas fa-exclamation-triangle"></i> Nelegální kopírování (pirátství)</h4>
+                                <p>Může vést k právním postihům: pokuty, zabavení majetku, vězení.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="license-section">
+                        <h3><i class="fas fa-file-contract"></i> Softwarové licence</h3>
+                        <p class="section-intro">Licence je smlouva mezi vývojářem a uživatelem, která určuje podmínky používání software.</p>
+                        
+                        <div class="license-types-grid">
+                            <div class="license-card">
+                                <h4>EULA</h4>
+                                <p class="license-full">End User License Agreement</p>
+                                <p>Licence pro koncového uživatele, která se zobrazuje při instalaci programu. Uživatel musí souhlasit s podmínkami, aby mohl software používat. Používá se u proprietárního software.</p>
+                            </div>
+                            <div class="license-card">
+                                <h4>GNU GPL</h4>
+                                <p class="license-full">General Public License</p>
+                                <p>Licence pro open-source software, která umožňuje uživatelům volně používat, šířit a upravovat software. Uživatelé jsou povinni dodržovat podmínky licence, např. zveřejnit zdrojový kód upravené verze.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="license-types-section">
+                        <h3><i class="fas fa-list"></i> Typy softwarových licencí</h3>
+                        
+                        <div class="license-categories">
+                            <div class="license-category">
+                                <div class="category-header">
+                                    <i class="fas fa-lock"></i>
+                                    <h4>Proprietární software</h4>
+                                </div>
+                                <p>Placené programy, kde uživatel nemá přístup ke kódu (Windows, Photoshop).</p>
+                                <div class="license-details">
+                                    <p><strong>Freemium model</strong> – základní verze zdarma a za pokročilé funkce se platí (Spotify, Evernote)</p>
+                                    <p>Zdrojový kód je uzavřený (closed-source), ve většině případů jde o komerční placený software</p>
+                                </div>
+                            </div>
+                            <div class="license-category">
+                                <div class="category-header">
+                                    <i class="fas fa-clock"></i>
+                                    <h4>Trialware</h4>
+                                </div>
+                                <p>Zkušební verze programu na omezenou dobu (obvykle na 30 dní).</p>
+                            </div>
+                            <div class="license-category">
+                                <div class="category-header">
+                                    <i class="fas fa-share-alt"></i>
+                                    <h4>Shareware</h4>
+                                </div>
+                                <p>Verze programu, kterou lze vyzkoušet zdarma, ale pro plné funkce je třeba zaplatit (WinRAR, Total Commander).</p>
+                            </div>
+                            <div class="license-category">
+                                <div class="category-header">
+                                    <i class="fas fa-gift"></i>
+                                    <h4>Freeware</h4>
+                                </div>
+                                <p>Zdarma dostupný software, který je možné používat bezplatně (Adobe Acrobat Reader, Skype).</p>
+                            </div>
+                            <div class="license-category">
+                                <div class="category-header">
+                                    <i class="fas fa-code-branch"></i>
+                                    <h4>Open-source software</h4>
+                                </div>
+                                <p>Software, jehož zdrojový kód je volně dostupný a může být upravován a šířen (Linux, LibreOffice, GIMP).</p>
+                                <div class="license-details">
+                                    <p>Existuje mnoho typů open-source licencí, např. <strong>MIT</strong>, <strong>Apache</strong>, <strong>BSD</strong>, <strong>GNU GPL</strong></p>
+                                </div>
+                            </div>
+                            <div class="license-category">
+                                <div class="category-header">
+                                    <i class="fas fa-globe"></i>
+                                    <h4>Public domain</h4>
+                                </div>
+                                <p>Software bez autorských omezení (klasické knihovny, některé starší programy).</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. Instalace programů, zálohování -->
+                <div class="content-section full-width">
+                    <h2><i class="fas fa-download"></i> Instalace programů, zálohování programů a dat</h2>
+                    
+                    <div class="installation-section">
+                        <h3><i class="fas fa-box-open"></i> Instalace programů</h3>
+                        <p class="section-intro">Programy lze instalovat z instalačních médií (CD, DVD), ze sítě (internet, intranet) nebo z obchodů s aplikacemi (Google Play, App Store).</p>
+                        
+                        <div class="install-types">
+                            <h4><i class="fas fa-list"></i> Typy instalačních balíčků</h4>
+                            <div class="install-types-grid">
+                                <div class="install-type">
+                                    <h5>EXE</h5>
+                                    <p>Spustitelný soubor, který obsahuje instalační program</p>
+                                </div>
+                                <div class="install-type">
+                                    <h5>MSI</h5>
+                                    <p>Instalační balíček pro Windows, který obsahuje informace o instalaci (soubory, registry)</p>
+                                </div>
+                                <div class="install-type">
+                                    <h5>DEB, RPM</h5>
+                                    <p>Balíčky pro Linuxové distribuce (Debian, Ubuntu, Fedora)</p>
+                                </div>
+                                <div class="install-type">
+                                    <h5>APP</h5>
+                                    <p>Balíček pro macOS</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="installation-info">
+                            <p>Postup instalace je často automatizován pomocí <strong>instalačních průvodců (wizardů)</strong>, které uživatele provedou procesem instalace.</p>
+                            <p><strong>Korektní odinstalace programu</strong> je důležitá pro odstranění všech souborů a registrů spojených s programem. Používáme k tomu utility dodávané s programem nebo vestavěné v OS, případně i speciální programy pro čištění systému (CCleaner).</p>
+                        </div>
+                    </div>
+
+                    <div class="version-section">
+                        <h3><i class="fas fa-sync-alt"></i> Verze programů a jejich aktualizace</h3>
+                        
+                        <div class="version-concepts">
+                            <div class="version-concept">
+                                <h4><i class="fas fa-tag"></i> Verze programu</h4>
+                                <p>Označení konkrétního vydání programu (1.0, 2.0, 3.0). Přechod na novou verzi označujeme jako <strong>upgrade</strong>.</p>
+                            </div>
+                            <div class="version-concept">
+                                <h4><i class="fas fa-arrow-up"></i> Aktualizace (update)</h4>
+                                <p>Opravy chyb, zlepšení funkcionality, nové funkce. Aktualizace mohou být <strong>minor</strong> (1.1, 1.2) nebo <strong>major</strong> (2.0, 3.0).</p>
+                                <div class="version-details">
+                                    <p>Aktualizace mohou být <strong>automatické</strong> (Windows Update, Google Play) nebo <strong>manuální</strong> (stahování a instalace ze stránek výrobce).</p>
+                                </div>
+                            </div>
+                            <div class="version-concept">
+                                <h4><i class="fas fa-bug"></i> Patch</h4>
+                                <p>Malá aktualizace opravující konkrétní chybu nebo zabezpečení.</p>
+                            </div>
+                            <div class="version-concept">
+                                <h4><i class="fas fa-box"></i> Service Pack</h4>
+                                <p>Větší aktualizace, která obsahuje mnoho oprav a nových funkcí (Windows XP SP3).</p>
+                            </div>
+                            <div class="version-concept">
+                                <h4><i class="fas fa-arrow-down"></i> Downgrade</h4>
+                                <p>Vrácení na předchozí verzi programu v případě problémů s novou verzí.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="backup-section">
+                        <h3><i class="fas fa-hdd"></i> Zálohování programů a dat</h3>
+                        
+                        <div class="backup-why">
+                            <h4><i class="fas fa-question-circle"></i> Proč zálohovat?</h4>
+                            <p>Ochrana před ztrátou dat (hardwarové selhání, ransomware, chyba uživatele).</p>
+                        </div>
+
+                        <div class="backup-methods">
+                            <h4><i class="fas fa-list-ol"></i> Metody zálohování</h4>
+                            <div class="backup-methods-grid">
+                                <div class="backup-method">
+                                    <h5>Plná záloha</h5>
+                                    <p>Kompletní kopie dat</p>
+                                </div>
+                                <div class="backup-method">
+                                    <h5>Diferenciální záloha</h5>
+                                    <p>Ukládají se pouze změny od poslední plné zálohy</p>
+                                </div>
+                                <div class="backup-method">
+                                    <h5>Inkrementální záloha</h5>
+                                    <p>Ukládají se pouze změny oproti předchozí záloze</p>
+                                </div>
+                                <div class="backup-method">
+                                    <h5>Záloha systému</h5>
+                                    <p>Záloha operačního systému a aplikací ve formě obrazu disku (disk image)</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="backup-storage">
+                            <h4><i class="fas fa-server"></i> Úložiště záloh</h4>
+                            <div class="storage-types">
+                                <div class="storage-type">
+                                    <i class="fas fa-hdd"></i>
+                                    <strong>Externí disky, NAS</strong> (Network Attached Storage) – rychlá záloha, ale zranitelná pro fyzické poškození
+                                </div>
+                                <div class="storage-type">
+                                    <i class="fas fa-layer-group"></i>
+                                    <strong>Zrcadlení disků (RAID)</strong> – redundantní pole nezávislých disků, které zajišťuje zálohu dat
+                                </div>
+                                <div class="storage-type">
+                                    <i class="fas fa-cloud"></i>
+                                    <strong>Cloudové úložiště</strong> – záloha dat na vzdáleném serveru (Google Drive, OneDrive, Dropbox)
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="backup-software">
+                            <h4><i class="fas fa-tools"></i> Software pro zálohování</h4>
+                            <div class="software-list">
+                                <div class="software-item">
+                                    <strong>Windows Backup and Restore</strong> – vestavěný nástroj v Windows
+                                </div>
+                                <div class="software-item">
+                                    <strong>Acronis True Image</strong> – komplexní zálohovací software s možností obnovy systému
+                                </div>
+                                <div class="software-item">
+                                    <strong>Clonezilla</strong> – alternativní open-source software pro tvorbu obrazů disků
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. Cloudová řešení, emulace a virtualizace -->
+                <div class="content-section full-width">
+                    <h2><i class="fas fa-cloud"></i> Cloudová řešení, emulace a virtualizace</h2>
+                    
+                    <div class="cloud-section">
+                        <h3><i class="fas fa-cloud"></i> Cloud</h3>
+                        <p class="section-intro"><strong>Cloud (mračno)</strong> – označení pro vzdálené servery a služby dostupné přes internet. Umožňuje uživatelům ukládat data, spouštět aplikace a sdílet informace.</p>
+                        
+                        <div class="cloud-pros-cons">
+                            <div class="pros-cons">
+                                <h4><i class="fas fa-check-circle"></i> Výhody cloudu</h4>
+                                <ul class="benefits-list">
+                                    <li><i class="fas fa-check"></i> <strong>Dostupnost</strong> – data jsou dostupná odkudkoliv</li>
+                                    <li><i class="fas fa-check"></i> <strong>Škálovatelnost</strong> – možnost rychle zvyšovat nebo snižovat kapacitu</li>
+                                    <li><i class="fas fa-check"></i> <strong>Bezpečnost</strong> – data jsou zálohována a chráněna před ztrátou</li>
+                                    <li><i class="fas fa-check"></i> <strong>Spolehlivost</strong> – servery jsou monitorovány a udržovány 24/7</li>
+                                    <li><i class="fas fa-check"></i> <strong>Nízké náklady</strong> – placení pouze za využitou kapacitu</li>
+                                </ul>
+                            </div>
+                            <div class="pros-cons">
+                                <h4><i class="fas fa-times-circle"></i> Nevýhody cloudu</h4>
+                                <ul class="drawbacks-list">
+                                    <li><i class="fas fa-times"></i> <strong>Závislost na internetu</strong> – bez připojení k internetu nelze data z cloudu získat</li>
+                                    <li><i class="fas fa-times"></i> <strong>Ochrana dat</strong> – důvěra poskytovateli cloudu, riziko úniku dat</li>
+                                    <li><i class="fas fa-times"></i> <strong>Výkon</strong> – rychlost přenosu dat může být omezena</li>
+                                    <li><i class="fas fa-times"></i> <strong>Náklady</strong> – dlouhodobé náklady mohou být vyšší než nákup vlastního hardware</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="cloud-solutions">
+                            <h4><i class="fas fa-server"></i> Cloudová řešení</h4>
+                            <div class="cloud-types">
+                                <div class="cloud-type">
+                                    <h5>Private cloud</h5>
+                                    <p>Cloudové služby provozované v rámci organizace (firemní servery)</p>
+                                </div>
+                                <div class="cloud-type">
+                                    <h5>Public cloud</h5>
+                                    <p>Cloudové služby poskytované třetí stranou (Google Cloud, Microsoft Azure)</p>
+                                </div>
+                                <div class="cloud-type">
+                                    <h5>Hybrid cloud</h5>
+                                    <p>Kombinace privátního a veřejného cloudu</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="cloud-models">
+                            <h4><i class="fas fa-layer-group"></i> Typy modelů</h4>
+                            <div class="models-grid">
+                                <div class="model-card">
+                                    <h5>SaaS</h5>
+                                    <p class="model-full">Software jako služba</p>
+                                    <p>Aplikace běžící v cloudu</p>
+                                    <div class="model-examples">
+                                        <strong>Příklady:</strong> Google Docs, Office 365
+                                    </div>
+                                </div>
+                                <div class="model-card">
+                                    <h5>PaaS</h5>
+                                    <p class="model-full">Platforma jako služba</p>
+                                    <p>Poskytuje prostředí pro vývoj aplikací, vývojáři nemusí řešit infrastrukturu</p>
+                                    <div class="model-examples">
+                                        <strong>Příklady:</strong> Google App Engine, Heroku
+                                    </div>
+                                </div>
+                                <div class="model-card">
+                                    <h5>IaaS</h5>
+                                    <p class="model-full">Infrastruktura jako služba</p>
+                                    <p>Pronájem výpočetních zdrojů (serverů, úložiště)</p>
+                                    <div class="model-examples">
+                                        <strong>Příklady:</strong> Amazon Web Services, Microsoft Azure
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="emulation-section">
+                        <h3><i class="fas fa-vial"></i> Emulace</h3>
+                        <p class="section-intro">Simulace hardware nebo software na jiném systému. Umožňuje spouštět programy určené pro jiný operační systém nebo hardware.</p>
+                        
+                        <div class="emulation-types">
+                            <div class="emulation-type">
+                                <h4><i class="fas fa-microchip"></i> Hardwarová emulace</h4>
+                                <p>Simulace fyzického hardware</p>
+                                <div class="emulation-examples">
+                                    <strong>Příklady:</strong> Emulátory herních konzolí - PCSX2, Dolphin
+                                </div>
+                            </div>
+                            <div class="emulation-type">
+                                <h4><i class="fas fa-laptop-code"></i> Softwarová emulace</h4>
+                                <p>Simulace operačního systému</p>
+                                <div class="emulation-examples">
+                                    <strong>Příklady:</strong> Wine pro spouštění Windows programů v Linuxu, DosBox pro staré DOS hry, BlueStacks pro spouštění Android aplikací na PC
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="virtualization-section">
+                        <h3><i class="fas fa-cube"></i> Virtualizace</h3>
+                        <p class="section-intro">Obecně označuje vytváření virtuálních verzí fyzických zdrojů (hardware, software, úložiště).</p>
+                        
+                        <div class="virtualization-types">
+                            <h4><i class="fas fa-list"></i> Typy virtualizace</h4>
+                            <div class="vtypes-grid">
+                                <div class="vtype-card">
+                                    <h5><i class="fas fa-server"></i> Hardware virtualizace</h5>
+                                    <p>Vytváření virtuálních strojů na fyzickém hardware</p>
+                                    <div class="vtype-examples">
+                                        <strong>Příklady:</strong> VMware, VirtualBox
+                                    </div>
+                                </div>
+                                <div class="vtype-card">
+                                    <h5><i class="fas fa-box"></i> Aplikační virtualizace</h5>
+                                    <p>Izolace aplikací od operačního systému</p>
+                                    <div class="vtype-examples">
+                                        <strong>Příklady:</strong> Docker, venv
+                                    </div>
+                                </div>
+                                <div class="vtype-card">
+                                    <h5><i class="fas fa-network-wired"></i> Síťová virtualizace</h5>
+                                    <p>Vytváření virtuálních sítí</p>
+                                    <div class="vtype-examples">
+                                        <strong>Příklady:</strong> VPN, VLAN
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="virtualization-usage">
+                            <h4><i class="fas fa-lightbulb"></i> Praktické využití</h4>
+                            <div class="usage-grid">
+                                <div class="usage-item">
+                                    <i class="fas fa-code"></i>
+                                    <strong>Vývoj software</strong> – vytvoření virtuálního prostředí pro vývoj a testování aplikací
+                                </div>
+                                <div class="usage-item">
+                                    <i class="fas fa-shield-alt"></i>
+                                    <strong>Bezpečnost</strong> – izolace nebezpečných aplikací nebo souborů
+                                </div>
+                                <div class="usage-item">
+                                    <i class="fas fa-server"></i>
+                                    <strong>Správa serverů</strong> – snadná migrace a zálohování serverů
+                                </div>
+                                <div class="usage-item">
+                                    <i class="fas fa-graduation-cap"></i>
+                                    <strong>Školení</strong> – vytvoření virtuálních prostředí pro školení a vzdělávání
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Místo pro kvíz -->
+                <div class="quiz-section">
+                    <h2><i class="fas fa-question-circle"></i> Kvíz</h2>
+                    <div class="quiz-placeholder">
+                        <p><i class="fas fa-tools"></i> Kvíz bude brzy dostupný</p>
+                        <p>Zde bude interaktivní kvíz pro testování znalostí z oblasti programů a dat.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

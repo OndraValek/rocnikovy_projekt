@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rastrová grafika a digitální fotografie - Maturitní Projekt</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Levý sidebar -->
+        <div class="sidebar">
+            <div class="search-section">
+                <h3>Vyhledávání</h3>
+                <div class="search-box">
+                    <input type="text" placeholder="Hledat..." class="search-input">
+                    <button class="search-btn">
+                        <i class="fas fa-search"></i>
+                        Hledat
+                    </button>
+                </div>
+            </div>
+            
+        </div>
+
+        <!-- Hlavní obsah -->
+        <div class="main-content">
+            <div class="page-title">
+                <h1>Rastrová grafika a digitální fotografie</h1>
+            </div>
+
+            <!-- Navigace zpět -->
+            <div class="back-navigation">
+                <a href="/" class="back-btn">
+                    <i class="fas fa-arrow-left"></i>
+                    Zpět na seznam témat
+                </a>
+            </div>
+
+            <!-- Obsah tématu -->
+            <div class="topic-content">
+                <!-- 1. Princip rastrové grafiky -->
+                <div class="content-section full-width">
+                    <h2><i class="fas fa-image"></i> Princip rastrové grafiky, oblasti využití, příklady programů</h2>
+                    
+                    <div class="definition-section">
+                        <h3><i class="fas fa-question-circle"></i> Co je rastrová grafika?</h3>
+                        <div class="definition-grid">
+                            <div class="definition-card">
+                                <p>Grafický formát, kde je obraz tvořen <strong>mřížkou (maticí)</strong> jednotlivých bodů – <strong>pixelů</strong>.</p>
+                                <p>Každý pixel obsahuje informace o své barvě podle zvoleného barevného modelu.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pros-cons-section">
+                        <h3><i class="fas fa-balance-scale"></i> Výhody a nevýhody</h3>
+                        <div class="pros-cons-grid">
+                            <div class="pros-card">
+                                <h4><i class="fas fa-check-circle"></i> Výhody</h4>
+                                <ul class="pros-list">
+                                    <li>Vhodná pro fotografie a komplexní grafické efekty</li>
+                                    <li>Snadná editace a rychlé zpracování</li>
+                                    <li>Převaha rastrových zařízení (monitory, tiskárny)</li>
+                                </ul>
+                            </div>
+                            <div class="cons-card">
+                                <h4><i class="fas fa-times-circle"></i> Nevýhody</h4>
+                                <ul class="cons-list">
+                                    <li>Při zvětšování obrázku dochází ke ztrátě kvality v důsledku pixelizace</li>
+                                    <li>Nevhodná pro tvorbu samostatných grafických objektů</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="usage-areas-section">
+                        <h3><i class="fas fa-map"></i> Oblasti využití rastrové grafiky</h3>
+                        <div class="usage-areas-grid">
+                            <div class="usage-area-card">
+                                <div class="usage-icon">
+                                    <i class="fas fa-camera"></i>
+                                </div>
+                                <h4>Digitální fotografie</h4>
+                                <p>Fotografie jsou ukládány v rastrových formátech (JPEG, RAW) a tištěny rastrovými tiskárnami</p>
+                            </div>
+                            <div class="usage-area-card">
+                                <div class="usage-icon">
+                                    <i class="fas fa-globe"></i>
+                                </div>
+                                <h4>Webdesign</h4>
+                                <p>Obrázky na webových stránkách, efektivní komprese pro rychlé načítání</p>
+                            </div>
+                            <div class="usage-area-card">
+                                <div class="usage-icon">
+                                    <i class="fas fa-paint-brush"></i>
+                                </div>
+                                <h4>Grafický design</h4>
+                                <p>Tvorba log, plakátů, obalů, reklamních materiálů</p>
+                            </div>
+                            <div class="usage-area-card">
+                                <div class="usage-icon">
+                                    <i class="fas fa-palette"></i>
+                                </div>
+                                <h4>Digitální malba</h4>
+                                <p>Tvorba digitálních obrazů pomocí grafických tabletů a stylusů</p>
+                            </div>
+                            <div class="usage-area-card">
+                                <div class="usage-icon">
+                                    <i class="fas fa-gamepad"></i>
+                                </div>
+                                <h4>Videohry</h4>
+                                <p>Textury, postavy, prostředí vytvářené pomocí rastrové grafiky</p>
+                            </div>
+                            <div class="usage-area-card">
+                                <div class="usage-icon">
+                                    <i class="fas fa-microscope"></i>
+                                </div>
+                                <h4>Vědecká vizualizace</h4>
+                                <p>Zpracování dat, mapování, simulace</p>
+                            </div>
+                            <div class="usage-area-card">
+                                <div class="usage-icon">
+                                    <i class="fas fa-brain"></i>
+                                </div>
+                                <h4>AI a strojové učení</h4>
+                                <p>Trénování neuronových sítí na obrázcích, rozpoznávání vzorů, generování grafiky</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="programs-section">
+                        <h3><i class="fas fa-desktop"></i> Příklady programů pro práci s rastrovou grafikou</h3>
+                        <div class="programs-grid">
+                            <div class="program-category">
+                                <h4><i class="fas fa-dollar-sign"></i> Placené programy</h4>
+                                <div class="programs-list">
+                                    <div class="program-item">Adobe Photoshop</div>
+                                    <div class="program-item">Corel PaintShop Pro</div>
+                                </div>
+                            </div>
+                            <div class="program-category">
+                                <h4><i class="fas fa-code-branch"></i> Open-source programy</h4>
+                                <div class="programs-list">
+                                    <div class="program-item">GIMP (GNU Image Manipulation Program)</div>
+                                    <div class="program-item">Krita</div>
+                                </div>
+                            </div>
+                            <div class="program-category">
+                                <h4><i class="fas fa-cloud"></i> Online editory</h4>
+                                <div class="programs-list">
+                                    <div class="program-item">Photopea</div>
+                                    <div class="program-item">Canva</div>
+                                    <div class="program-item">Figma</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Vlastnosti rastrového obrazu, rastrové formáty -->
+                <div class="content-section full-width">
+                    <h2><i class="fas fa-cog"></i> Vlastnosti rastrového obrazu, rastrové formáty</h2>
+                    
+                    <div class="properties-section">
+                        <h3><i class="fas fa-list"></i> Vlastnosti rastrového obrazu</h3>
+                        <div class="properties-grid">
+                            <div class="property-card">
+                                <h4><i class="fas fa-expand"></i> Rozlišení</h4>
+                                <p>Počet pixelů v obrázku (např. <strong>1920×1080 px</strong>)</p>
+                            </div>
+                            <div class="property-card">
+                                <h4><i class="fas fa-palette"></i> Barevná hloubka</h4>
+                                <p>Počet bitů na pixel určující počet barev</p>
+                                <div class="property-details">
+                                    <p><strong>24 bitů</strong> – 16,7 milionů barev</p>
+                                    <p><strong>32 bitů</strong> – s průhledností</p>
+                                    <p><strong>1 bit</strong> – černobílý obrázek</p>
+                                </div>
+                            </div>
+                            <div class="property-card">
+                                <h4><i class="fas fa-dot-circle"></i> Pixelová hustota</h4>
+                                <p>Počet pixelů na jednotku délky</p>
+                                <div class="property-details">
+                                    <p><strong>DPI</strong> (dots per inch) – ovlivňuje kvalitu tisku (min. <strong>300 DPI</strong>)</p>
+                                    <p><strong>PPI</strong> (pixels per inch) – pro webové obrázky, obvykle <strong>72 PPI</strong></p>
+                                </div>
+                            </div>
+                            <div class="property-card">
+                                <h4><i class="fas fa-eye-slash"></i> Průhlednost</h4>
+                                <p>Schopnost průhledných pixelů (alfa kanál - <strong>RGBA</strong>), využívá se pro vrstvy a masky</p>
+                            </div>
+                            <div class="property-card">
+                                <h4><i class="fas fa-compress"></i> Komprese</h4>
+                                <p>Ztrátová (JPEG) nebo bezztrátová (PNG) komprese snižuje velikost souboru</p>
+                            </div>
+                            <div class="property-card">
+                                <h4><i class="fas fa-file"></i> Velikost souboru</h4>
+                                <p>Ovlivněna rozlišením, barevnou hloubkou a kompresí</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="formats-section">
+                        <h3><i class="fas fa-file-image"></i> Rastrové formáty</h3>
+                        
+                        <div class="formats-categories">
+                            <div class="format-category">
+                                <h4><i class="fas fa-check-circle"></i> Bezztrátové formáty</h4>
+                                <div class="formats-grid">
+                                    <div class="format-card">
+                                        <h5>PNG</h5>
+                                        <p class="format-full">Portable Network Graphics</p>
+                                        <p>Podporuje průhlednost, vhodný pro grafiku s ostrými hranami (ikony, loga)</p>
+                                    </div>
+                                    <div class="format-card">
+                                        <h5>GIF</h5>
+                                        <p class="format-full">Graphics Interchange Format</p>
+                                        <p>Umožňuje animace, omezená barevná hloubka (<strong>256 barev</strong>)</p>
+                                    </div>
+                                    <div class="format-card">
+                                        <h5>TIFF</h5>
+                                        <p class="format-full">Tagged Image File Format</p>
+                                        <p>Využíván v tisku, vysoká kvalita, velké soubory</p>
+                                    </div>
+                                    <div class="format-card">
+                                        <h5>BMP</h5>
+                                        <p>Nekomprimovaný formát, velká velikost souboru</p>
+                                    </div>
+                                    <div class="format-card">
+                                        <h5>PSD</h5>
+                                        <p class="format-full">Adobe Photoshop Document</p>
+                                        <p>Uchovává vrstvy, masky a další informace o editaci v Photoshopu</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="format-category">
+                                <h4><i class="fas fa-minus-circle"></i> Ztrátové formáty</h4>
+                                <div class="formats-grid">
+                                    <div class="format-card">
+                                        <h5>JPEG</h5>
+                                        <p class="format-full">Joint Photographic Experts Group</p>
+                                        <p>Nejběžnější formát se ztrátovou kompresí, vhodný pro fotografie na webu</p>
+                                    </div>
+                                    <div class="format-card">
+                                        <h5>JPEG 2000</h5>
+                                        <p>Vylepšená verze JPEG s lepší kompresí a kvalitou, ale nižší podporou</p>
+                                    </div>
+                                    <div class="format-card">
+                                        <h5>WebP</h5>
+                                        <p>Moderní webový formát s lepší kompresí než JPEG, podporuje průhlednost</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Vnímání barev, barevné modely -->
+                <div class="content-section full-width">
+                    <h2><i class="fas fa-palette"></i> Vnímání barev, barevné modely, korekce barevného obrazu</h2>
+                    
+                    <div class="color-perception-section">
+                        <h3><i class="fas fa-eye"></i> Vnímání barev</h3>
+                        <div class="perception-info">
+                            <p>Lidské oko vnímá barvy pomocí <strong>tří druhů čípků</strong> (červený, zelený, modrý), které reagují na různé vlnové délky světla.</p>
+                            <p>Barva je <strong>subjektivní vnímání</strong> závislé na intenzitě světla a kontextu. Lidé s různými typy či zrakovými vadami mohou barvy vnímat odlišně.</p>
+                            <p>Neutrální barvy (černá, bílá, šedá) mají konstantní jas a neobsahují pigmenty.</p>
+                        </div>
+                        <div class="color-models-intro">
+                            <p><strong>Barevný model</strong> je matematický model pro reprezentaci barev, založený na určitých pravidlech a vzorcích. Neodpovídá přesně lidskému vnímání barev, ale umožňuje jednoznačnou reprezentaci pro počítače.</p>
+                            <p>V počítačové grafice se barvy reprezentují číselnými hodnotami podle vybraného barevného modelu.</p>
+                            <p><strong>Barevný gamut</strong> je rozsah všech barev, které může dané zařízení (monitor, tiskárna) zobrazit nebo reprodukovat.</p>
+                        </div>
+                    </div>
+
+                    <div class="color-models-section">
+                        <h3><i class="fas fa-fill-drip"></i> Nejpoužívanější barevné modely</h3>
+                        <div class="color-models-grid">
+                            <div class="color-model-card rgb">
+                                <h4><i class="fas fa-tv"></i> RGB</h4>
+                                <p class="model-full">Red, Green, Blue</p>
+                                <p>Využíván pro digitální obrazovky, tzv. <strong>aditivní model</strong>, kdy se barvy přidávají k černému pozadí</p>
+                            </div>
+                            <div class="color-model-card cmyk">
+                                <h4><i class="fas fa-print"></i> CMYK</h4>
+                                <p class="model-full">Cyan, Magenta, Yellow, Black</p>
+                                <p>Používán v tisku, tzv. <strong>subtraktivní model</strong>, kdy se barvy odečítají od bílého pozadí</p>
+                            </div>
+                            <div class="color-model-card hsb">
+                                <h4><i class="fas fa-adjust"></i> HSB</h4>
+                                <p class="model-full">Hue, Saturation, Brightness</p>
+                                <p>Vhodný pro úpravy barev v grafických programech, je založen na lidském vnímání barev (odstín, sytost, jas)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="color-correction-section">
+                        <h3><i class="fas fa-sliders-h"></i> Korekce barevného obrazu</h3>
+                        <p class="section-intro">Korekce barev se provádí za účelem zlepšení kvality obrazu a dosažení požadovaného vzhledu.</p>
+                        
+                        <div class="correction-methods">
+                            <div class="correction-method">
+                                <h4><i class="fas fa-adjust"></i> Úprava kontrastu a jasu</h4>
+                                <p>Zvýšení viditelnosti detailů, rozlišení světlých a tmavých oblastí</p>
+                            </div>
+                            <div class="correction-method">
+                                <h4><i class="fas fa-sun"></i> Vyvážení bílé (white balance)</h4>
+                                <p>Eliminace nežádoucího zabarvení v důsledku různých světelných podmínek</p>
+                            </div>
+                            <div class="correction-method">
+                                <h4><i class="fas fa-fill"></i> Odstín a sytost (Hue, Saturation)</h4>
+                                <p>Změna barevného tónu a intenzity, saturace ovlivňuje sytost barev</p>
+                            </div>
+                            <div class="correction-method">
+                                <h4><i class="fas fa-chart-line"></i> Korekce barev pomocí křivek</h4>
+                                <p>Manuální úprava jasu a kontrastu v různých částech obrazu</p>
+                            </div>
+                            <div class="correction-method">
+                                <h4><i class="fas fa-cog"></i> Kalibrace monitoru</h4>
+                                <p>Nastavení správného zobrazení barev na monitoru, aby odpovídalo skutečnosti</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. Funkce rastrových editorů -->
+                <div class="content-section full-width">
+                    <h2><i class="fas fa-tools"></i> Funkce rastrových editorů – práce s objekty, vrstvami, maskou, nástroji a filtry</h2>
+                    
+                    <div class="editors-functions-section">
+                        <h3><i class="fas fa-crop"></i> Práce s objekty</h3>
+                        <p>Možnost práce s výřezy, ořezáním a transformací jednotlivých částí obrázku.</p>
+                    </div>
+
+                    <div class="layers-section">
+                        <h3><i class="fas fa-layer-group"></i> Vrstvy</h3>
+                        <div class="layers-info">
+                            <p>Každý prvek obrázku může být umístěn na <strong>samostatné vrstvě</strong> s vlastními vlastnostmi.</p>
+                            <p>Umožňuje nezávislé úpravy jednotlivých částí obrazu bez ovlivnění ostatních.</p>
+                            <p>Mezi vrstvami lze nastavit <strong>průhlednost</strong> a <strong>mód smíchání</strong> (např. násobení, překrývání).</p>
+                        </div>
+                    </div>
+
+                    <div class="masks-section">
+                        <h3><i class="fas fa-mask"></i> Masky</h3>
+                        <div class="masks-info">
+                            <p>Maska je <strong>černobílý obrázek</strong>, který určuje průhlednost a viditelnost částí vrstvy.</p>
+                            <div class="mask-colors">
+                                <div class="mask-color white">
+                                    <strong>Bílá barva</strong> – zobrazuje část vrstvy
+                                </div>
+                                <div class="mask-color black">
+                                    <strong>Černá barva</strong> – skrývá část vrstvy
+                                </div>
+                                <div class="mask-color gray">
+                                    <strong>Šedá barva</strong> – části průhledné
+                                </div>
+                            </div>
+                            <p>Používají se k <strong>nedestruktivním úpravám</strong>, protože neodstraní části obrazu, ale skryjí je.</p>
+                            <p>Masky lze vytvořit ohraničením oblasti (např. výběrovým nástrojem laso, kouzelná hůlka), aplikací filtrů nebo kreslením.</p>
+                        </div>
+                    </div>
+
+                    <div class="tools-section">
+                        <h3><i class="fas fa-wrench"></i> Nástroje v rastrových editorech</h3>
+                        <div class="tools-grid">
+                            <div class="tool-category">
+                                <h4><i class="fas fa-mouse-pointer"></i> Výběrové nástroje</h4>
+                                <div class="tools-list">
+                                    <div class="tool-item">Obdélník</div>
+                                    <div class="tool-item">Elipsa</div>
+                                    <div class="tool-item">Laso</div>
+                                    <div class="tool-item">Kouzelná hůlka</div>
+                                </div>
+                            </div>
+                            <div class="tool-category">
+                                <h4><i class="fas fa-paint-brush"></i> Kreslící nástroje</h4>
+                                <div class="tools-list">
+                                    <div class="tool-item">Tužka</div>
+                                    <div class="tool-item">Štětec</div>
+                                    <div class="tool-item">Náplň</div>
+                                    <div class="tool-item">Křivka</div>
+                                </div>
+                            </div>
+                            <div class="tool-category">
+                                <h4><i class="fas fa-magic"></i> Retušovací nástroje</h4>
+                                <div class="tools-list">
+                                    <div class="tool-item">Klonovací razítko (slouží k kopírování a retušování částí obrazu)</div>
+                                    <div class="tool-item">Rozmazání</div>
+                                    <div class="tool-item">Doostření</div>
+                                </div>
+                            </div>
+                            <div class="tool-category">
+                                <h4><i class="fas fa-font"></i> Textové nástroje</h4>
+                                <div class="tools-list">
+                                    <div class="tool-item">Vkládání a formátování textu</div>
+                                </div>
+                            </div>
+                            <div class="tool-category">
+                                <h4><i class="fas fa-expand-arrows-alt"></i> Transformační nástroje</h4>
+                                <div class="tools-list">
+                                    <div class="tool-item">Změna velikosti</div>
+                                    <div class="tool-item">Rotace</div>
+                                    <div class="tool-item">Zkosení</div>
+                                    <div class="tool-item">Perspektiva</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="filters-section">
+                        <h3><i class="fas fa-filter"></i> Filtry, efekty, AI nástroje</h3>
+                        <div class="filters-grid">
+                            <div class="filter-category">
+                                <h4><i class="fas fa-sliders-h"></i> Filtry</h4>
+                                <p>Aplikace efektů na celý obrázek nebo vybranou oblast (např. rozostření, zvýraznění hran, úprava barev)</p>
+                            </div>
+                            <div class="filter-category">
+                                <h4><i class="fas fa-star"></i> Efekty</h4>
+                                <p>Možnost přidání stínů, světelných efektů, textur, vrstevnic, 3D efektů</p>
+                            </div>
+                            <div class="filter-category">
+                                <h4><i class="fas fa-robot"></i> AI nástroje</h4>
+                                <p>Využívání umělé inteligence pro automatické úpravy (např. odstranění šumu, zvýraznění detailů, změna pozadí, retušování)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. Digitální fotografie -->
+                <div class="content-section full-width">
+                    <h2><i class="fas fa-camera"></i> Digitální fotografie, její vytváření a zpracování</h2>
+                    
+                    <div class="camera-section">
+                        <h3><i class="fas fa-camera-retro"></i> Digitální fotoaparáty</h3>
+                        <div class="camera-info">
+                            <p>Rastrová fotografie je <strong>digitální obraz</strong> vytvořený pomocí digitálního fotoaparátu nebo skeneru.</p>
+                            <p><strong>Digitální fotoaparát</strong> – zařízení pro zachycení obrazu, skládá se z objektivu, snímacího čipu, expozičních parametrů a softwaru.</p>
+                        </div>
+                        
+                        <div class="camera-components">
+                            <div class="camera-component">
+                                <h4><i class="fas fa-microchip"></i> Snímací čip (CCD nebo CMOS)</h4>
+                                <p>Převádí světlo na elektrické signály, je tvořen mřížkou miniaturizovaných senzorů (fotodiod), které reagují na intenzitu světla.</p>
+                                <p>Počet pixelů určuje rozlišení fotografie, např. <strong>24 Mpx</strong>.</p>
+                                <p>Barevné informace jsou získány pomocí barevných filtrů (červený, zelený, modrý) umístěných nad senzory (<strong>Bayerův filtr</strong>).</p>
+                            </div>
+                            <div class="camera-component">
+                                <h4><i class="fas fa-eye"></i> Objektiv</h4>
+                                <p>Určuje kvalitu a vlastnosti fotografie. Optické vlastnosti objektivu ovlivňují:</p>
+                                <div class="component-details">
+                                    <p><strong>Hloubka ostrosti</strong></p>
+                                    <p><strong>Vinětace</strong> (ztráta světla ke kraji)</p>
+                                    <p><strong>Zkreslení</strong></p>
+                                </div>
+                                <p><strong>Ohnisková vzdálenost</strong> se udává v mm (např. 50 mm) a určuje úhel záběru (širokoúhlý, teleobjektiv).</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="exposure-section">
+                        <h3><i class="fas fa-lightbulb"></i> Expozice</h3>
+                        <div class="exposure-info">
+                            <p><strong>Expozice</strong> je množství světla dopadající na snímač během pořizování fotografie.</p>
+                            <p>Správná expozice závisí na <strong>času závěrky, cloně a ISO citlivosti</strong> - tzv. <strong>expoziční trojúhelník</strong>.</p>
+                        </div>
+                        
+                        <div class="exposure-params">
+                            <div class="exposure-param">
+                                <h4><i class="fas fa-clock"></i> Čas závěrky</h4>
+                                <p>Určuje délku expozice, ovlivňuje pohyb a rozmazání</p>
+                                <p>Je vyjádřen v sekundách nebo zlomcích sekundy (<strong>1/100 s</strong>)</p>
+                            </div>
+                            <div class="exposure-param">
+                                <h4><i class="fas fa-circle"></i> Clona (f/číslo)</h4>
+                                <p>Ovlivňuje hloubku ostrosti, čím nižší číslo, tím větší clona a menší hloubka ostrosti (např. <strong>f/2.8</strong>)</p>
+                            </div>
+                            <div class="exposure-param">
+                                <h4><i class="fas fa-brightness"></i> ISO</h4>
+                                <p>Citlivost snímače k světlu, čím vyšší ISO, tím světlejší fotografie, ale s větším šumem</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="processing-section">
+                        <h3><i class="fas fa-sliders-h"></i> Zpracování digitální fotografie</h3>
+                        <div class="processing-methods">
+                            <div class="processing-method">
+                                <h4><i class="fas fa-file-code"></i> RAW</h4>
+                                <p>Nezpracovaný formát digitálních fotografií, obsahuje všechna data z čipu, vhodný pro postprodukci</p>
+                            </div>
+                            <div class="processing-method">
+                                <h4><i class="fas fa-edit"></i> Postprodukce</h4>
+                                <p>Úpravy expozice, kontrastu, barev</p>
+                            </div>
+                            <div class="processing-method">
+                                <h4><i class="fas fa-magic"></i> Retuš a korekce</h4>
+                                <p>Odstranění šumu, doostření, odstranění vad objektivu</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="software-section">
+                        <h3><i class="fas fa-desktop"></i> Software pro úpravu fotografií</h3>
+                        <div class="software-grid">
+                            <div class="software-item-card">
+                                <h4>Adobe Lightroom</h4>
+                                <p>Profesionální úpravy fotografií, umožňuje správu a editaci velkého množství fotografií, využívá formát RAW</p>
+                            </div>
+                            <div class="software-item-card">
+                                <h4>Darktable</h4>
+                                <p>Open-source alternativa Lightroomu</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Místo pro kvíz -->
+                <div class="quiz-section">
+                    <h2><i class="fas fa-question-circle"></i> Kvíz</h2>
+                    <div class="quiz-placeholder">
+                        <p><i class="fas fa-tools"></i> Kvíz bude brzy dostupný</p>
+                        <p>Zde bude interaktivní kvíz pro testování znalostí z oblasti rastrové grafiky a digitální fotografie.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

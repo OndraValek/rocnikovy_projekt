@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Počítačové zpracování zvuku - Maturitní Projekt</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Levý sidebar -->
+        <div class="sidebar">
+            <div class="search-section">
+                <h3>Vyhledávání</h3>
+                <div class="search-box">
+                    <input type="text" placeholder="Hledat..." class="search-input">
+                    <button class="search-btn">
+                        <i class="fas fa-search"></i>
+                        Hledat
+                    </button>
+                </div>
+            </div>
+            
+        </div>
+
+        <!-- Hlavní obsah -->
+        <div class="main-content">
+            <div class="page-title">
+                <h1>Počítačové zpracování zvuku</h1>
+            </div>
+
+            <!-- Navigace zpět -->
+            <div class="back-navigation">
+                <a href="/" class="back-btn">
+                    <i class="fas fa-arrow-left"></i>
+                    Zpět na seznam témat
+                </a>
+            </div>
+
+            <!-- Obsah tématu -->
+            <div class="topic-content">
+                <!-- 1. Zvuk a jeho vlastnosti, pořízení a digitalizace -->
+                <div class="content-section full-width">
+                    <h2><i class="fas fa-volume-up"></i> Zvuk a jeho vlastnosti, pořízení a digitalizace audio signálu, parametry digitálního audia</h2>
+                    
+                    <div class="sound-basics-section">
+                        <h3><i class="fas fa-wave-square"></i> Zvuk a jeho vlastnosti</h3>
+                        <p class="section-intro">Zvuk je mechanické vlnění (tlaková vlna) šířící se prostředím (vzduch, voda, pevné látky), nešíří se ve vakuu.</p>
+                        
+                        <div class="sound-types-grid">
+                            <div class="sound-type-card">
+                                <h4><i class="fas fa-music"></i> Tón</h4>
+                                <p>Zvuk s jednoznačnou frekvencí, hudební zvuk</p>
+                            </div>
+                            <div class="sound-type-card">
+                                <h4><i class="fas fa-exclamation-triangle"></i> Hluk</h4>
+                                <p>Nepříjemný zvuk, nepravidelné kmitání</p>
+                            </div>
+                            <div class="sound-type-card">
+                                <h4><i class="fas fa-ear-listen"></i> Schopnost slyšení</h4>
+                                <p>Lidské ucho vnímá zvukové vlny v rozsahu frekvencí <strong>20 Hz až 20 kHz</strong></p>
+                            </div>
+                            <div class="sound-type-card">
+                                <h4><i class="fas fa-volume-down"></i> Infrazvuk</h4>
+                                <p>Frekvence pod 20 Hz, slyší ho např. sloni</p>
+                            </div>
+                            <div class="sound-type-card">
+                                <h4><i class="fas fa-volume-up"></i> Ultrazvuk</h4>
+                                <p>Frekvence nad 20 kHz, slyší ho např. netopýři, psi, delfíni. Využití v ultrazvukovém čištění, medicíně (ultrazvukové vyšetření těhotných matek)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sound-properties-section">
+                        <h3><i class="fas fa-sliders-h"></i> Základní vlastnosti zvuku</h3>
+                        <div class="properties-grid">
+                            <div class="property-card">
+                                <h4><i class="fas fa-wave-square"></i> Frekvence</h4>
+                                <p>Udává počet kmitů za sekundu (Hz), ovlivňuje výšku tónu. Čím vyšší frekvence, tím vyšší tón.</p>
+                                <div class="property-detail">
+                                    <strong>Ladění hudebních nástrojů:</strong> koncertní ladění <strong>A = 440 Hz</strong>
+                                </div>
+                            </div>
+                            <div class="property-card">
+                                <h4><i class="fas fa-volume-up"></i> Amplituda</h4>
+                                <p>Určuje hlasitost zvuku, závisí na tlaku vlnění. Měří se v decibelech (dB).</p>
+                                <div class="property-detail">
+                                    <strong>Příklady:</strong> normální hlasitost mluveného slova je <strong>60 dB</strong>, hlasitost koncertu <strong>120 dB</strong>
+                                </div>
+                            </div>
+                            <div class="property-card">
+                                <h4><i class="fas fa-arrow-down"></i> Práh slyšitelnosti</h4>
+                                <p>Nejtišší zvuk, který je člověk schopen slyšet (přibližně <strong>10 dB</strong>)</p>
+                            </div>
+                            <div class="property-card">
+                                <h4><i class="fas fa-exclamation-circle"></i> Práh bolesti</h4>
+                                <p>Maximální hlasitost, kterou ucho snese bez poškození (kolem <strong>120 dB</strong>)</p>
+                            </div>
+                            <div class="property-card">
+                                <h4><i class="fas fa-palette"></i> Barva zvuku</h4>
+                                <p>Závisí na složení harmonických složek zvuku, ovlivňuje subjektivní vnímání zvuku (např. rozlišení hudebních nástrojů)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="recording-principles-section">
+                        <h3><i class="fas fa-microphone"></i> Zásady pořízení zvukového záznamu</h3>
+                        <div class="recording-grid">
+                            <div class="recording-card">
+                                <h4><i class="fas fa-microphone-alt"></i> Výběr mikrofonu</h4>
+                                <p>Podle účelu (dynamický pro koncerty a pódiová vystoupení, kondenzátorový pro studiová nahrávání - vyšší citlivost, vyžaduje napájení)</p>
+                            </div>
+                            <div class="recording-card">
+                                <h4><i class="fas fa-cog"></i> Parametry mikrofonu</h4>
+                                <p>Směrová charakteristika (kardioidní, všesměrový, směrový), frekvenční charakteristika (citlivost v různých frekvencích)</p>
+                            </div>
+                            <div class="recording-card">
+                                <h4><i class="fas fa-map-marker-alt"></i> Umístění mikrofonu</h4>
+                                <p>Blízko zdroje zvuku pro lepší kvalitu, eliminace okolního hluku, ochranu proti větru (pop filtr)</p>
+                            </div>
+                            <div class="recording-card">
+                                <h4><i class="fas fa-sliders-h"></i> Nastavení hlasitosti</h4>
+                                <p>Vyvážení hlasitosti zvuku, eliminace zkreslení</p>
+                            </div>
+                            <div class="recording-card">
+                                <h4><i class="fas fa-building"></i> Akustika prostoru</h4>
+                                <p>Tvar místnosti, odrazné plochy, absorbce zvuku, eliminace nežádoucích efektů (ozvěny)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="digitalization-section">
+                        <h3><i class="fas fa-digital-tachograph"></i> Princip digitalizace audio signálu</h3>
+                        <p class="section-intro">Analogový zvuk musí být převeden na digitální podobu s využitím <strong>A/D převodníku</strong> na vstupu zvukové karty. Opakem je <strong>D/A převodník</strong>, který digitální signál převede zpět na analogový zvuk pro reprodukci (reprobedny, sluchátka).</p>
+                        
+                        <div class="digitalization-process-grid">
+                            <div class="process-card">
+                                <h4><i class="fas fa-sync"></i> Vzorkování (sampling)</h4>
+                                <p>Měření hodnot signálu v pravidelných intervalech. Udává se jako vzorkovací frekvence v Hz (např. <strong>44,1 kHz pro CD</strong>)</p>
+                            </div>
+                            <div class="process-card">
+                                <h4><i class="fas fa-ruler"></i> Kvantování (quantization)</h4>
+                                <p>Přiřazení hodnot vzorkům podle pevně daného rozsahu. Určuje se bitovou hloubkou (např. <strong>16 bitů pro CD</strong>)</p>
+                            </div>
+                            <div class="process-card">
+                                <h4><i class="fas fa-code"></i> Kódování (encoding)</h4>
+                                <p>Převedení vzorků do binární podoby</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="audio-parameters-section">
+                        <h3><i class="fas fa-chart-line"></i> Parametry digitálního audia</h3>
+                        <div class="parameters-grid">
+                            <div class="parameter-card">
+                                <h4><i class="fas fa-tachometer-alt"></i> Vzorkovací frekvence</h4>
+                                <p>Počet vzorků za sekundu</p>
+                                <div class="parameter-examples">
+                                    <div class="example-item">CD kvalita: <strong>44,1 kHz</strong></div>
+                                    <div class="example-item">Studiová kvalita: <strong>96 kHz</strong></div>
+                                </div>
+                            </div>
+                            <div class="parameter-card">
+                                <h4><i class="fas fa-layer-group"></i> Bitová hloubka</h4>
+                                <p>Počet bitů použitých k vyjádření jednoho vzorku</p>
+                                <div class="parameter-examples">
+                                    <div class="example-item"><strong>16 bitů</strong></div>
+                                    <div class="example-item"><strong>24 bitů</strong></div>
+                                </div>
+                            </div>
+                            <div class="parameter-card">
+                                <h4><i class="fas fa-exchange-alt"></i> Bitrate (datový tok)</h4>
+                                <p>Množství dat přenesených za sekundu (např. <strong>320 kbps pro MP3</strong>)</p>
+                                <div class="parameter-examples">
+                                    <div class="example-item"><strong>CBR</strong> (Constant Bit Rate) – konstantní datový tok, stejná kvalita po celou dobu</div>
+                                    <div class="example-item"><strong>VBR</strong> (Variable Bit Rate) – proměnný datový tok, lepší kvalita při složitějších pasážích</div>
+                                </div>
+                            </div>
+                            <div class="parameter-card">
+                                <h4><i class="fas fa-headphones"></i> Počet kanálů</h4>
+                                <p>Počet nezávislých zvukových stop, prostorový zvuk</p>
+                                <div class="parameter-examples">
+                                    <div class="example-item"><strong>Mono</strong> – jeden kanál</div>
+                                    <div class="example-item"><strong>Stereo</strong> – dva kanály</div>
+                                    <div class="example-item"><strong>5.1</strong> – šest kanálů</div>
+                                    <div class="example-item"><strong>7.1</strong> – osm kanálů</div>
+                                    <div class="example-item"><strong>Joint Stereo</strong> – využívá se podobnosti zvuku v levém a pravém kanálu, přenáší se součtový a rozdílový signál (účinnější komprese)</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Komprese zvuku, psychoakustický model -->
+                <div class="content-section full-width">
+                    <h2><i class="fas fa-compress"></i> Komprese zvuku, psychoakustický model a maskování, audio kodeky a formáty</h2>
+                    
+                    <div class="compression-section">
+                        <h3><i class="fas fa-archive"></i> Komprese zvuku</h3>
+                        <p class="section-intro">Snižuje velikost zvukových souborů pro snadnější přenos a ukládání.</p>
+                        
+                        <div class="compression-types-grid">
+                            <div class="compression-type-card">
+                                <h4><i class="fas fa-check-circle"></i> Bezztrátová komprese</h4>
+                                <p>Zachovává původní kvalitu (např. FLAC, ALAC). Velikost souboru bývá <strong>50–60 % nekomprimovaného</strong></p>
+                            </div>
+                            <div class="compression-type-card">
+                                <h4><i class="fas fa-times-circle"></i> Ztrátová komprese</h4>
+                                <p>Odstraňuje především nepostřehnutelné složky zvuku (např. MP3, AAC, OGG)</p>
+                            </div>
+                            <div class="compression-type-card">
+                                <h4><i class="fas fa-file-audio"></i> Nekomprimované formáty</h4>
+                                <p>Kompresi nepoužívají např. formáty <strong>WAV</strong> či <strong>AIFF</strong> (Apple Interchange File Format)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="psychoacoustics-section">
+                        <h3><i class="fas fa-brain"></i> Psychoakustický model a maskování</h3>
+                        <p class="section-intro">Psychoakustika studuje, jak lidské ucho vnímá zvuk.</p>
+                        
+                        <div class="psychoacoustics-grid">
+                            <div class="psychoacoustics-card">
+                                <h4><i class="fas fa-project-diagram"></i> Psychoakustický model</h4>
+                                <p>Určuje, které frekvence jsou pro lidské ucho důležité a které mohou být odstraněny. Je využíván při kompresi zvuku a je založen na maskování zvuku</p>
+                            </div>
+                            <div class="psychoacoustics-card">
+                                <h4><i class="fas fa-eye-slash"></i> Maskování</h4>
+                                <p>Jev, kdy je jeden zvuk maskován jiným zvukem, což znamená, že maskovaný zvuk není slyšitelný</p>
+                            </div>
+                            <div class="psychoacoustics-card">
+                                <h4><i class="fas fa-grip-lines"></i> Maskovací práh</h4>
+                                <p>Hranice, kdy je zvuk maskován a kdy je slyšitelný</p>
+                            </div>
+                            <div class="psychoacoustics-card">
+                                <h4><i class="fas fa-clock"></i> Časové maskování</h4>
+                                <p>Silný zvukový signál může maskovat jiný signál, který následuje krátce po něm, případně i těsně před ním (např. silný úder bubnu maskuje slabší zvuky, které ho následují)</p>
+                            </div>
+                            <div class="psychoacoustics-card">
+                                <h4><i class="fas fa-wave-square"></i> Frekvenční maskování</h4>
+                                <p>Tóny (frekvence) s vysokou hlasitostí mohou maskovat tóny s nižší hlasitostí, pokud jsou ve vzájemné blízkosti (např. hlasitý zvuk kytary maskuje tiché zvuky kláves, basové tóny maskují vysoké frekvence)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="codecs-formats-section">
+                        <h3><i class="fas fa-file-audio"></i> Audio kodeky a formáty</h3>
+                        <p class="section-intro"><strong>Kodek</strong> – software nebo hardware, který komprimuje a dekomprimuje digitální zvuk (Code-Decode). Nemusí se shodovat s formátem souboru - např. pro formát MP3 může být použit kodek LAME nebo starší Fraunhofer.</p>
+                        <p class="section-intro"><strong>Formát</strong> – souborový formát pro ukládání zvukových dat.</p>
+                        
+                        <div class="formats-categories-audio">
+                            <div class="format-category-audio">
+                                <h4><i class="fas fa-check-double"></i> Bezztrátové formáty</h4>
+                                <div class="format-list-audio">
+                                    <div class="format-item-audio">
+                                        <code>WAV</code> – surový nekomprimovaný zvuk. Formát používaný na CD. Jinou variantou je AIFF
+                                    </div>
+                                    <div class="format-item-audio">
+                                        <code>FLAC</code> – bezztrátová komprese se zachováním kvality
+                                    </div>
+                                    <div class="format-item-audio">
+                                        <code>ALAC</code> – Apple Lossless Audio Codec, bezztrátová komprese pro Apple zařízení
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="format-category-audio">
+                                <h4><i class="fas fa-times"></i> Ztrátové formáty</h4>
+                                <div class="format-list-audio">
+                                    <div class="format-item-audio">
+                                        <code>MP3</code> – nejrozšířenější, optimalizován psychoakustickým modelem. Využívá se pro streamování a stahování hudby
+                                    </div>
+                                    <div class="format-item-audio">
+                                        <code>AAC</code> – lepší kvalita při stejném bitrate než MP3, formát firmy Apple
+                                    </div>
+                                    <div class="format-item-audio">
+                                        <code>WMA</code> – Windows Media Audio, konkurence MP3, formát od Microsoftu
+                                    </div>
+                                    <div class="format-item-audio">
+                                        <code>OGG Vorbis</code> – otevřený formát s vysokou kvalitou zvuku
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Zvuková syntéza, MIDI -->
+                <div class="content-section full-width">
+                    <h2><i class="fas fa-synth"></i> Zvuková syntéza, MIDI, tvorba digitální hudby</h2>
+                    
+                    <div class="synthesis-section">
+                        <h3><i class="fas fa-waves"></i> Zvuková syntéza</h3>
+                        <p class="section-intro">Umělé vytváření zvuku pomocí elektronických zařízení (syntezátorů) nebo softwaru.</p>
+                        
+                        <div class="synthesis-types-grid">
+                            <div class="synthesis-type-card">
+                                <h4><i class="fas fa-plus-circle"></i> Additivní syntéza</h4>
+                                <p>Kombinace jednoduchých signálů</p>
+                            </div>
+                            <div class="synthesis-type-card">
+                                <h4><i class="fas fa-minus-circle"></i> Subtraktivní syntéza</h4>
+                                <p>Filtruje frekvence bohatého signálu</p>
+                            </div>
+                            <div class="synthesis-type-card">
+                                <h4><i class="fas fa-broadcast-tower"></i> FM syntéza</h4>
+                                <p>Frekvence nosného signálu je modulována jiným signálem; využívá se nejen v syntetické hudbě, ale i při přenosu rádiových signálů</p>
+                            </div>
+                            <div class="synthesis-type-card">
+                                <h4><i class="fas fa-table"></i> Wavetable syntéza</h4>
+                                <p>Využívá předem vytvořené zvukové vzorky (wavetables). Vzorky jsou zvuky různých hudebních nástrojů, které se podle potřeby opakují a modulují</p>
+                            </div>
+                        </div>
+
+                        <div class="synthesis-elements-grid">
+                            <div class="element-card">
+                                <h4><i class="fas fa-chart-area"></i> ADSR obálka</h4>
+                                <p>Reálný zvuk má různé úrovně hlasitosti v průběhu času (např. zvuk klavíru), proto je důležité, aby syntetizovaný zvuk měl podobnou dynamiku a nebyl monotónní.</p>
+                                <div class="adsr-details">
+                                    <div class="adsr-item"><strong>Attack</strong> – zvuk postupně zesílí</div>
+                                    <div class="adsr-item"><strong>Decay</strong> – pak mírně zeslabí</div>
+                                    <div class="adsr-item"><strong>Sustain</strong> – po nějakou dobu trvá na určité úrovni hlasitosti</div>
+                                    <div class="adsr-item"><strong>Release</strong> – nakonec postupně zaniká</div>
+                                </div>
+                            </div>
+                            <div class="element-card">
+                                <h4><i class="fas fa-filter"></i> Filtr</h4>
+                                <p>Umožňuje ovlivnit frekvence zvuku. Typicky se používají filtry nízkofrekvenční, vysokofrekvenční a pásmové (potlačují nežádoucí zvuky - např. praskání, šum)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="midi-section">
+                        <h3><i class="fas fa-music"></i> MIDI (Musical Instrument Digital Interface)</h3>
+                        <p class="section-intro">Standard pro přenos hudebních dat mezi nástroji a počítači. Jedná se o sériový protokol, který umožňuje ovládat hudební nástroje a zařízení pomocí digitálních instrukcí.</p>
+                        
+                        <div class="midi-info-grid">
+                            <div class="midi-info-card">
+                                <h4><i class="fas fa-info-circle"></i> Co obsahuje MIDI</h4>
+                                <p>Obsahuje pouze instrukce, ne zvuková data (např. „zahraj tón C4 na 50 % hlasitosti po dobu 2 sekund s použitím klavíru")</p>
+                            </div>
+                            <div class="midi-info-card">
+                                <h4><i class="fas fa-star"></i> Výhody MIDI</h4>
+                                <p>Malá velikost souborů a možnost editace hudebních stop pomocí MIDI sekvencerů</p>
+                            </div>
+                            <div class="midi-info-card">
+                                <h4><i class="fas fa-keyboard"></i> MIDI kontrolery</h4>
+                                <p>Elektronické klávesy, padové ovladače, MIDI kytary</p>
+                            </div>
+                            <div class="midi-info-card">
+                                <h4><i class="fas fa-plug"></i> Využití v digitální hudbě</h4>
+                                <p>Ovládání softwarových nástrojů (VST pluginy), synchronizace hudebních zařízení</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="digital-music-section">
+                        <h3><i class="fas fa-compact-disc"></i> Tvorba digitální hudby</h3>
+                        <div class="digital-music-grid">
+                            <div class="digital-music-card">
+                                <h4><i class="fas fa-desktop"></i> Digitální audio pracovní stanice (DAW)</h4>
+                                <p>Programy pro hudební produkci</p>
+                                <div class="program-examples-audio">
+                                    <div class="example-item-audio">FL Studio</div>
+                                    <div class="example-item-audio">LMMS (Linux MultiMedia Studio) – open-source</div>
+                                </div>
+                            </div>
+                            <div class="digital-music-card">
+                                <h4><i class="fas fa-guitar"></i> Virtuální nástroje (VST pluginy)</h4>
+                                <p>Simulují reálné hudební nástroje (klávesy, bicí, syntezátory)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. Programy pro práci se zvukem -->
+                <div class="content-section full-width">
+                    <h2><i class="fas fa-tools"></i> Programy pro práci se zvukem, možnosti editace digitálního zvuku, zvukové záznamy na internetu</h2>
+                    
+                    <div class="audio-programs-section">
+                        <h3><i class="fas fa-laptop-code"></i> Programy pro práci se zvukem</h3>
+                        <div class="audio-programs-grid">
+                            <div class="audio-program-card">
+                                <h4><i class="fas fa-edit"></i> Audacity</h4>
+                                <p>Open-source software pro nahrávání a úpravu zvuku</p>
+                            </div>
+                            <div class="audio-program-card">
+                                <h4><i class="fas fa-adobe"></i> Adobe Audition</h4>
+                                <p>Profesionální editace a mixování zvuku</p>
+                            </div>
+                            <div class="audio-program-card">
+                                <h4><i class="fas fa-list-music"></i> Sekvencery</h4>
+                                <p>Umožňují skládání hudby pomocí MIDI (FL Studio, LMMS)</p>
+                            </div>
+                            <div class="audio-program-card">
+                                <h4><i class="fas fa-music"></i> Notátory</h4>
+                                <p>Zápis hudebních not pomocí notové osnovy (např. MuseScore)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="editing-options-section">
+                        <h3><i class="fas fa-cut"></i> Možnosti editace digitálního zvuku</h3>
+                        <div class="editing-grid">
+                            <div class="editing-card">
+                                <h4><i class="fas fa-scissors"></i> Střih a úprava délky nahrávky</h4>
+                                <p>Odstranění ticha na začátku a konci, zkrácení nebo prodloužení nahrávky</p>
+                            </div>
+                            <div class="editing-card">
+                                <h4><i class="fas fa-sliders-h"></i> Změna frekvence a tóniny</h4>
+                                <p>Změna výšky tónu, transpozice</p>
+                            </div>
+                            <div class="editing-card">
+                                <h4><i class="fas fa-balance-scale"></i> Normalizace hlasitosti</h4>
+                                <p>Vyrovnání hlasitosti různých stop, zvýraznění tichých pasáží</p>
+                            </div>
+                            <div class="editing-card">
+                                <h4><i class="fas fa-magic"></i> Efekty</h4>
+                                <p>Reverb, echo, distortion</p>
+                            </div>
+                            <div class="editing-card">
+                                <h4><i class="fas fa-broom"></i> Odstranění šumu a čištění nahrávky</h4>
+                                <p>Výhodné při digitalizaci starých nahrávek</p>
+                            </div>
+                            <div class="editing-card">
+                                <h4><i class="fas fa-mixer"></i> Mixování a mastering</h4>
+                                <p>Kombinace různých stop do finální nahrávky, nastavení hlasitosti, vyvážení frekvencí</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="internet-audio-section">
+                        <h3><i class="fas fa-globe"></i> Zvukové záznamy na internetu</h3>
+                        <div class="internet-audio-grid">
+                            <div class="internet-audio-card">
+                                <h4><i class="fas fa-podcast"></i> Podcasty a audioknihy</h4>
+                                <p>Distribuce mluveného slova (podcasty rozhlasových stanic)</p>
+                            </div>
+                            <div class="internet-audio-card">
+                                <h4><i class="fas fa-stream"></i> Hudební streamovací služby</h4>
+                                <p>Spotify, Apple Music, YouTube Music</p>
+                            </div>
+                            <div class="internet-audio-card">
+                                <h4><i class="fas fa-copyright"></i> Licence a autorská práva</h4>
+                                <p>Creative Commons - licence umožňující sdílení a využití díla s určitými podmínkami</p>
+                            </div>
+                            <div class="internet-audio-card">
+                                <h4><i class="fas fa-database"></i> Zvukové efekty a smyčky</h4>
+                                <p>Zvukové knihovny pro tvorbu hudby a videí (Freesound)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. Rozpoznávání a syntéza řeči, AI -->
+                <div class="content-section full-width">
+                    <h2><i class="fas fa-robot"></i> Rozpoznávání a syntéza řeči, využití umělé inteligence při práci se zvukem</h2>
+                    
+                    <div class="speech-recognition-section">
+                        <h3><i class="fas fa-microphone-alt"></i> Rozpoznávání řeči (Speech Recognition)</h3>
+                        <p class="section-intro">Technologie pro přepis mluveného slova na text. Je založena na strojovém učení a neuronových sítích, které se učí rozpoznávat slova a fráze.</p>
+                        
+                        <div class="speech-recognition-grid">
+                            <div class="speech-card">
+                                <h4><i class="fas fa-bolt"></i> ASR (Automatic Speech Recognition)</h4>
+                                <p>Automatické rozpoznávání řeči</p>
+                            </div>
+                            <div class="speech-card">
+                                <h4><i class="fas fa-robot"></i> Hlasoví asistenti</h4>
+                                <p>Siri, Google Assistant, Alexa</p>
+                            </div>
+                            <div class="speech-card">
+                                <h4><i class="fas fa-file-alt"></i> Přepis rozhovorů</h4>
+                                <p>Otter.ai, Whisper</p>
+                            </div>
+                            <div class="speech-card">
+                                <h4><i class="fas fa-closed-captioning"></i> Titulkování videí</h4>
+                                <p>YouTube automatické titulky</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="speech-synthesis-section">
+                        <h3><i class="fas fa-comments"></i> Syntéza řeči (Text-to-Speech, TTS)</h3>
+                        <p class="section-intro">Konverze textu na přirozeně znějící hlas pomocí umělé inteligence a neuronových sítí. Je využívána v hlasových asistentech, audioknihách a dalších aplikacích.</p>
+                        
+                        <div class="tts-grid">
+                            <div class="tts-card">
+                                <h4><i class="fas fa-voice"></i> ElevenLabs</h4>
+                                <p>Realistická AI hlasová syntéza</p>
+                            </div>
+                            <div class="tts-card">
+                                <h4><i class="fas fa-wave-square"></i> Google WaveNet</h4>
+                                <p>Neuronová síť pro generování řeči</p>
+                            </div>
+                            <div class="tts-card">
+                                <h4><i class="fas fa-amazon"></i> Amazon Polly</h4>
+                                <p>AI čtení textu</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ai-audio-section">
+                        <h3><i class="fas fa-brain"></i> Využití umělé inteligence při práci se zvukem</h3>
+                        <div class="ai-audio-grid">
+                            <div class="ai-audio-card">
+                                <h4><i class="fas fa-music"></i> Hudební generátory</h4>
+                                <p>AI komponování hudby (AIVA, Suno.com)</p>
+                            </div>
+                            <div class="ai-audio-card">
+                                <h4><i class="fas fa-user-friends"></i> Hlasové klonování</h4>
+                                <p>Syntéza hlasu na základě vzorků (Deepfake Voice)</p>
+                            </div>
+                            <div class="ai-audio-card">
+                                <h4><i class="fas fa-broom"></i> Odstranění šumu</h4>
+                                <p>AI nástroje na zlepšení kvality zvuku (Krisp.ai)</p>
+                            </div>
+                            <div class="ai-audio-card">
+                                <h4><i class="fas fa-file-alt"></i> Transkripce nahrávek</h4>
+                                <p>Přepis mluveného slova do textu (Descript, Otter.ai)</p>
+                            </div>
+                            <div class="ai-audio-card">
+                                <h4><i class="fas fa-guitar"></i> Virtuální hudební nástroje</h4>
+                                <p>AI syntetizátory a efekty (Amper Music, LANDR)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
