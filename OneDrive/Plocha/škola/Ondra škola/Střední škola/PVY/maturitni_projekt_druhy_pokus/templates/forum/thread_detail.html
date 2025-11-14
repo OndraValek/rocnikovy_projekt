@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ thread.title }} - {{ block.super }}{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'subjects:subject_list' %}">Předměty</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'subjects:subject_detail' thread.topic.subject.slug %}">{{ thread.topic.subject.name }}</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'subjects:topic_detail' thread.topic.subject.slug thread.topic.slug %}">{{ thread.topic.name }}</a></li>
+        <li class="breadcrumb-item active">{{ thread.title }}</li>
+    </ol>
+</nav>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>{{ thread.title }}</h1>
+    {% if thread.is_pinned %}
+        <span class="badge bg-warning">Připnuto</span>
+    {% endif %}
+    {% if thread.is_locked %}
+        <span class="badge bg-danger">Zamčeno</span>
+    {% endif %}
+</div>
+
+<div class="mb-3">
+    <small class="text-muted">
+        Autor: {{ thread.author }} • {{ thread.created_at|date:"d.m.Y H:i" }} • Zobrazení: {{ thread.views }}
+    </small>
+</div>
+
+<div class="list-group mb-4">
+    {% for post in posts %}
+        <div class="list-group-item">
+            <div class="d-flex w-100 justify-content-between mb-2">
+                <h6 class="mb-1">{{ post.author }}</h6>
+                <small>{{ post.created_at|date:"d.m.Y H:i" }}</small>
+            </div>
+            <p class="mb-1">{{ post.content|linebreaks }}</p>
+            {% if post.is_edited %}
+                <small class="text-muted">(upraveno)</small>
+            {% endif %}
+            {% if post.author == user or user.is_teacher %}
+                <div class="mt-2">
+                    <a href="{% url 'forum:edit_post' post.id %}" class="btn btn-sm btn-outline-primary">Upravit</a>
+                    <a href="{% url 'forum:delete_post' post.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Opravdu chcete smazat tento příspěvek?')">Smazat</a>
+                </div>
+            {% endif %}
+        </div>
+    {% endfor %}
+</div>
+
+{% if not thread.is_locked or user.is_teacher %}
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Přidat příspěvek</h5>
+            <form method="post" action="{% url 'forum:create_post' thread.id %}">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <textarea name="content" class="form-control" rows="5" required placeholder="Napište svůj příspěvek..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Odeslat</button>
+            </form>
+        </div>
+    </div>
+{% else %}
+    <div class="alert alert-warning">
+        Toto vlákno je zamčené. Nemůžete přidávat nové příspěvky.
+    </div>
+{% endif %}
+
+<a href="{% url 'subjects:topic_detail' thread.topic.subject.slug thread.topic.slug %}" class="btn btn-secondary mt-3">
+    Zpět na okruh
+</a>
+{% endblock %}
+

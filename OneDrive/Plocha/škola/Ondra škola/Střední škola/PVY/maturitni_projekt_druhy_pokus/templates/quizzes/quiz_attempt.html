@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}Test: {{ quiz.title }} - {{ block.super }}{% endblock %}
+
+{% block content %}
+<h1>{{ quiz.title }}</h1>
+
+{% if quiz.h5p_embed_code %}
+    <div class="mb-4">
+        {{ quiz.h5p_embed_code|safe }}
+    </div>
+{% else %}
+    <div class="alert alert-warning">
+        Test není k dispozici.
+    </div>
+{% endif %}
+
+<a href="{% url 'subjects:topic_detail' quiz.topic.subject.slug quiz.topic.slug %}" class="btn btn-secondary">
+    Zpět na okruh
+</a>
+{% endblock %}
+

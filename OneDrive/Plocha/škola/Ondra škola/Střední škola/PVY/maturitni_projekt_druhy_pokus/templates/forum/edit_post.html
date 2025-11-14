@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}Upravit příspěvek - {{ block.super }}{% endblock %}
+
+{% block content %}
+<h1>Upravit příspěvek</h1>
+
+<form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label for="content" class="form-label">Obsah</label>
+        <textarea class="form-control" id="content" name="content" rows="10" required>{{ post.content }}</textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Uložit změny</button>
+    <a href="{% url 'forum:thread_detail' post.thread.id %}" class="btn btn-secondary">Zrušit</a>
+</form>
+{% endblock %}
+
