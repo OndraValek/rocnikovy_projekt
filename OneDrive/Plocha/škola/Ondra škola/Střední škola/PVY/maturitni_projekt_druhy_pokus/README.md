@@ -67,11 +67,6 @@ python manage.py migrate
 python manage.py createsuperuser
 ```
 
-### 6. Naplnění databáze inicializačními daty (volitelné)
-
-```bash
-python manage.py loaddata initial_data
-```
 
 ### 7. Spuštění vývojového serveru
 
@@ -83,8 +78,16 @@ Aplikace bude dostupná na `http://localhost:8000`
 
 ## Použití s Docker
 
+Pro podrobné instrukce viz [DOCKER.md](DOCKER.md).
+
+Rychlý start:
+
 ```bash
+# Sestavení a spuštění
 docker-compose up --build
+
+# Aplikace bude dostupná na http://localhost:8000
+# Výchozí superuživatel: admin@example.com / admin123
 ```
 
 ## Struktura dat

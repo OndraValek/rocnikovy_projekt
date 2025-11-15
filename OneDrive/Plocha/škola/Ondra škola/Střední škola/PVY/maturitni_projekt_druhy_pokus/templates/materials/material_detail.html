@@ -45,7 +45,9 @@
     </div>
 {% elif material.material_type == 'h5p' and material.h5p_embed_code %}
     <div class="mb-4">
-        {{ material.h5p_embed_code|safe }}
+        <div class="h5p-container" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%;">
+            {{ material.h5p_embed_code|safe }}
+        </div>
     </div>
 {% elif material.material_type == 'text' and material.content %}
     <div class="mb-4">

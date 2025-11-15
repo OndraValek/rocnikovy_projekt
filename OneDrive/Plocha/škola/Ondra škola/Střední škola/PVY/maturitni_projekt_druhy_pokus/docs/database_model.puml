@@ -1,0 +1,148 @@
+@startuml
+!define PK_COLOR #FF6B6B
+!define FK_COLOR #4ECDC4
+!define TABLE_COLOR #95E1D3
+
+skinparam linetype ortho
+skinparam roundcorner 10
+skinparam shadowing true
+hide circle
+
+entity "User" as User {
+  *id : int <<PK>> <<PK_COLOR>>
+  --
+  username : varchar
+  email : varchar <<unique>>
+  password : varchar
+  first_name : varchar
+  last_name : varchar
+  role : varchar <<enum: student, teacher, admin>>
+  class_name : varchar
+  is_active : bool
+  is_staff : bool
+  is_superuser : bool
+  created_at : datetime
+  updated_at : datetime
+}
+
+entity "UserProfile" as UserProfile {
+  *id : int <<PK>> <<PK_COLOR>>
+  *user_id : int <<FK>> <<FK_COLOR>>
+  --
+  bio : text
+  avatar : varchar
+  created_at : datetime
+  updated_at : datetime
+}
+
+entity "Subject" as Subject {
+  *id : int <<PK>> <<PK_COLOR>>
+  --
+  name : varchar <<unique>>
+  slug : varchar <<unique>>
+  description : text
+  created_at : datetime
+  updated_at : datetime
+}
+
+entity "Topic" as Topic {
+  *id : int <<PK>> <<PK_COLOR>>
+  *subject_id : int <<FK>> <<FK_COLOR>>
+  --
+  name : varchar
+  slug : varchar
+  description : text
+  order : int
+  created_at : datetime
+  updated_at : datetime
+}
+
+entity "Material" as Material {
+  *id : int <<PK>> <<PK_COLOR>>
+  *topic_id : int <<FK>> <<FK_COLOR>>
+  author_id : int <<FK>> <<FK_COLOR>>
+  --
+  title : varchar
+  description : text
+  material_type : varchar <<enum: pdf, video, link, h5p, text, image>>
+  document_id : int <<FK>> <<FK_COLOR>>
+  image_id : int <<FK>> <<FK_COLOR>>
+  external_url : varchar
+  h5p_embed_code : text
+  content : text
+  order : int
+  is_published : bool
+  created_at : datetime
+  updated_at : datetime
+}
+
+entity "Quiz" as Quiz {
+  *id : int <<PK>> <<PK_COLOR>>
+  *topic_id : int <<FK>> <<FK_COLOR>>
+  author_id : int <<FK>> <<FK_COLOR>>
+  --
+  title : varchar
+  description : text
+  h5p_embed_code : text
+  time_limit : int
+  max_attempts : int
+  passing_score : int
+  is_published : bool
+  created_at : datetime
+  updated_at : datetime
+}
+
+entity "QuizAttempt" as QuizAttempt {
+  *id : int <<PK>> <<PK_COLOR>>
+  *quiz_id : int <<FK>> <<FK_COLOR>>
+  *user_id : int <<FK>> <<FK_COLOR>>
+  --
+  score : int
+  is_passed : bool
+  started_at : datetime
+  completed_at : datetime
+  answers_data : json
+}
+
+entity "ForumThread" as ForumThread {
+  *id : int <<PK>> <<PK_COLOR>>
+  *topic_id : int <<FK>> <<FK_COLOR>>
+  *author_id : int <<FK>> <<FK_COLOR>>
+  --
+  title : varchar
+  slug : varchar
+  is_pinned : bool
+  is_locked : bool
+  views : int
+  created_at : datetime
+  updated_at : datetime
+}
+
+entity "ForumPost" as ForumPost {
+  *id : int <<PK>> <<PK_COLOR>>
+  *thread_id : int <<FK>> <<FK_COLOR>>
+  *author_id : int <<FK>> <<FK_COLOR>>
+  --
+  content : text
+  is_edited : bool
+  created_at : datetime
+  updated_at : datetime
+}
+
+' Relationships
+User ||--o| UserProfile : "has"
+Subject ||--o{ Topic : "contains"
+Topic ||--o{ Material : "has"
+Topic ||--o{ Quiz : "has"
+Topic ||--o{ ForumThread : "has"
+Quiz ||--o{ QuizAttempt : "has"
+ForumThread ||--o{ ForumPost : "contains"
+User ||--o{ Material : "authors"
+User ||--o{ Quiz : "authors"
+User ||--o{ QuizAttempt : "attempts"
+User ||--o{ ForumThread : "creates"
+User ||--o{ ForumPost : "writes"
+User ||--o{ Topic : "favorites"
+
+@enduml
+

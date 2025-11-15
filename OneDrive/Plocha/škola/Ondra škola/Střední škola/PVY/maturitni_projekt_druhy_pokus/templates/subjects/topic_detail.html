@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}{{ topic.name }} - {{ block.super }}{% endblock %}
 
@@ -20,74 +21,35 @@
 {% endif %}
 
 <div class="row">
-    <div class="col-md-8">
-        <h2>Materiály</h2>
-        {% if materials %}
-            <div class="list-group mb-4">
-                {% for material in materials %}
-                    <a href="{% url 'materials:material_detail' material.id %}" class="list-group-item list-group-item-action">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h5 class="mb-1">{{ material.title }}</h5>
-                            <span class="badge bg-secondary">{{ material.get_material_type_display }}</span>
-                        </div>
-                        {% if material.description %}
-                            <p class="mb-1">{{ material.description|truncatewords:20 }}</p>
-                        {% endif %}
-                    </a>
-                {% endfor %}
-            </div>
-        {% else %}
-            <p>Zatím nejsou k dispozici žádné materiály.</p>
-        {% endif %}
-
-        <h2>Testy</h2>
-        {% if quizzes %}
-            <div class="list-group mb-4">
-                {% for quiz in quizzes %}
-                    <a href="{% url 'quizzes:quiz_detail' quiz.id %}" class="list-group-item list-group-item-action">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h5 class="mb-1">{{ quiz.title }}</h5>
-                            {% if quiz.time_limit %}
-                                <small>{{ quiz.time_limit }} min</small>
-                            {% endif %}
-                        </div>
-                        {% if quiz.description %}
-                            <p class="mb-1">{{ quiz.description|truncatewords:20 }}</p>
-                        {% endif %}
-                    </a>
-                {% endfor %}
-            </div>
-        {% else %}
-            <p>Zatím nejsou k dispozici žádné testy.</p>
-        {% endif %}
-    </div>
-
-    <div class="col-md-4">
-        <h2>Diskusní fórum</h2>
-        {% if forum_threads %}
-            <div class="list-group mb-4">
-                {% for thread in forum_threads %}
-                    <a href="{% url 'forum:thread_detail' thread.id %}" class="list-group-item list-group-item-action">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h6 class="mb-1">{{ thread.title }}</h6>
-                            {% if thread.is_pinned %}
-                                <span class="badge bg-warning">Připnuto</span>
-                            {% endif %}
-                        </div>
-                        <small>od {{ thread.author }} • {{ thread.created_at|date:"d.m.Y" }}</small>
-                    </a>
-                {% endfor %}
-            </div>
-        {% else %}
-            <p>Zatím nejsou žádné diskuse.</p>
-        {% endif %}
+    <div class="col-12">
+        <h2>Úlohy</h2>
         
-        {% if user.is_authenticated %}
-            <a href="{% url 'forum:create_thread' topic.id %}" class="btn btn-primary">
-                Vytvořit nové vlákno
-            </a>
-        {% endif %}
+        <!-- Container pro dynamické načítání úloh -->
+        <div id="dynamic-tasks-container" data-topic-id="{{ topic.id }}"></div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/dynamic-tasks.js' %}"></script>
+<script>
+    // Inicializace dynamického načítání úloh
+    document.addEventListener('DOMContentLoaded', function() {
+        const container = document.getElementById('dynamic-tasks-container');
+        if (container) {
+            const topicId = container.getAttribute('data-topic-id');
+            if (topicId) {
+                const loader = new DynamicTasksLoader('dynamic-tasks-container', {
+                    topicId: topicId,
+                    apiEndpoint: '/api/tasks/',
+                    type: 'all',
+                    perPage: 12,
+                    showFilters: true,
+                    showPagination: true
+                });
+            }
+        }
+    });
+</script>
 {% endblock %}
 

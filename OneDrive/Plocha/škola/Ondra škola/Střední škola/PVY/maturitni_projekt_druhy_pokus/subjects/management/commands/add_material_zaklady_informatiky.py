@@ -1,17 +1,21 @@
 """
-Management příkaz pro vytvoření inicializačních dat pro předmět Programové vybavení.
+Management command pro přidání materiálu "Základy informatiky" do databáze.
 """
 from django.core.management.base import BaseCommand
-from django.utils.text import slugify
 from subjects.models import Subject, Topic
 from materials.models import Material, MaterialType
 
 
 class Command(BaseCommand):
-    help = 'Vytvoří inicializační data pro předmět Programové vybavení'
+    help = 'Přidá materiál "Základy informatiky" do databáze'
 
     def handle(self, *args, **options):
-        # Vytvořit předmět
+        self.stdout.write("=" * 70)
+        self.stdout.write("PŘIDÁNÍ MATERIÁLU 'ZÁKLADY INFORMATIKY'")
+        self.stdout.write("=" * 70)
+        self.stdout.write()
+
+        # 1. Získat nebo vytvořit předmět
         subject, created = Subject.objects.get_or_create(
             slug='programove-vybaveni',
             defaults={
@@ -19,19 +23,30 @@ class Command(BaseCommand):
                 'description': 'Příprava k maturitě z předmětu Programové vybavení'
             }
         )
-        
+
         if created:
-            self.stdout.write(self.style.SUCCESS(f'Vytvořen předmět: {subject.name}'))
+            self.stdout.write(self.style.SUCCESS(f"✓ Vytvořen předmět: {subject.name}"))
         else:
-            self.stdout.write(self.style.WARNING(f'Předmět {subject.name} již existuje'))
-        
-        # Vytvořit maturitní okruhy podle oficiálního sylabu
-        okruhy = [
-            {
-                'name': 'Základy informatiky', 
-                'order': 1, 
-                'description': 'Pojem informatika, informace, data, signál (analogový, digitální), digitalizace. Jednotky v informatice. Číselné soustavy a jejich převody. Princip kódování informací, kódování znaků, reprezentace čísel v počítači. Přenos informací a princip datové komprese.',
-                'content': '''1. Pojem informatika, informace, data, signál (analogový, digitální), digitalizace
+            self.stdout.write(f"✓ Použit existující předmět: {subject.name}")
+
+        # 2. Získat nebo vytvořit okruh
+        topic, created = Topic.objects.get_or_create(
+            subject=subject,
+            slug='zaklady-informatiky',
+            defaults={
+                'name': 'Základy informatiky',
+                'description': 'Pojem informatika, informace, data, signál, digitalizace, jednotky, číselné soustavy, kódování, přenos informací a datová komprese.',
+                'order': 1
+            }
+        )
+
+        if created:
+            self.stdout.write(self.style.SUCCESS(f"✓ Vytvořen okruh: {topic.name}"))
+        else:
+            self.stdout.write(f"✓ Použit existující okruh: {topic.name}")
+
+        # 3. Obsah materiálu
+        content = """1. Pojem informatika, informace, data, signál (analogový, digitální), digitalizace
 
 Co je informatika?
 
@@ -205,61 +220,40 @@ Kontrolní součet (Checksum) – funguje na principu porovnání kontrolního s
 
 Kontrolní kód (CRC) – cyklický redundantní kód, který umožňuje detekci a opravu chyb. Používá se například v síťových protokolech (Ethernet, Wi-Fi).
 
-Existuje mnoho dalších metod pro detekci a opravu chyb, které se liší podle konkrétních požadavků na spolehlivost a efektivitu. Používají se například v telekomunikacích, datových úložištích a síťových technologiích.'''
-            },
-            {'name': 'Programy a data', 'order': 2, 'description': 'Programové a datové soubory. Systémové a aplikační programy, utility a speciální software. Programy a autorský zákon, softwarové licence. Instalace programů, zálohování programů a dat. Cloudová řešení, emulace a virtualizace.'},
-            {'name': 'Informační systémy a databázové systémy', 'order': 3, 'description': 'Informační systém (IS), jeho komponenty, základní koncepce a rozdělení. Základní typy IS, jejich uživatelé a příklady využití v praxi. ERP, CRM, GIS – význam, funkce a využití. Životní cyklus vývoje IS, způsoby jeho vývoje a správy.'},
-            {'name': 'Rastrová grafika a digitální fotografie', 'order': 4, 'description': 'Princip rastrové grafiky, oblasti využití, příklady programů. Vlastnosti rastrového obrazu, rastrové formáty. Vnímání barev, barevné modely, korekce barevného obrazu. Funkce rastrových editorů – práce s objekty, vrstvami, maskou, nástroji a filtry. Digitální fotografie, její vytváření a zpracování.'},
-            {'name': 'Vektorová grafika', 'order': 5, 'description': 'Principy vektorové grafiky, oblasti využití, vektorové formáty. Pomůcky pro přesné kreslení, manipulace s křivkami, logické operace a transformace objektů. Tvorba technických výkresů v CAD. Trojrozměrné modelování a metody realistické vizualizace. Virtuální a rozšířená realita, principy, technické a programové prostředky, využití.'},
-            {'name': 'Zpracování textů na počítači', 'order': 6, 'description': 'Programy pro práci s textem, formáty textových dokumentů. Typografie - základní typografické pojmy, zásady psaní textu. Typy fontů, vlastnosti písem, zásady používání písem. Textový dokument a jeho části, styly a šablony, pokročilé nástroje MS Word. Předtisková příprava a tisk dokumentů, elektronické knihy.'},
-            {'name': 'Počítačové zpracování zvuku', 'order': 8, 'description': 'Zvuk a jeho vlastnosti, pořízení a digitalizace audio signálu, parametry digitálního audia. Komprese zvuku, psychoakustický model a maskování, audio kodeky a formáty. Zvuková syntéza, MIDI, tvorba digitální hudby. Programy pro práci se zvukem, možnosti editace digitálního zvuku, zvukové záznamy na internetu. Rozpoznávání a syntéza řeči, využití umělé inteligence při práci se zvukem.'},
-            {'name': 'Digitální video a multimediální prezentace', 'order': 9, 'description': 'Principy analogového a digitálního videa, technické vybavení, parametry digitálního videa. Kodeky a formáty videa, multimediální kontejnery. Proces produkce videa, zásady pořizování záběrů, typy záběrů. Proces postprodukce, DVD authoring, možnosti publikování videa na Internetu. Počítačová animace - základní typy, animační techniky, využití AI.'},
-            {'name': 'Relační databáze a SQL', 'order': 10, 'description': 'Princip relační databáze, relační datový model a jeho části, klíče a propojení tabulek. Proces návrhu databáze, ER diagram, normalizace databáze. Správa relační databáze, prostředky pro správu, integrita, indexace. Jazyk SQL, základní SQL dotazy, struktura výběrových dotazů. Pokročilé možnosti práce s databází: pohledy, triggery, uložené procedury a funkce.'},
-            {'name': 'Internet a WWW', 'order': 11, 'description': 'Internet – principy, vývoj a adresování. Principy a standardy WWW, URI (URL), protokol HTTP/HTTPS – metody a stavové kódy. Funkce internetového prohlížeče, sessions, local storage a bezpečnostní aspekty. Vyhledávače, SEO a analytika webu. Trendy vývoje webu – Web 2.0, Web 3.0 a internet věcí (IoT).'},
-            {'name': 'HTML a kaskádové styly', 'order': 12, 'description': 'Jazyk HTML a jeho verze, HTML syntax a validita kódu. Struktura webové stránky, základní HTML elementy. Odkazy a navigace mezi stránkami. Kaskádové styly a integrace s HTML, syntax CSS, typy selektorů. Layout webové stránky a zásady webdesignu.'},
-            {'name': 'Webové technologie', 'order': 13, 'description': 'Webové technologie na straně klienta a serveru, frontend a backend. Základy jazyka JavaScript a tvorba klientských webových aplikací. Tvorba webových serverových aplikací s využitím Node.js, synchronní a asynchronní programování. Webová API, komunikace mezi frontendem a backendem, AJAX. Webové knihovny, frameworky a nástroje, jejich využití v praxi.'},
-            {'name': 'Webové aplikace', 'order': 14, 'description': 'Architektura webových aplikací: vícevrstvé aplikace, MVC a MVT, struktura projektu v Django. Backend v Django: ORM, modely, migrace, routing a pohledy. Frontend v Django: šablonovací systémy, webové formuláře a jejich validace, regulární výrazy. Autentizace a autorizace uživatelů, bezpečnost webových aplikací. Redakční systémy, trendy ve vývoji webových aplikací, možnosti nasazení aplikací.'},
-            {'name': 'Kyberbezpečnost', 'order': 15, 'description': 'Pojem kyberprostor, útoky a hrozby v kyberprostoru, zákon o kybernetické bezpečnosti. Malware, způsoby infikace, typy malware, sociální inženýrství. Příznaky napadení počítače a různé možnosti obrany. Problematika identity uživatelů, možnosti autentizace, zásady používání hesel. Ohrožení a ochrana dat v kyberprostoru, typy šifrování, elektronický podpis.'},
-        ]
-        
-        for okruh_data in okruhy:
-            slug = slugify(okruh_data['name'])
-            topic, created = Topic.objects.get_or_create(
-                subject=subject,
-                slug=slug,
-                defaults={
-                    'name': okruh_data['name'],
-                    'order': okruh_data['order'],
-                    'description': okruh_data['description']
-                }
-            )
-            
-            if created:
-                self.stdout.write(self.style.SUCCESS(f'  ✓ Vytvořen okruh: {topic.name}'))
-            else:
-                self.stdout.write(self.style.WARNING(f'  - Okruh {topic.name} již existuje'))
-            
-            # Vytvořit materiál s obsahem pro tento okruh
-            if 'content' in okruh_data and okruh_data['content']:
-                material, material_created = Material.objects.get_or_create(
-                    topic=topic,
-                    title=f"Studijní materiál: {topic.name}",
-                    defaults={
-                        'material_type': MaterialType.TEXT,
-                        'content': okruh_data['content'],
-                        'description': okruh_data.get('description', ''),
-                        'is_published': True,
-                        'order': 0
-                    }
-                )
-                
-                if material_created:
-                    self.stdout.write(self.style.SUCCESS(f'    ✓ Vytvořen materiál pro okruh: {topic.name}'))
-                else:
-                    # Aktualizovat obsah, pokud materiál již existuje
-                    material.content = okruh_data['content']
-                    material.save()
-                    self.stdout.write(self.style.WARNING(f'    - Materiál pro okruh {topic.name} aktualizován'))
-        
-        self.stdout.write(self.style.SUCCESS('\nInicializační data byla úspěšně vytvořena!'))
+Existuje mnoho dalších metod pro detekci a opravu chyb, které se liší podle konkrétních požadavků na spolehlivost a efektivitu. Používají se například v telekomunikacích, datových úložištích a síťových technologiích."""
+
+        # 4. Vytvořit nebo aktualizovat materiál
+        material, created = Material.objects.get_or_create(
+            topic=topic,
+            title='Základy informatiky',
+            defaults={
+                'material_type': MaterialType.TEXT,
+                'description': 'Pojem informatika, informace, data, signál (analogový, digitální), digitalizace. Jednotky v informatice. Číselné soustavy a jejich převody. Princip kódování informací, kódování znaků, reprezentace čísel v počítači. Přenos informací a princip datové komprese.',
+                'content': content,
+                'is_published': True,
+                'order': 1
+            }
+        )
+
+        if created:
+            self.stdout.write(self.style.SUCCESS(f"✓ Vytvořen materiál: {material.title}"))
+        else:
+            # Aktualizovat obsah, pokud materiál již existuje
+            material.content = content
+            material.description = 'Pojem informatika, informace, data, signál (analogový, digitální), digitalizace. Jednotky v informatice. Číselné soustavy a jejich převody. Princip kódování informací, kódování znaků, reprezentace čísel v počítači. Přenos informací a princip datové komprese.'
+            material.is_published = True
+            material.order = 1
+            material.save()
+            self.stdout.write(self.style.SUCCESS(f"✓ Aktualizován materiál: {material.title}"))
+
+        self.stdout.write()
+        self.stdout.write("=" * 70)
+        self.stdout.write(self.style.SUCCESS("✓ Hotovo! Materiál byl úspěšně přidán/aktualizován."))
+        self.stdout.write()
+        self.stdout.write(f"Předmět: {subject.name}")
+        self.stdout.write(f"Okruh: {topic.name}")
+        self.stdout.write(f"Materiál: {material.title}")
+        self.stdout.write(f"Typ: {material.get_material_type_display()}")
+        self.stdout.write(f"URL: /materials/{material.id}/")
+        self.stdout.write("=" * 70)
 

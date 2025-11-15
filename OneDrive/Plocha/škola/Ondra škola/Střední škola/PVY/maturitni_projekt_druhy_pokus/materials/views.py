@@ -1,14 +1,16 @@
-from django.shortcuts import render, get_object_or_404
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import DetailView
 from .models import Material
 
 
-@login_required
-def material_detail(request, material_id):
+class MaterialDetailView(LoginRequiredMixin, DetailView):
     """Detail materiálu."""
-    material = get_object_or_404(Material, id=material_id, is_published=True)
-    context = {
-        'material': material,
-    }
-    return render(request, 'materials/material_detail.html', context)
+    model = Material
+    template_name = 'materials/material_detail.html'
+    context_object_name = 'material'
+    pk_url_kwarg = 'material_id'
+    
+    def get_queryset(self):
+        """Filtruje pouze publikované materiály."""
+        return Material.objects.filter(is_published=True)
 
