@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ quiz.title }} - {{ block.super }}{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'subjects:subject_list' %}">Předměty</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'subjects:subject_detail' quiz.topic.subject.slug %}">{{ quiz.topic.subject.name }}</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'subjects:topic_detail' quiz.topic.subject.slug quiz.topic.slug %}">{{ quiz.topic.name }}</a></li>
+        <li class="breadcrumb-item active">{{ quiz.title }}</li>
+    </ol>
+</nav>
+
+<h1>{{ quiz.title }}</h1>
+
+{% if quiz.description %}
+    <p class="lead">{{ quiz.description }}</p>
+{% endif %}
+
+<div class="mb-3">
+    {% if quiz.time_limit %}
+        <span class="badge bg-info">Časový limit: {{ quiz.time_limit }} minut</span>
+    {% endif %}
+    <span class="badge bg-secondary">Max. pokusů: {{ quiz.max_attempts }}</span>
+    <span class="badge bg-success">Úspěšnost: {{ quiz.passing_score }}%</span>
+</div>
+
+{% if last_attempt %}
+    <div class="alert alert-info">
+        <h5>Poslední pokus</h5>
+        <p>Skóre: {{ last_attempt.score|default:"-" }}%</p>
+        <p>Status: {% if last_attempt.is_passed %}<span class="text-success">Úspěšně dokončeno</span>{% else %}<span class="text-danger">Nedokončeno</span>{% endif %}</p>
+        <p>Datum: {{ last_attempt.started_at|date:"d.m.Y H:i" }}</p>
+    </div>
+{% endif %}
+
+{% if can_attempt %}
+    <div class="mb-4">
+        <a href="{% url 'quizzes:quiz_attempt' quiz.id %}" class="btn btn-primary btn-lg">
+            Spustit test
+        </a>
+    </div>
+{% else %}
+    <div class="alert alert-warning">
+        Dosáhl jsi maximálního počtu pokusů pro tento test.
+    </div>
+{% endif %}
+
+<a href="{% url 'subjects:topic_detail' quiz.topic.subject.slug quiz.topic.slug %}" class="btn btn-secondary">
+    Zpět na okruh
+</a>
+{% endblock %}
+

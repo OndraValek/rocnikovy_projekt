@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ subject.name }} - {{ block.super }}{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'subjects:subject_list' %}">Předměty</a></li>
+        <li class="breadcrumb-item active">{{ subject.name }}</li>
+    </ol>
+</nav>
+
+<h1>{{ subject.name }}</h1>
+
+{% if subject.description %}
+    <p class="lead">{{ subject.description }}</p>
+{% endif %}
+
+<h2 class="mt-4">Maturitní okruhy</h2>
+
+{% if topics %}
+    <div class="list-group">
+        {% for topic in topics %}
+            <a href="{% url 'subjects:topic_detail' subject.slug topic.slug %}" class="list-group-item list-group-item-action">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">{{ topic.name }}</h5>
+                    <small>{{ topic.order }}</small>
+                </div>
+                {% if topic.description %}
+                    <p class="mb-1">{{ topic.description|truncatewords:20|striptags }}</p>
+                {% endif %}
+            </a>
+        {% endfor %}
+    </div>
+{% else %}
+    <p>Zatím nejsou k dispozici žádné okruhy.</p>
+{% endif %}
+{% endblock %}
+

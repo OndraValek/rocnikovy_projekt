@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Test: {{ quiz.title }} - {{ block.super }}{% endblock %}
+
+{% block content %}
+<h1>{{ quiz.title }}</h1>
+
+{% if quiz.description %}
+    <p class="lead">{{ quiz.description }}</p>
+{% endif %}
+
+{% if quiz.h5p_embed_code %}
+    <div class="mb-4" data-quiz-id="{{ quiz.id }}" {% if attempt %}data-attempt-id="{{ attempt.id }}"{% endif %}>
+        <div class="h5p-container" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%;">
+            {{ quiz.h5p_embed_code|safe }}
+        </div>
+    </div>
+    
+    {% if attempt %}
+        <div class="alert alert-info">
+            <strong>Váš pokus:</strong> 
+            {% if attempt.score is not None %}
+                Skóre: {{ attempt.score }}% 
+                {% if attempt.is_passed %}
+                    <span class="badge bg-success">Úspěšně</span>
+                {% else %}
+                    <span class="badge bg-danger">Neúspěšně</span>
+                {% endif %}
+            {% else %}
+                Test ještě nebyl dokončen.
+            {% endif %}
+        </div>
+    {% endif %}
+{% else %}
+    <div class="alert alert-warning">
+        Test není k dispozici.
+    </div>
+{% endif %}
+
+<div class="mt-4">
+    <a href="{% url 'subjects:topic_detail' quiz.topic.subject.slug quiz.topic.slug %}" class="btn btn-secondary">
+        Zpět na okruh
+    </a>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/h5p-integration.js' %}"></script>
+{% endblock %}
+

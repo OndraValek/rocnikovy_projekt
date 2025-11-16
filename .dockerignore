@@ -1,0 +1,58 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+.venv
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+/media
+/staticfiles
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Documentation
+*.md
+!README.md
+
+# OAuth2 debug scripts
+check_*.py
+fix_*.py
+debug_*.py
+diagnostika_*.py
+*_oauth*.py
+*_microsoft*.py
+*_google*.py
+*_github*.py
+
+# Temporary files
+*.tmp
+*.bak
+*.cache
+
+# Docker
+docker-compose.yml
+Dockerfile
+.dockerignore
+

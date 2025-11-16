@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ topic.name }} - {{ block.super }}{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'subjects:subject_list' %}">Předměty</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'subjects:subject_detail' subject.slug %}">{{ subject.name }}</a></li>
+        <li class="breadcrumb-item active">{{ topic.name }}</li>
+    </ol>
+</nav>
+
+<h1>{{ topic.name }}</h1>
+
+{% if topic.description %}
+    <div class="mb-4">
+        {{ topic.description|safe }}
+    </div>
+{% endif %}
+
+<div class="row">
+    <div class="col-12">
+        <h2>Úlohy</h2>
+        
+        <!-- Container pro dynamické načítání úloh -->
+        <div id="dynamic-tasks-container" data-topic-id="{{ topic.id }}"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/dynamic-tasks.js' %}"></script>
+<script>
+    // Inicializace dynamického načítání úloh
+    document.addEventListener('DOMContentLoaded', function() {
+        const container = document.getElementById('dynamic-tasks-container');
+        if (container) {
+            const topicId = container.getAttribute('data-topic-id');
+            if (topicId) {
+                const loader = new DynamicTasksLoader('dynamic-tasks-container', {
+                    topicId: topicId,
+                    apiEndpoint: '/api/tasks/',
+                    type: 'all',
+                    perPage: 12,
+                    showFilters: true,
+                    showPagination: true
+                });
+            }
+        }
+    });
+</script>
+{% endblock %}
+
