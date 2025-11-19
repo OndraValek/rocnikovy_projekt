@@ -1,18 +1,23 @@
 # H5P Integrace - Kompletní průvodce
 
+> **⚠️ DŮLEŽITÉ:** Tento dokument popisuje starší způsob integrace pomocí embed kódu. 
+> Pro novou integraci pomocí **h5p-standalone** (doporučeno) viz [H5P_STANDALONE_INTEGRATION.md](./H5P_STANDALONE_INTEGRATION.md)
+
 ## Co je H5P?
 
 H5P (HTML5 Package) je open-source nástroj pro vytváření interaktivního vzdělávacího obsahu. Umožňuje vytvářet interaktivní videa, kvízy, prezentace a další vzdělávací aktivity bez programování.
 
 ## Jak H5P funguje v projektu
 
-### 1. Základní integrace (už implementováno)
+### 1. Základní integrace (starší způsob - embed kód)
 
 H5P obsah se vkládá pomocí **embed kódu** (iframe). To znamená:
 - Vytvoříš H5P obsah na externím serveru (např. H5P.org)
 - Zkopíruješ embed kód
 - Vložíš ho do Django aplikace
 - Obsah se zobrazí přímo na stránce
+
+**⚠️ Poznámka:** Tento způsob má omezení - nelze snadno ukládat výsledky a stav uživatele. Pro plnou funkcionalitu použijte [h5p-standalone integraci](./H5P_STANDALONE_INTEGRATION.md).
 
 ### 2. Kde lze použít H5P
 

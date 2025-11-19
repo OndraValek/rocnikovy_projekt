@@ -2,7 +2,8 @@ from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.views.generic import DetailView, CreateView
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
+from django.conf import settings
 from .models import Quiz, QuizAttempt
 
 
@@ -65,6 +66,21 @@ class QuizAttemptView(LoginRequiredMixin, CreateView):
         # Pokud už existuje attempt (po vytvoření), přidat ho do kontextu
         if self.object:
             context['attempt'] = self.object
+        
+        # Přidat informace pro h5p-standalone
+        if self.quiz.h5p_path:
+            # Cesta k H5P JSON souboru
+            context['h5p_json_path'] = f"{settings.MEDIA_URL}{self.quiz.h5p_path}h5p.json"
+            # Content ID pro API endpointy (použijeme quiz ID)
+            context['h5p_content_id'] = f"quiz-{self.quiz.id}"
+            # API endpointy (použijeme reverse místo reverse_lazy, protože jsme v view, ne v URL config)
+            context['h5p_user_data_url'] = reverse('quizzes:h5p_user_data', kwargs={'content_id': f"quiz-{self.quiz.id}"})
+            context['h5p_xapi_url'] = reverse('quizzes:h5p_xapi')
+            # Cesty k h5p-standalone souborům (očekáváme, že budou v static/h5p-player/)
+            context['h5p_player_js'] = '/static/h5p-player/main.bundle.js'
+            context['h5p_frame_js'] = '/static/h5p-player/frame.bundle.js'
+            context['h5p_frame_css'] = '/static/h5p-player/styles/h5p.css'
+        
         return context
     
     def get_success_url(self):

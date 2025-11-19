@@ -27,7 +27,14 @@ class Quiz(ClusterableModel):
         blank=True,
         null=True,
         verbose_name=_('H5P embed kód'),
-        help_text=_('Vložte iframe kód pro H5P test')
+        help_text=_('Vložte iframe kód pro H5P test (starší způsob)')
+    )
+    h5p_path = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        verbose_name=_('Cesta k H5P obsahu'),
+        help_text=_('Relativní cesta k rozbalenému H5P obsahu (např. h5p/quiz-1/)')
     )
     
     # Alternativně: vlastní otázky (pro budoucí rozšíření)
@@ -128,4 +135,36 @@ class QuizAttempt(models.Model):
             self.is_passed = self.score >= self.quiz.passing_score
             self.save()
         return self.score
+
+
+class H5PUserData(models.Model):
+    """Ukládání stavu uživatele v H5P obsahu (pro h5p-standalone)."""
+    user = models.ForeignKey(
+        'accounts.User',
+        on_delete=models.CASCADE,
+        related_name='h5p_user_data',
+        verbose_name=_('Uživatel')
+    )
+    content_id = models.CharField(
+        max_length=100,
+        verbose_name=_('ID H5P obsahu'),
+        help_text=_('Unikátní identifikátor H5P obsahu')
+    )
+    data = models.JSONField(
+        verbose_name=_('Data stavu'),
+        help_text=_('JSON data s uloženým stavem uživatele')
+    )
+    updated_at = models.DateTimeField(
+        auto_now=True,
+        verbose_name=_('Aktualizováno')
+    )
+    
+    class Meta:
+        verbose_name = _('H5P uživatelská data')
+        verbose_name_plural = _('H5P uživatelská data')
+        unique_together = [['user', 'content_id']]
+        ordering = ['-updated_at']
+    
+    def __str__(self):
+        return f"{self.user} - {self.content_id}"
 
