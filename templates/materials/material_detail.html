@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ material.title }} - {{ block.super }}{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'subjects:subject_list' %}">Předměty</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'subjects:subject_detail' material.topic.subject.slug %}">{{ material.topic.subject.name }}</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'subjects:topic_detail' material.topic.subject.slug material.topic.slug %}">{{ material.topic.name }}</a></li>
+        <li class="breadcrumb-item active">{{ material.title }}</li>
+    </ol>
+</nav>
+
+<h1>{{ material.title }}</h1>
+
+{% if material.description %}
+    <p class="lead">{{ material.description }}</p>
+{% endif %}
+
+<div class="mb-3">
+    <span class="badge bg-secondary">{{ material.get_material_type_display }}</span>
+    {% if material.author %}
+        <span class="text-muted">• Autor: {{ material.author }}</span>
+    {% endif %}
+</div>
+
+{% if material.material_type == 'pdf' and material.document %}
+    <div class="mb-4">
+        <a href="{{ material.document.url }}" class="btn btn-primary" target="_blank">
+            Otevřít PDF dokument
+        </a>
+    </div>
+{% elif material.material_type == 'video' and material.external_url %}
+    <div class="mb-4">
+        <div class="ratio ratio-16x9">
+            <iframe src="{{ material.external_url }}" allowfullscreen></iframe>
+        </div>
+    </div>
+{% elif material.material_type == 'link' and material.external_url %}
+    <div class="mb-4">
+        <a href="{{ material.external_url }}" class="btn btn-primary" target="_blank">
+            Otevřít odkaz
+        </a>
+    </div>
+{% elif material.material_type == 'h5p' and material.h5p_embed_code %}
+    <div class="mb-4">
+        <div class="h5p-container" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%;">
+            {{ material.h5p_embed_code|safe }}
+        </div>
+    </div>
+{% elif material.material_type == 'text' and material.content %}
+    <div class="mb-4">
+        <div class="card">
+            <div class="card-body">
+                {{ material.content|linebreaks }}
+            </div>
+        </div>
+    </div>
+{% elif material.material_type == 'image' and material.image %}
+    <div class="mb-4">
+        <img src="{{ material.image.url }}" class="img-fluid" alt="{{ material.title }}">
+    </div>
+{% endif %}
+
+<a href="{% url 'subjects:topic_detail' material.topic.subject.slug material.topic.slug %}" class="btn btn-secondary">
+    Zpět na okruh
+</a>
+{% endblock %}
+

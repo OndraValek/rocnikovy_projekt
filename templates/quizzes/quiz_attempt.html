@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Test: {{ quiz.title }} - {{ block.super }}{% endblock %}
+
+{% block content %}
+<h1>{{ quiz.title }}</h1>
+
+{% if quiz.description %}
+    <p class="lead">{{ quiz.description }}</p>
+{% endif %}
+
+{% if quiz.h5p_path %}
+    {# H5P Standalone Player #}
+    <div class="mb-4" data-quiz-id="{{ quiz.id }}" {% if attempt %}data-attempt-id="{{ attempt.id }}"{% endif %}>
+        <div id="h5p-container" class="h5p-container"></div>
+    </div>
+    
+    {% if attempt %}
+        <div class="alert alert-info">
+            <strong>Váš pokus:</strong> 
+            {% if attempt.score is not None %}
+                Skóre: {{ attempt.score }}% 
+                {% if attempt.is_passed %}
+                    <span class="badge bg-success">Úspěšně</span>
+                {% else %}
+                    <span class="badge bg-danger">Neúspěšně</span>
+                {% endif %}
+            {% else %}
+                Test ještě nebyl dokončen.
+            {% endif %}
+        </div>
+    {% endif %}
+{% elif quiz.h5p_embed_code %}
+    {# Starší způsob - embed kód #}
+    <div class="mb-4" data-quiz-id="{{ quiz.id }}" {% if attempt %}data-attempt-id="{{ attempt.id }}"{% endif %}>
+        <div class="h5p-container" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%;">
+            {{ quiz.h5p_embed_code|safe }}
+        </div>
+    </div>
+    
+    {% if attempt %}
+        <div class="alert alert-info">
+            <strong>Váš pokus:</strong> 
+            {% if attempt.score is not None %}
+                Skóre: {{ attempt.score }}% 
+                {% if attempt.is_passed %}
+                    <span class="badge bg-success">Úspěšně</span>
+                {% else %}
+                    <span class="badge bg-danger">Neúspěšně</span>
+                {% endif %}
+            {% else %}
+                Test ještě nebyl dokončen.
+            {% endif %}
+        </div>
+    {% endif %}
+{% else %}
+    <div class="alert alert-warning">
+        Test není k dispozici.
+    </div>
+{% endif %}
+
+<div class="mt-4">
+    <a href="{% url 'subjects:topic_detail' quiz.topic.subject.slug quiz.topic.slug %}" class="btn btn-secondary">
+        Zpět na okruh
+    </a>
+</div>
+
+{% endblock %}
+
+{% block extra_css %}
+{% if quiz.h5p_path %}
+<link rel="stylesheet" href="{{ h5p_frame_css }}">
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+{% if quiz.h5p_path %}
+{# H5P Standalone Player #}
+<script src="{{ h5p_frame_js }}"></script>
+<script src="{{ h5p_player_js }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const container = document.getElementById('h5p-container');
+    if (container) {
+        // Inicializace H5P Standalone Player
+        new H5PStandalone.H5P(container, {
+            h5pJsonPath: "{{ h5p_json_path }}",
+            frameJs: "{{ h5p_frame_js }}",
+            frameCss: "{{ h5p_frame_css }}",
+            frame: true,
+            reportingIsEnabled: true,
+            postUserStatistics: true,
+            saveFreq: 5, // Ukládat stav každých 5 sekund
+            ajax: {
+                contentUserDataUrl: "{{ h5p_user_data_url }}"
+            },
+            user: {
+                name: "{{ request.user.get_full_name|default:request.user.email }}",
+                mail: "{{ request.user.email }}"
+            }
+        }).then(function() {
+            // Naslouchání na xAPI události
+            if (window.H5P && window.H5P.externalDispatcher) {
+                window.H5P.externalDispatcher.on('xAPI', function(event) {
+                    // Přidat quiz_id do xAPI události
+                    const xapiData = {
+                        statement: event.data.statement,
+                        quiz_id: {{ quiz.id }}
+                    };
+                    
+                    // Odeslat xAPI událost na backend
+                    fetch("{{ h5p_xapi_url }}", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        credentials: 'include',
+                        body: JSON.stringify(xapiData)
+                    }).then(function(response) {
+                        if (response.ok) {
+                            return response.json();
+                        }
+                        throw new Error('Network response was not ok');
+                    }).then(function(data) {
+                        console.log('xAPI událost uložena:', data);
+                        // Pokud je test dokončen, zobrazit výsledky
+                        if (data.is_passed !== undefined) {
+                            // Můžeme aktualizovat UI s výsledky
+                            location.reload(); // Pro jednoduchost obnovíme stránku
+                        }
+                    }).catch(function(error) {
+                        console.error('Chyba při ukládání xAPI události:', error);
+                    });
+                });
+            }
+        }).catch(function(error) {
+            console.error('Chyba při načítání H5P obsahu:', error);
+            container.innerHTML = '<div class="alert alert-danger">Chyba při načítání H5P obsahu. Zkontrolujte, zda je H5P obsah správně rozbalen.</div>';
+        });
+    }
+});
+</script>
+{% else %}
+{# Starší způsob - embed kód #}
+<script src="{% static 'js/h5p-integration.js' %}"></script>
+{% endif %}
+{% endblock %}
+

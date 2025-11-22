@@ -1,0 +1,24 @@
+/* Základní styly pro maturitní projekt */
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+
+.card {
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.list-group-item-action:hover {
+    background-color: #f8f9fa;
+}
+
