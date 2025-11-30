@@ -23,15 +23,9 @@ class QuizDetailView(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         quiz = self.object
         
-        # Zkontrolovat, kolik pokusů uživatel má
-        user_attempts = quiz.attempts.filter(user=self.request.user).count()
-        can_attempt = user_attempts < quiz.max_attempts
-        
         # Poslední pokus
         last_attempt = quiz.attempts.filter(user=self.request.user).order_by('-started_at').first()
         
-        context['user_attempts'] = user_attempts
-        context['can_attempt'] = can_attempt
         context['last_attempt'] = last_attempt
         return context
 
@@ -43,14 +37,8 @@ class QuizAttemptView(LoginRequiredMixin, CreateView):
     fields = []  # Vytvoříme pokus bez polí
     
     def dispatch(self, request, *args, **kwargs):
-        """Zkontroluje počet pokusů před zobrazením."""
+        """Nastaví quiz před zobrazením."""
         self.quiz = get_object_or_404(Quiz, id=kwargs['quiz_id'], is_published=True)
-        user_attempts = self.quiz.attempts.filter(user=request.user).count()
-        
-        if user_attempts >= self.quiz.max_attempts:
-            messages.error(request, 'Dosáhl jsi maximálního počtu pokusů pro tento test.')
-            return redirect('quizzes:quiz_detail', quiz_id=self.quiz.id)
-        
         return super().dispatch(request, *args, **kwargs)
     
     def form_valid(self, form):

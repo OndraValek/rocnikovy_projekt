@@ -4,11 +4,14 @@ API views pro dynamické načítání úloh (materiálů, testů) z databáze.
 from django.http import JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 from django.core.paginator import Paginator
 from django.db.models import Q
+from django.contrib.contenttypes.models import ContentType
 from materials.models import Material
 from quizzes.models import Quiz
-from subjects.models import Topic
+from subjects.models import Topic, Subject, Feedback
 
 
 class MaterialsAPIView(LoginRequiredMixin, View):
@@ -333,6 +336,155 @@ class AllTasksAPIView(LoginRequiredMixin, View):
                 'total_count': paginator.count,
                 'has_next': page_obj.has_next(),
                 'has_previous': page_obj.has_previous(),
+            }
+        })
+
+
+class FeedbackAPIView(LoginRequiredMixin, View):
+    """
+    API endpoint pro práci s připomínkami.
+    
+    GET parametry:
+    - content_type: 'subject' nebo 'topic'
+    - object_id: ID předmětu nebo okruhu
+    - page: číslo stránky (default: 1)
+    - per_page: počet na stránku (default: 10)
+    
+    POST parametry:
+    - content_type: 'subject' nebo 'topic'
+    - object_id: ID předmětu nebo okruhu
+    - text: text připomínky
+    """
+    
+    def get(self, request):
+        content_type_name = request.GET.get('content_type')
+        object_id = request.GET.get('object_id')
+        page = int(request.GET.get('page', 1))
+        per_page = int(request.GET.get('per_page', 10))
+        
+        if not content_type_name or not object_id:
+            return JsonResponse({
+                'error': 'content_type a object_id jsou povinné'
+            }, status=400)
+        
+        # Získat ContentType
+        if content_type_name == 'subject':
+            content_type = ContentType.objects.get_for_model(Subject)
+        elif content_type_name == 'topic':
+            content_type = ContentType.objects.get_for_model(Topic)
+        else:
+            return JsonResponse({
+                'error': 'content_type musí být "subject" nebo "topic"'
+            }, status=400)
+        
+        # Ověřit, že objekt existuje
+        try:
+            obj = content_type.get_object_for_this_type(id=object_id)
+        except:
+            return JsonResponse({
+                'error': 'Objekt neexistuje'
+            }, status=404)
+        
+        # Načíst připomínky
+        queryset = Feedback.objects.filter(
+            content_type=content_type,
+            object_id=object_id
+        ).select_related('author').order_by('-created_at')
+        
+        # Stránkování
+        paginator = Paginator(queryset, per_page)
+        page_obj = paginator.get_page(page)
+        
+        # Serializace dat
+        feedbacks = []
+        for feedback in page_obj:
+            feedbacks.append({
+                'id': feedback.id,
+                'text': feedback.text,
+                'author': feedback.author_name,
+                'author_role': feedback.author_role,
+                'is_edited': feedback.is_edited,
+                'created_at': feedback.created_at.strftime('%d.%m.%Y %H:%M'),
+                'updated_at': feedback.updated_at.strftime('%d.%m.%Y %H:%M') if feedback.is_edited else None,
+                'can_edit': feedback.author == request.user,
+            })
+        
+        return JsonResponse({
+            'success': True,
+            'feedbacks': feedbacks,
+            'pagination': {
+                'page': page,
+                'per_page': per_page,
+                'total_pages': paginator.num_pages,
+                'total_count': paginator.count,
+                'has_next': page_obj.has_next(),
+                'has_previous': page_obj.has_previous(),
+            }
+        })
+    
+    @method_decorator(csrf_exempt)
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+    
+    def post(self, request):
+        import json
+        try:
+            data = json.loads(request.body)
+        except:
+            return JsonResponse({
+                'error': 'Neplatný JSON'
+            }, status=400)
+        
+        content_type_name = data.get('content_type')
+        object_id = data.get('object_id')
+        text = data.get('text', '').strip()
+        
+        if not content_type_name or not object_id:
+            return JsonResponse({
+                'error': 'content_type a object_id jsou povinné'
+            }, status=400)
+        
+        if not text:
+            return JsonResponse({
+                'error': 'Text připomínky je povinný'
+            }, status=400)
+        
+        # Získat ContentType
+        if content_type_name == 'subject':
+            content_type = ContentType.objects.get_for_model(Subject)
+        elif content_type_name == 'topic':
+            content_type = ContentType.objects.get_for_model(Topic)
+        else:
+            return JsonResponse({
+                'error': 'content_type musí být "subject" nebo "topic"'
+            }, status=400)
+        
+        # Ověřit, že objekt existuje
+        try:
+            obj = content_type.get_object_for_this_type(id=object_id)
+        except:
+            return JsonResponse({
+                'error': 'Objekt neexistuje'
+            }, status=404)
+        
+        # Vytvořit připomínku
+        feedback = Feedback.objects.create(
+            content_type=content_type,
+            object_id=object_id,
+            author=request.user,
+            text=text
+        )
+        
+        return JsonResponse({
+            'success': True,
+            'feedback': {
+                'id': feedback.id,
+                'text': feedback.text,
+                'author': feedback.author_name,
+                'author_role': feedback.author_role,
+                'is_edited': feedback.is_edited,
+                'created_at': feedback.created_at.strftime('%d.%m.%Y %H:%M'),
+                'can_edit': True,
             }
         })
 

@@ -89,3 +89,56 @@ class UserProfile(models.Model):
     def __str__(self):
         return f"Profil uživatele {self.user}"
 
+
+class StudentClass(models.Model):
+    """Třída/skupina studentů spravovaná učitelem."""
+    name = models.CharField(
+        max_length=100,
+        verbose_name=_('Název třídy'),
+        help_text=_('Např. 4.A, Skupina A, Třída 2024')
+    )
+    teacher = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='managed_classes',
+        limit_choices_to={'role': User.Role.TEACHER},
+        verbose_name=_('Učitel'),
+        help_text=_('Učitel, který spravuje tuto třídu')
+    )
+    students = models.ManyToManyField(
+        User,
+        related_name='student_classes',
+        limit_choices_to={'role': User.Role.STUDENT},
+        blank=True,
+        verbose_name=_('Studenti'),
+        help_text=_('Studenti v této třídě')
+    )
+    description = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name=_('Popis'),
+        help_text=_('Volitelný popis třídy')
+    )
+    school_year = models.CharField(
+        max_length=20,
+        blank=True,
+        null=True,
+        verbose_name=_('Školní rok'),
+        help_text=_('Např. 2024/2025')
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        verbose_name = _('Třída')
+        verbose_name_plural = _('Třídy')
+        ordering = ['name']
+    
+    def __str__(self):
+        return f"{self.name} ({self.teacher.get_full_name() or self.teacher.email})"
+    
+    def get_student_count(self):
+        """Vrátí počet studentů ve třídě."""
+        return self.students.count()
+    
+    get_student_count.short_description = _('Počet studentů')

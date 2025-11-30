@@ -35,5 +35,141 @@
 {% else %}
     <p>Zatím nejsou k dispozici žádné okruhy.</p>
 {% endif %}
+
+<!-- Sekce připomínek -->
+<div class="mt-5">
+    <h2>Připomínky a zpětná vazba</h2>
+    <div id="feedback-section" data-content-type="subject" data-object-id="{{ subject.id }}">
+        <!-- Formulář pro přidání připomínky -->
+        {% if user.is_authenticated %}
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Přidat připomínku</h5>
+                <form id="feedback-form">
+                    <div class="mb-3">
+                        <textarea class="form-control" id="feedback-text" rows="3" placeholder="Napište svou připomínku nebo zpětnou vazbu..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Odeslat připomínku</button>
+                </form>
+            </div>
+        </div>
+        {% else %}
+        <div class="alert alert-info">
+            Pro přidání připomínky se musíte <a href="{% url 'account_login' %}">přihlásit</a>.
+        </div>
+        {% endif %}
+        
+        <!-- Seznam připomínek -->
+        <div id="feedback-list">
+            <div class="text-center">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Načítání...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const feedbackSection = document.getElementById('feedback-section');
+    if (!feedbackSection) return;
+    
+    const contentType = feedbackSection.getAttribute('data-content-type');
+    const objectId = feedbackSection.getAttribute('data-object-id');
+    const feedbackList = document.getElementById('feedback-list');
+    const feedbackForm = document.getElementById('feedback-form');
+    const feedbackText = document.getElementById('feedback-text');
+    
+    // Načíst připomínky
+    function loadFeedbacks(page = 1) {
+        fetch(`/api/feedback/?content_type=${contentType}&object_id=${objectId}&page=${page}&per_page=10`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    renderFeedbacks(data.feedbacks);
+                } else {
+                    feedbackList.innerHTML = '<div class="alert alert-danger">Chyba při načítání připomínek.</div>';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                feedbackList.innerHTML = '<div class="alert alert-danger">Chyba při načítání připomínek.</div>';
+            });
+    }
+    
+    // Zobrazit připomínky
+    function renderFeedbacks(feedbacks) {
+        if (feedbacks.length === 0) {
+            feedbackList.innerHTML = '<p class="text-muted">Zatím nejsou žádné připomínky. Buďte první!</p>';
+            return;
+        }
+        
+        let html = '<div class="list-group">';
+        feedbacks.forEach(feedback => {
+            html += `
+                <div class="list-group-item">
+                    <div class="d-flex w-100 justify-content-between">
+                        <div class="flex-grow-1">
+                            <h6 class="mb-1">${escapeHtml(feedback.author)} <small class="text-muted">(${feedback.author_role})</small></h6>
+                            <p class="mb-1">${escapeHtml(feedback.text)}</p>
+                            <small class="text-muted">${feedback.created_at}${feedback.updated_at ? ' (upraveno: ' + feedback.updated_at + ')' : ''}</small>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        html += '</div>';
+        feedbackList.innerHTML = html;
+    }
+    
+    // Escape HTML
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+    
+    // Odeslat připomínku
+    if (feedbackForm) {
+        feedbackForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const text = feedbackText.value.trim();
+            if (!text) return;
+            
+            fetch('/api/feedback/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    content_type: contentType,
+                    object_id: objectId,
+                    text: text
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    feedbackText.value = '';
+                    loadFeedbacks();
+                } else {
+                    alert('Chyba: ' + (data.error || 'Nepodařilo se odeslat připomínku'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Chyba při odesílání připomínky');
+            });
+        });
+    }
+    
+    // Načíst připomínky při načtení stránky
+    loadFeedbacks();
+});
+</script>
 {% endblock %}
 

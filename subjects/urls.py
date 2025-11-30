@@ -15,5 +15,6 @@ api_urlpatterns = [
     path('materials/', api_views.MaterialsAPIView.as_view(), name='api_materials'),
     path('quizzes/', api_views.QuizzesAPIView.as_view(), name='api_quizzes'),
     path('tasks/', api_views.AllTasksAPIView.as_view(), name='api_tasks'),
+    path('feedback/', api_views.FeedbackAPIView.as_view(), name='api_feedback'),
 ]
 

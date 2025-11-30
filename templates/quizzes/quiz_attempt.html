@@ -31,6 +31,27 @@
             {% endif %}
         </div>
     {% endif %}
+    
+    <div class="mt-3 mb-4">
+        <div class="alert alert-info">
+            <strong>Poznámka:</strong> Pokud se skóre automaticky nenašlo, zadej ho ručně do pole níže.
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="manual-score" class="form-label">Skóre (pokud se automaticky nenašlo):</label>
+                <div class="input-group">
+                    <input type="number" class="form-control" id="manual-score" min="0" max="100" placeholder="Např. 20 (pro 1/5 = 20%)">
+                    <span class="input-group-text">%</span>
+                </div>
+                <small class="form-text text-muted">Zadej skóre v procentech (např. 1 z 5 = 20%)</small>
+            </div>
+        </div>
+        <button id="submit-quiz-btn" class="btn btn-success btn-lg" 
+                onclick="submitQuizResults({{ quiz.id }}, {% if attempt %}{{ attempt.id }}{% else %}null{% endif %})">
+            <i class="bi bi-check-circle"></i> Odeslat výsledky testu
+        </button>
+        <div id="submit-status" class="mt-2"></div>
+    </div>
 {% elif quiz.h5p_embed_code %}
     {# Starší způsob - embed kód #}
     <div class="mb-4" data-quiz-id="{{ quiz.id }}" {% if attempt %}data-attempt-id="{{ attempt.id }}"{% endif %}>
@@ -54,6 +75,14 @@
             {% endif %}
         </div>
     {% endif %}
+    
+    <div class="mt-3 mb-4">
+        <button id="submit-quiz-btn" class="btn btn-success btn-lg"
+                onclick="submitQuizResults({{ quiz.id }}, {% if attempt %}{{ attempt.id }}{% else %}null{% endif %})">
+            <i class="bi bi-check-circle"></i> Odeslat výsledky testu
+        </button>
+        <div id="submit-status" class="mt-2"></div>
+    </div>
 {% else %}
     <div class="alert alert-warning">
         Test není k dispozici.
@@ -61,6 +90,9 @@
 {% endif %}
 
 <div class="mt-4">
+    <a href="{% url 'quizzes:quiz_detail' quiz.id %}" class="btn btn-primary me-2">
+        Zpět na test
+    </a>
     <a href="{% url 'subjects:topic_detail' quiz.topic.subject.slug quiz.topic.slug %}" class="btn btn-secondary">
         Zpět na okruh
     </a>
@@ -75,15 +107,23 @@
 {% endblock %}
 
 {% block extra_js %}
+{% load static %}
+<script src="{% static 'js/quiz-submit.js' %}"></script>
 {% if quiz.h5p_path %}
 {# H5P Standalone Player #}
 <script src="{{ h5p_frame_js }}"></script>
 <script src="{{ h5p_player_js }}"></script>
 <script>
+
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOMContentLoaded - zkouším načíst H5P...');
     const container = document.getElementById('h5p-container');
+    console.log('H5P container:', container);
+    console.log('H5PStandalone:', typeof H5PStandalone);
+    
     if (container) {
         // Inicializace H5P Standalone Player
+        console.log('Inicializuji H5P Standalone...');
         new H5PStandalone.H5P(container, {
             h5pJsonPath: "{{ h5p_json_path }}",
             frameJs: "{{ h5p_frame_js }}",
@@ -99,41 +139,238 @@ document.addEventListener('DOMContentLoaded', function() {
                 name: "{{ request.user.get_full_name|default:request.user.email }}",
                 mail: "{{ request.user.email }}"
             }
-        }).then(function() {
-            // Naslouchání na xAPI události
+        }).then(function(h5pInstance) {
+            // Uložit instanci H5P pro pozdější použití
+            window.h5pInstance = h5pInstance;
+            console.log('H5P instance načtena:', h5pInstance);
+            console.log('H5P instance metody:', Object.keys(h5pInstance));
+            console.log('window.h5pInstance nastaveno:', window.h5pInstance);
+            
+            // Také uložit do kontejneru pro alternativní přístup
+            const container = document.getElementById('h5p-container');
+            if (container) {
+                container.h5pInstance = h5pInstance;
+                console.log('H5P instance uložena do kontejneru');
+            }
+            
+            // Zkusit uložit do H5P.instances, pokud existuje
+            if (window.H5P && !window.H5P.instances) {
+                window.H5P.instances = [];
+            }
+            if (window.H5P && window.H5P.instances) {
+                window.H5P.instances.push(h5pInstance);
+                console.log('H5P instance uložena do H5P.instances');
+            }
+            
+            // Zkusit získat výsledky hned po načtení
+            if (h5pInstance && h5pInstance.contentInstance) {
+                console.log('contentInstance dostupný:', h5pInstance.contentInstance);
+                console.log('contentInstance metody:', Object.keys(h5pInstance.contentInstance));
+            }
+            
+            // Spustit MutationObserver pro sledování změn v DOM
+            if (typeof startScoreObserver === 'function') {
+                startScoreObserver();
+            }
+            
+            // Naslouchání na xAPI události - zkusit různé způsoby
+            console.log('Zkouším nastavit xAPI listener...');
+            console.log('window.H5P:', window.H5P);
+            console.log('window.H5P.externalDispatcher:', window.H5P ? window.H5P.externalDispatcher : 'N/A');
+            
+            // Zkusit také získat výsledky přímo z instance každých 2 sekundy po dokončení
+            let checkInterval = null;
+            let lastCheckedScore = null;
+            
+            function checkForResults() {
+                try {
+                    // Zkusit získat z contentInstance
+                    if (h5pInstance && h5pInstance.contentInstance) {
+                        const content = h5pInstance.contentInstance;
+                        
+                        // Zkusit getScore
+                        if (content.getScore && typeof content.getScore === 'function') {
+                            const score = content.getScore();
+                            const maxScore = content.getMaxScore ? content.getMaxScore() : 100;
+                            if (score !== null && score !== undefined && score !== lastCheckedScore) {
+                                lastCheckedScore = score;
+                                window.h5pLastResults = {
+                                    score: score,
+                                    max_score: maxScore
+                                };
+                                console.log('H5P výsledky získány z getScore() (interval):', window.h5pLastResults);
+                                if (checkInterval) {
+                                    clearInterval(checkInterval);
+                                    checkInterval = null;
+                                }
+                            }
+                        }
+                        
+                        // Zkusit getXAPIData
+                        if (content.getXAPIData && typeof content.getXAPIData === 'function') {
+                            try {
+                                const xapiData = content.getXAPIData();
+                                if (xapiData && xapiData.statement && xapiData.statement.result && xapiData.statement.result.score) {
+                                    const scoreData = xapiData.statement.result.score;
+                                    const rawScore = scoreData.raw;
+                                    const maxScore = scoreData.max || 100;
+                                    if (rawScore !== null && rawScore !== undefined) {
+                                        window.h5pLastResults = {
+                                            score: rawScore,
+                                            max_score: maxScore
+                                        };
+                                        console.log('H5P výsledky získány z getXAPIData() (interval):', window.h5pLastResults);
+                                        if (checkInterval) {
+                                            clearInterval(checkInterval);
+                                            checkInterval = null;
+                                        }
+                                    }
+                                }
+                            } catch (e) {
+                                // Ignorovat chyby
+                            }
+                        }
+                    }
+                } catch (e) {
+                    // Ignorovat chyby
+                }
+            }
+            
+            // Spustit kontrolu každé 2 sekundy
+            checkInterval = setInterval(checkForResults, 2000);
+            console.log('Spuštěn interval pro kontrolu výsledků každé 2 sekundy');
+            
+            // Zkusit H5P.externalDispatcher
             if (window.H5P && window.H5P.externalDispatcher) {
                 window.H5P.externalDispatcher.on('xAPI', function(event) {
-                    // Přidat quiz_id do xAPI události
-                    const xapiData = {
-                        statement: event.data.statement,
-                        quiz_id: {{ quiz.id }}
-                    };
-                    
-                    // Odeslat xAPI událost na backend
-                    fetch("{{ h5p_xapi_url }}", {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRFToken': '{{ csrf_token }}'
-                        },
-                        credentials: 'include',
-                        body: JSON.stringify(xapiData)
-                    }).then(function(response) {
-                        if (response.ok) {
-                            return response.json();
-                        }
-                        throw new Error('Network response was not ok');
-                    }).then(function(data) {
-                        console.log('xAPI událost uložena:', data);
-                        // Pokud je test dokončen, zobrazit výsledky
-                        if (data.is_passed !== undefined) {
-                            // Můžeme aktualizovat UI s výsledky
-                            location.reload(); // Pro jednoduchost obnovíme stránku
-                        }
-                    }).catch(function(error) {
-                        console.error('Chyba při ukládání xAPI události:', error);
-                    });
+                    console.log('xAPI událost přijata (externalDispatcher):', event);
+                    handleXAPIEvent(event);
                 });
+                console.log('xAPI listener nastaven na H5P.externalDispatcher');
+            }
+            
+            // Zkusit také H5P instance events
+            if (h5pInstance && h5pInstance.on) {
+                h5pInstance.on('xAPI', function(event) {
+                    console.log('xAPI událost přijata (instance.on):', event);
+                    handleXAPIEvent(event);
+                });
+                console.log('xAPI listener nastaven na h5pInstance.on');
+            }
+            
+            // Funkce pro zpracování xAPI události
+            function handleXAPIEvent(event) {
+                const statement = event.data ? event.data.statement : event.statement;
+                console.log('xAPI statement:', statement);
+                
+                if (!statement) {
+                    console.warn('xAPI event neobsahuje statement');
+                    return;
+                }
+                
+                // Uložit výsledky z xAPI do globální proměnné
+                if (statement.result && statement.result.score) {
+                    const scoreData = statement.result.score;
+                    const rawScore = scoreData.raw;
+                    const scaledScore = scoreData.scaled;
+                    const maxScore = scoreData.max || scoreData.maxScore || 100;
+                    
+                    console.log('xAPI score data:', {raw: rawScore, scaled: scaledScore, max: maxScore});
+                    
+                    // Použít raw score nebo scaled score
+                    if (rawScore !== undefined && rawScore !== null) {
+                        window.h5pLastResults = {
+                            score: rawScore,
+                            max_score: maxScore
+                        };
+                        console.log('H5P výsledky uloženy z xAPI (raw):', window.h5pLastResults);
+                    } else if (scaledScore !== undefined && scaledScore !== null && maxScore) {
+                        // Pokud je jen scaled score, přepočítat na raw
+                        window.h5pLastResults = {
+                            score: Math.round(scaledScore * maxScore),
+                            max_score: maxScore
+                        };
+                        console.log('H5P výsledky uloženy z xAPI (scaled):', window.h5pLastResults);
+                    }
+                } else {
+                    console.log('xAPI statement neobsahuje score data');
+                }
+                
+                // Přidat quiz_id do xAPI události
+                const xapiData = {
+                    statement: statement,
+                    quiz_id: {{ quiz.id }},
+                };
+                
+                // Odeslat xAPI událost na backend
+                fetch("{{ h5p_xapi_url }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify(xapiData)
+                }).then(function(response) {
+                    if (response.ok) {
+                        return response.json();
+                    }
+                    throw new Error('Network response was not ok');
+                }).then(function(data) {
+                    console.log('xAPI událost uložena:', data);
+                }).catch(function(error) {
+                    console.error('Chyba při ukládání xAPI události:', error);
+                });
+            }
+            
+            // Také zkusit získat výsledky přímo z instance po načtení
+            if (h5pInstance && h5pInstance.contentInstance) {
+                // Počkat chvíli a zkusit získat výsledky
+                setTimeout(function() {
+                    try {
+                        const content = h5pInstance.contentInstance;
+                        console.log('H5P contentInstance:', content);
+                        console.log('H5P contentInstance metody:', Object.keys(content));
+                        
+                        // Zkusit různé metody pro získání skóre
+                        if (content.getScore && typeof content.getScore === 'function') {
+                            const score = content.getScore();
+                            const maxScore = content.getMaxScore ? content.getMaxScore() : 100;
+                            console.log('content.getScore() výsledek:', score, maxScore);
+                            if (score !== null && score !== undefined) {
+                                window.h5pLastResults = {
+                                    score: score,
+                                    max_score: maxScore
+                                };
+                                console.log('H5P výsledky získány z contentInstance.getScore():', window.h5pLastResults);
+                            }
+                        }
+                        
+                        // Zkusit získat z getXAPIData
+                        if (content.getXAPIData && typeof content.getXAPIData === 'function') {
+                            try {
+                                const xapiData = content.getXAPIData();
+                                console.log('content.getXAPIData() výsledek:', xapiData);
+                                if (xapiData && xapiData.statement && xapiData.statement.result && xapiData.statement.result.score) {
+                                    const scoreData = xapiData.statement.result.score;
+                                    const rawScore = scoreData.raw;
+                                    const maxScore = scoreData.max || 100;
+                                    if (rawScore !== null && rawScore !== undefined) {
+                                        window.h5pLastResults = {
+                                            score: rawScore,
+                                            max_score: maxScore
+                                        };
+                                        console.log('H5P výsledky získány z getXAPIData():', window.h5pLastResults);
+                                    }
+                                }
+                            } catch (e) {
+                                console.log('getXAPIData() vyhodila chybu:', e);
+                            }
+                        }
+                    } catch (e) {
+                        console.error('Chyba při získávání výsledků z contentInstance:', e);
+                    }
+                }, 3000);
             }
         }).catch(function(error) {
             console.error('Chyba při načítání H5P obsahu:', error);
@@ -142,9 +379,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
-{% else %}
-{# Starší způsob - embed kód #}
-<script src="{% static 'js/h5p-integration.js' %}"></script>
 {% endif %}
 {% endblock %}
 

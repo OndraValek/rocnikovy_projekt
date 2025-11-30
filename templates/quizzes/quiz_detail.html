@@ -22,7 +22,6 @@
     {% if quiz.time_limit %}
         <span class="badge bg-info">Časový limit: {{ quiz.time_limit }} minut</span>
     {% endif %}
-    <span class="badge bg-secondary">Max. pokusů: {{ quiz.max_attempts }}</span>
     <span class="badge bg-success">Úspěšnost: {{ quiz.passing_score }}%</span>
 </div>
 
@@ -35,20 +34,169 @@
     </div>
 {% endif %}
 
-{% if can_attempt %}
-    <div class="mb-4">
-        <a href="{% url 'quizzes:quiz_attempt' quiz.id %}" class="btn btn-primary btn-lg">
-            Spustit test
-        </a>
+<div class="mb-4">
+    <a href="{% url 'quizzes:quiz_attempt' quiz.id %}" class="btn btn-primary btn-lg">
+        Spustit test
+    </a>
+</div>
+
+<!-- Tabulka s výsledky -->
+<div class="mt-5">
+    <h2>Výsledky testu</h2>
+    <div id="quiz-results-container" data-quiz-id="{{ quiz.id }}">
+        <div class="text-center">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Načítání výsledků...</span>
+            </div>
+        </div>
     </div>
-{% else %}
-    <div class="alert alert-warning">
-        Dosáhl jsi maximálního počtu pokusů pro tento test.
-    </div>
-{% endif %}
+</div>
 
 <a href="{% url 'subjects:topic_detail' quiz.topic.subject.slug quiz.topic.slug %}" class="btn btn-secondary">
     Zpět na okruh
 </a>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const container = document.getElementById('quiz-results-container');
+    if (!container) return;
+    
+    const quizId = container.getAttribute('data-quiz-id');
+    
+    // Načíst výsledky
+    fetch(`/api/quiz/${quizId}/results/`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            renderResults(data);
+        } else {
+            console.error('API error:', data);
+            container.innerHTML = '<div class="alert alert-danger">Chyba při načítání výsledků: ' + (data.error || 'Neznámá chyba') + '</div>';
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        container.innerHTML = '<div class="alert alert-danger">Chyba při načítání výsledků: ' + error.message + '</div>';
+    });
+    
+    function renderResults(data) {
+        let html = '';
+        
+        // Statistiky (jen pro učitele/adminy a když existují data)
+        if (data.is_teacher_or_admin && data.stats && Object.keys(data.stats).length > 0) {
+            html += `
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h5 class="card-title">${data.stats.total_attempts || 0}</h5>
+                                <p class="card-text text-muted">Celkem pokusů</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h5 class="card-title">${data.stats.unique_users || 0}</h5>
+                                <p class="card-text text-muted">Studentů</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h5 class="card-title">${data.stats.average_score || 0}%</h5>
+                                <p class="card-text text-muted">Průměrné skóre</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h5 class="card-title">${data.stats.pass_rate || 0}%</h5>
+                                <p class="card-text text-muted">Úspěšnost</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Tabulka s výsledky
+        if (data.results && data.results.length > 0) {
+            html += `
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                ${data.is_teacher_or_admin ? '<th>Student</th>' : ''}
+                                ${data.is_teacher_or_admin ? '<th>Třída</th>' : ''}
+                                <th>Skóre</th>
+                                <th>Status</th>
+                                <th>Dokončeno</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+            
+            data.results.forEach((result, index) => {
+                const isCurrentUser = result.user.email === '{{ user.email }}';
+                const rowClass = isCurrentUser ? 'table-info' : '';
+                
+                html += `
+                    <tr class="${rowClass}">
+                        <td>${index + 1}</td>
+                        ${data.is_teacher_or_admin ? `<td>${escapeHtml(result.user.name)}</td>` : ''}
+                        ${data.is_teacher_or_admin ? `<td>${escapeHtml(result.user.class_name || '-')}</td>` : ''}
+                        <td>
+                            <strong>${result.score !== null && result.score !== undefined ? result.score + '%' : '-'}</strong>
+                            ${result.score !== null && result.score !== undefined && result.score >= data.quiz.passing_score ? '<span class="badge bg-success ms-2">✓</span>' : ''}
+                        </td>
+                        <td>
+                            ${result.score !== null && result.score !== undefined 
+                                ? (result.is_passed 
+                                    ? '<span class="badge bg-success">Úspěšně</span>' 
+                                    : '<span class="badge bg-danger">Neúspěšně</span>')
+                                : '<span class="badge bg-secondary">V řešení</span>'}
+                        </td>
+                        <td>${result.completed_at || '-'}</td>
+                    </tr>
+                `;
+            });
+            
+            html += `
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        } else {
+            html += '<p class="text-muted">Zatím nejsou žádné výsledky.</p>';
+        }
+        
+        container.innerHTML = html;
+    }
+    
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+});
+</script>
 {% endblock %}
 

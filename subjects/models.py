@@ -1,5 +1,8 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.conf import settings
 from wagtail.models import Page
 from wagtail.fields import RichTextField, StreamField
 from wagtail import blocks
@@ -149,4 +152,63 @@ class TopicPage(Page):
     class Meta:
         verbose_name = _('Stránka okruhu')
         verbose_name_plural = _('Stránky okruhů')
+
+
+class Feedback(models.Model):
+    """Připomínky/zpětná vazba na předměty a okruhy."""
+    content_type = models.ForeignKey(
+        ContentType,
+        on_delete=models.CASCADE,
+        limit_choices_to={'model__in': ('subject', 'topic')},
+        verbose_name=_('Typ obsahu')
+    )
+    object_id = models.PositiveIntegerField(verbose_name=_('ID objektu'))
+    content_object = GenericForeignKey('content_type', 'object_id')
+    
+    author = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='feedbacks',
+        verbose_name=_('Autor')
+    )
+    text = models.TextField(
+        verbose_name=_('Text připomínky'),
+        help_text=_('Napište svou připomínku nebo zpětnou vazbu')
+    )
+    is_edited = models.BooleanField(
+        default=False,
+        verbose_name=_('Upraveno')
+    )
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Vytvořeno'))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_('Aktualizováno'))
+    
+    class Meta:
+        verbose_name = _('Připomínka')
+        verbose_name_plural = _('Připomínky')
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['content_type', 'object_id']),
+        ]
+    
+    def __str__(self):
+        content_name = str(self.content_object) if self.content_object else f"{self.content_type} #{self.object_id}"
+        author_name = self.author.get_full_name() or self.author.email
+        return f"Připomínka od {author_name} na {content_name}"
+    
+    @property
+    def author_name(self):
+        """Vrátí jméno autora nebo email."""
+        return self.author.get_full_name() or self.author.email
+    
+    @property
+    def author_role(self):
+        """Vrátí roli autora."""
+        if hasattr(self.author, 'role'):
+            role_map = {
+                'student': 'Student',
+                'teacher': 'Učitel',
+                'admin': 'Administrátor'
+            }
+            return role_map.get(self.author.role, self.author.role)
+        return ''
 

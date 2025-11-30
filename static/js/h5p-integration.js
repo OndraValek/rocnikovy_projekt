@@ -10,7 +10,7 @@
 
     // Konfigurace
     const H5P_CONFIG = {
-        apiEndpoint: '/api/h5p/results/',  // API endpoint pro ukládání výsledků
+        apiEndpoint: '/quizzes/api/h5p/results/',  // API endpoint pro ukládání výsledků
         csrfToken: getCookie('csrftoken'),  // CSRF token pro Django
     };
 

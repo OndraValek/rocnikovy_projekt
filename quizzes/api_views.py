@@ -13,6 +13,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from .models import Quiz, QuizAttempt, H5PUserData
 from django.utils import timezone
+from django.db.models import Max, Avg, Count
+from django.db.models import Q
 
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -64,10 +66,11 @@ class H5PResultsView(LoginRequiredMixin, View):
                 }, status=404)
             
             # Vypočítat procentuální skóre
-            if score is not None and max_score:
+            percentage_score = None
+            if score is not None and max_score and max_score > 0:
                 percentage_score = int((score / max_score) * 100)
-            else:
-                percentage_score = None
+                # Zajistit, že skóre je v rozsahu 0-100
+                percentage_score = max(0, min(100, percentage_score))
             
             # Získat nebo vytvořit attempt
             if attempt_id:
@@ -275,4 +278,90 @@ def h5p_xapi_event(request):
         return Response({
             'error': str(e)
         }, status=status.HTTP_400_BAD_REQUEST)
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class QuizResultsView(LoginRequiredMixin, View):
+    """
+    API endpoint pro získání výsledků testu (leaderboard).
+    
+    Vrací seznam všech pokusů o test seřazený podle skóre (nejlepší první).
+    Učitelé a administrátoři vidí všechny výsledky, studenti vidí jen své.
+    """
+    
+    def get(self, request, quiz_id):
+        try:
+            quiz = Quiz.objects.get(id=quiz_id)
+        except Quiz.DoesNotExist:
+            return JsonResponse({
+                'success': False,
+                'error': 'Test neexistuje'
+            }, status=404)
+        
+        # Zkontrolovat oprávnění
+        # Použít hasattr pro bezpečné ověření existence properties
+        is_teacher_or_admin = (
+            (hasattr(request.user, 'is_teacher') and request.user.is_teacher) or 
+            (hasattr(request.user, 'is_admin') and request.user.is_admin) or 
+            request.user.is_superuser
+        )
+        
+        # Získat pokusy
+        if is_teacher_or_admin:
+            # Učitelé a administrátoři vidí všechny pokusy (i bez skóre)
+            attempts = QuizAttempt.objects.filter(
+                quiz=quiz
+            ).select_related('user').order_by('-score', '-completed_at', '-started_at')
+        else:
+            # Studenti vidí jen své pokusy (i bez skóre)
+            attempts = QuizAttempt.objects.filter(
+                quiz=quiz,
+                user=request.user
+            ).select_related('user').order_by('-score', '-completed_at', '-started_at')
+        
+        # Serializace dat
+        results = []
+        for attempt in attempts:
+            results.append({
+                'id': attempt.id,
+                'user': {
+                    'id': attempt.user.id,
+                    'name': attempt.user.get_full_name() or attempt.user.email,
+                    'email': attempt.user.email,
+                    'role': attempt.user.role if hasattr(attempt.user, 'role') else '',
+                    'class_name': attempt.user.class_name or '',
+                },
+                'score': attempt.score,
+                'is_passed': attempt.is_passed,
+                'completed_at': attempt.completed_at.strftime('%d.%m.%Y %H:%M') if attempt.completed_at else None,
+                'started_at': attempt.started_at.strftime('%d.%m.%Y %H:%M'),
+            })
+        
+        # Statistiky
+        stats = {}
+        if is_teacher_or_admin:
+            all_attempts = QuizAttempt.objects.filter(quiz=quiz, score__isnull=False)
+            if all_attempts.exists():
+                stats = {
+                    'total_attempts': all_attempts.count(),
+                    'unique_users': all_attempts.values('user').distinct().count(),
+                    'average_score': round(all_attempts.aggregate(Avg('score'))['score__avg'] or 0, 2),
+                    'max_score': all_attempts.aggregate(Max('score'))['score__max'],
+                    'pass_rate': round(
+                        (all_attempts.filter(is_passed=True).count() / all_attempts.count()) * 100, 
+                        2
+                    ) if all_attempts.count() > 0 else 0,
+                }
+        
+        return JsonResponse({
+            'success': True,
+            'quiz': {
+                'id': quiz.id,
+                'title': quiz.title,
+                'passing_score': quiz.passing_score,
+            },
+            'results': results,
+            'stats': stats,
+            'is_teacher_or_admin': is_teacher_or_admin,
+        })
 
