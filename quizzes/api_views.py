@@ -68,7 +68,17 @@ class H5PResultsView(LoginRequiredMixin, View):
             # Vypočítat procentuální skóre
             percentage_score = None
             if score is not None and max_score and max_score > 0:
-                percentage_score = int((score / max_score) * 100)
+                # Zkontrolovat, jestli score není už procentuální hodnota (0-1) nebo procenta (0-100)
+                if score >= 0 and score <= 1 and max_score == 1:
+                    # Je to procentuální hodnota (např. 0.2 pro 20%), přepočítat na procenta
+                    percentage_score = int(score * 100)
+                elif score > 1 and score <= 100 and max_score == 100:
+                    # Je to už procenta, použít přímo
+                    percentage_score = int(score)
+                else:
+                    # Je to raw score (např. 1 z 5), přepočítat na procenta
+                    percentage_score = int((score / max_score) * 100)
+                
                 # Zajistit, že skóre je v rozsahu 0-100
                 percentage_score = max(0, min(100, percentage_score))
             
@@ -217,7 +227,19 @@ def h5p_xapi_event(request):
         # Vypočítat procentuální skóre
         percentage_score = None
         if raw_score is not None and max_score:
-            percentage_score = int((raw_score / max_score) * 100)
+            # Zkontrolovat, jestli raw_score není už procentuální hodnota (0-1) nebo procenta (0-100)
+            if raw_score >= 0 and raw_score <= 1 and max_score == 1:
+                # Je to procentuální hodnota (např. 0.2 pro 20%), přepočítat na procenta
+                percentage_score = int(raw_score * 100)
+            elif raw_score > 1 and raw_score <= 100 and max_score == 100:
+                # Je to už procenta, použít přímo
+                percentage_score = int(raw_score)
+            else:
+                # Je to raw score (např. 1 z 5), přepočítat na procenta
+                percentage_score = int((raw_score / max_score) * 100)
+            
+            # Zajistit, že skóre je v rozsahu 0-100
+            percentage_score = max(0, min(100, percentage_score))
         
         # Zjistit, jestli je aktivita dokončena
         is_completed = 'completed' in verb_id.lower() or 'passed' in verb_id.lower()

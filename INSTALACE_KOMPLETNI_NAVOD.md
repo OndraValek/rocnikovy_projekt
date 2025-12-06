@@ -31,23 +31,34 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 4. Nastavení databáze
+### 4. Nastavení environment variables
 
-**SQLite (jednodušší pro začátek):**
-- Žádná další konfigurace není potřeba
-- Databáze se vytvoří automaticky při migraci
+**Automatické nastavení (doporučeno):**
 
-**PostgreSQL (pro produkci):**
-- Vytvoř soubor `.env` v kořenovém adresáři:
+**Windows:**
+```bash
+setup.bat
 ```
-SECRET_KEY=your-secret-key-here-change-in-production
-DEBUG=True
-DB_NAME=maturitni_projekt
-DB_USER=postgres
-DB_PASSWORD=postgres
-DB_HOST=localhost
-DB_PORT=5432
+
+**Linux/Mac:**
+```bash
+chmod +x setup.sh
+./setup.sh
 ```
+
+**Nebo ručně:**
+
+**Windows:**
+```bash
+copy .env.example .env
+```
+
+**Linux/Mac:**
+```bash
+cp .env.example .env
+```
+
+Soubor `.env.example` obsahuje všechny potřebné proměnné včetně OAuth2 credentials, takže po zkopírování máš vše připravené. Pokud chceš použít jiné credentials, uprav je v `.env` souboru.
 
 ### 5. Spuštění migrací
 
@@ -66,22 +77,45 @@ Zadej:
 - Heslo
 - Potvrzení hesla
 
-### 7. Vytvoření inicializačních dat
+### 7. Vytvoření základní struktury (volitelné)
 
-**DŮLEŽITÉ:** Tento příkaz vytvoří předmět "Programové vybavení", 3 okruhy, materiál a 2 testy.
+Pro vytvoření základní struktury (předmět "Programové vybavení" a 3 okruhy):
 
 ```bash
-python manage.py create_initial_data
+python manage.py setup_basic_data
 ```
 
-Tento příkaz vytvoří:
-- ✅ Předmět "Programové vybavení"
-- ✅ Okruh "Základy informatiky"
-- ✅ Okruh "Programy a data"
-- ✅ Okruh "Informační systémy a databázové systémy"
-- ✅ H5P materiál "Základy informatiky"
-- ✅ Test "Základy informatiky - Single Choice Set"
-- ✅ Test "Základy informatiky - Question Set"
+**POZNÁMKA:** Tento příkaz vytvoří pouze předmět a okruhy. Materiály a testy musíš přidat ručně přes admin panel nebo pomocí jiných management commands.
+
+### 8. Nastavení OAuth2 (volitelné, ale doporučeno)
+
+Pro OAuth2 autentizaci přes Google, GitHub nebo Microsoft:
+
+1. **Přidej OAuth2 credentials do `.env` souboru** (získej je z příslušných developer konzolí):
+   ```env
+   GOOGLE_CLIENT_ID=your-google-client-id
+   GOOGLE_CLIENT_SECRET=your-google-client-secret
+   GITHUB_CLIENT_ID=your-github-client-id
+   GITHUB_CLIENT_SECRET=your-github-client-secret
+   MICROSOFT_CLIENT_ID=your-microsoft-client-id
+   MICROSOFT_CLIENT_SECRET=your-microsoft-client-secret
+   ```
+
+2. **Spusť příkaz pro vytvoření Social Applications:**
+   ```bash
+   python manage.py create_social_apps
+   ```
+   
+   Tento příkaz automaticky vytvoří Social Applications z hodnot v `.env` souboru. Pokud některé credentials chybí, příkaz přeskočí daného poskytovatele a zobrazí varování.
+
+**DŮLEŽITÉ:** Redirect URIs v OAuth2 aplikacích musí být:
+- Google: `http://localhost:8000/accounts/google/login/callback/`
+- GitHub: `http://localhost:8000/accounts/github/login/callback/`
+- Microsoft: `http://localhost:8000/accounts/microsoft/login/callback/`
+
+Pro produkci změň `localhost:8000` na skutečnou doménu.
+
+Podrobnější návod najdeš v `docs/OAUTH2_SETUP.md` nebo `OAUTH2_PODROBNY_NAVOD.md`.
 
 ### 8. Instalace h5p-standalone (volitelné, pro h5p-standalone integraci)
 
@@ -114,7 +148,7 @@ Pokud chceš používat h5p-standalone s rozbalenými H5P soubory:
 mkdir media\h5p
 ```
 
-### 10. Spuštění vývojového serveru
+### 9. Spuštění vývojového serveru
 
 ```bash
 python manage.py runserver
@@ -138,16 +172,21 @@ source venv/bin/activate  # Linux/Mac
 # 2. Instalace závislostí
 pip install -r requirements.txt
 
-# 3. Migrace databáze
+# 3. Automatické nastavení .env (zkopíruje .env.example do .env)
+setup.bat  # Windows
+# nebo
+./setup.sh  # Linux/Mac
+
+# 4. Migrace databáze
 python manage.py migrate
 
-# 4. Vytvoření superuživatele
+# 5. Vytvoření superuživatele
 python manage.py createsuperuser
 
-# 5. Vytvoření inicializačních dat (DŮLEŽITÉ!)
-python manage.py create_initial_data
+# 6. Nastavení OAuth2 (automaticky z .env)
+python manage.py create_social_apps
 
-# 6. Spuštění serveru
+# 7. Spuštění serveru
 python manage.py runserver
 ```
 
@@ -159,9 +198,8 @@ Po spuštění serveru:
 
 1. **Otevři:** http://localhost:8000
 2. **Měl bys vidět:**
-   - Předmět "Programové vybavení"
-   - Po kliknutí: 3 okruhy
-   - Po kliknutí na "Základy informatiky": materiál a 2 testy
+   - Pokud jsi spustil `setup_basic_data`: Předmět "Programové vybavení" s 3 okruhy
+   - Pokud ne: Prázdnou stránku (musíš přidat data ručně přes admin)
 
 3. **Přihlas se do adminu:**
    - Django Admin: http://localhost:8000/django-admin/

@@ -52,15 +52,15 @@ python manage.py createsuperuser
 
 Zadejte email, heslo a další údaje. Email bude použit jako přihlašovací jméno.
 
-### 5. Vytvoření inicializačních dat
+### 5. Nastavení OAuth2 (volitelné)
+
+Pokud máš OAuth2 credentials v `.env` souboru:
 
 ```bash
-python manage.py create_initial_data
+python manage.py create_social_apps
 ```
 
-Tento příkaz vytvoří:
-- Předmět "Programové vybavení"
-- 6 základních maturitních okruhů
+Tento příkaz automaticky vytvoří Social Applications z hodnot v `.env` souboru.
 
 ### 6. Spuštění serveru
 
@@ -82,8 +82,8 @@ docker-compose up --build
 # Vytvoření superuživatele (v jiném terminálu)
 docker-compose exec web python manage.py createsuperuser
 
-# Vytvoření inicializačních dat
-docker-compose exec web python manage.py create_initial_data
+# Nastavení OAuth2 (pokud máš credentials v .env)
+docker-compose exec web python manage.py create_social_apps
 ```
 
 ## První kroky po instalaci

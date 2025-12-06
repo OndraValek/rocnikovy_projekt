@@ -10,13 +10,16 @@
     </ol>
 </nav>
 
-<h1>{{ subject.name }}</h1>
+<div class="row">
+    <!-- Pravá část - Hlavní obsah -->
+    <div class="col-12">
+        <h1>{{ subject.name }}</h1>
 
-{% if subject.description %}
-    <p class="lead">{{ subject.description }}</p>
-{% endif %}
+        {% if subject.description %}
+            <p class="lead">{{ subject.description }}</p>
+        {% endif %}
 
-<h2 class="mt-4">Maturitní okruhy</h2>
+        <h2 class="mt-4">Maturitní okruhy</h2>
 
 {% if topics %}
     <div class="list-group">
@@ -36,44 +39,45 @@
     <p>Zatím nejsou k dispozici žádné okruhy.</p>
 {% endif %}
 
-<!-- Sekce připomínek -->
-<div class="mt-5">
-    <h2>Připomínky a zpětná vazba</h2>
-    <div id="feedback-section" data-content-type="subject" data-object-id="{{ subject.id }}">
-        <!-- Formulář pro přidání připomínky -->
-        {% if user.is_authenticated %}
-        <div class="card mb-4">
-            <div class="card-body">
-                <h5 class="card-title">Přidat připomínku</h5>
-                <form id="feedback-form">
-                    <div class="mb-3">
-                        <textarea class="form-control" id="feedback-text" rows="3" placeholder="Napište svou připomínku nebo zpětnou vazbu..." required></textarea>
+        <!-- Sekce připomínek -->
+        <div class="mt-5">
+            <h2>Připomínky a zpětná vazba</h2>
+            <div id="feedback-section" data-content-type="subject" data-object-id="{{ subject.id }}">
+                <!-- Formulář pro přidání připomínky -->
+                {% if user.is_authenticated %}
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Přidat připomínku</h5>
+                        <form id="feedback-form">
+                            <div class="mb-3">
+                                <textarea class="form-control" id="feedback-text" rows="3" placeholder="Napište svou připomínku nebo zpětnou vazbu..." required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Odeslat připomínku</button>
+                        </form>
                     </div>
-                    <button type="submit" class="btn btn-primary">Odeslat připomínku</button>
-                </form>
-            </div>
-        </div>
-        {% else %}
-        <div class="alert alert-info">
-            Pro přidání připomínky se musíte <a href="{% url 'account_login' %}">přihlásit</a>.
-        </div>
-        {% endif %}
-        
-        <!-- Seznam připomínek -->
-        <div id="feedback-list">
-            <div class="text-center">
-                <div class="spinner-border" role="status">
-                    <span class="visually-hidden">Načítání...</span>
+                </div>
+                {% else %}
+                <div class="alert alert-info">
+                    Pro přidání připomínky se musíte <a href="{% url 'account_login' %}">přihlásit</a>.
+                </div>
+                {% endif %}
+                
+                <!-- Seznam připomínek -->
+                <div id="feedback-list">
+                    <div class="text-center">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Načítání...</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
 {% endblock %}
 
 {% block extra_js %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Načíst připomínky
     const feedbackSection = document.getElementById('feedback-section');
     if (!feedbackSection) return;
     

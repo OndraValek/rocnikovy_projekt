@@ -183,10 +183,10 @@ class QuizzesAPIView(LoginRequiredMixin, View):
             # Přidat informace o pokusech
             if quiz.id in user_attempts:
                 quiz_data['user_attempts'] = user_attempts[quiz.id]
-                quiz_data['can_attempt'] = user_attempts[quiz.id]['count'] < quiz.max_attempts
             else:
                 quiz_data['user_attempts'] = {'count': 0, 'best_score': None, 'is_passed': False}
-                quiz_data['can_attempt'] = True
+            # Vždy povolit pokusy (bez limitu)
+            quiz_data['can_attempt'] = True
             
             quizzes.append(quiz_data)
         
@@ -308,10 +308,10 @@ class AllTasksAPIView(LoginRequiredMixin, View):
                 
                 if quiz.id in user_attempts:
                     quiz_data['user_attempts'] = user_attempts[quiz.id]
-                    quiz_data['can_attempt'] = user_attempts[quiz.id]['count'] < quiz.max_attempts
                 else:
                     quiz_data['user_attempts'] = {'count': 0, 'best_score': None}
-                    quiz_data['can_attempt'] = True
+                # Vždy povolit pokusy (bez limitu)
+                quiz_data['can_attempt'] = True
                 
                 tasks.append(quiz_data)
         

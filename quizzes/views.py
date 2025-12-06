@@ -57,8 +57,8 @@ class QuizAttemptView(LoginRequiredMixin, CreateView):
         
         # Přidat informace pro h5p-standalone
         if self.quiz.h5p_path:
-            # Cesta k H5P JSON souboru
-            context['h5p_json_path'] = f"{settings.MEDIA_URL}{self.quiz.h5p_path}h5p.json"
+            # Cesta k H5P adresáři (H5P Standalone Player si přidá h5p.json sám)
+            context['h5p_json_path'] = f"{settings.MEDIA_URL}{self.quiz.h5p_path}"
             # Content ID pro API endpointy (použijeme quiz ID)
             context['h5p_content_id'] = f"quiz-{self.quiz.id}"
             # API endpointy (použijeme reverse místo reverse_lazy, protože jsme v view, ne v URL config)
@@ -67,7 +67,7 @@ class QuizAttemptView(LoginRequiredMixin, CreateView):
             # Cesty k h5p-standalone souborům (očekáváme, že budou v static/h5p-player/)
             context['h5p_player_js'] = '/static/h5p-player/main.bundle.js'
             context['h5p_frame_js'] = '/static/h5p-player/frame.bundle.js'
-            context['h5p_frame_css'] = '/static/h5p-player/styles/h5p.css'
+            context['h5p_frame_css'] = '/static/h5p-player/h5p.css'
         
         return context
     

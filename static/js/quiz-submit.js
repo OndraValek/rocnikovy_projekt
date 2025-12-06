@@ -10,19 +10,30 @@ function extractScoreFromText(text) {
     if (!text) return null;
     
     console.log('extractScoreFromText volána, délka textu:', text.length);
+    console.log('Hledám skóre v textu (prvních 500 znaků):', text.substring(0, 500));
     
-    // Různé patterny pro různé formáty - zkusit všechny možné varianty
+    // Různé patterny pro různé formáty - UPŘEDNOSTNIT PŘESNĚJŠÍ PATTERNY
+    // Důležité: zkusit nejdřív nejpřesnější patterny, které obsahují "correct" nebo "got"
     const patterns = [
-        /got\s+(\d+)\s+of\s+(\d+)\s+correct/i,           // "You got 1 of 5 correct"
-        /(\d+)\s+of\s+(\d+)\s+correct/i,                  // "1 of 5 correct"
+        // Nejpřesnější patterny - obsahují "got" a "correct"
+        /you\s+got\s+(\d+)\s+of\s+(\d+)\s+correct/i,      // "You got 1 of 5 correct" (case insensitive)
+        /got\s+(\d+)\s+of\s+(\d+)\s+correct/i,            // "got 1 of 5 correct"
+        /(\d+)\s+of\s+(\d+)\s+correct/i,                   // "1 of 5 correct"
+        /(\d+)\s+correct\s+out\s+of\s+(\d+)/i,            // "1 correct out of 5"
+        // Patterny s "of" (méně přesné, ale stále dobré)
         /(\d+)\s+of\s+(\d+)/i,                            // "1 of 5"
-        /(\d+)\s*\/\s*(\d+)/,                             // "1/5"
-        /score[:\s]+(\d+)\s*\/\s*(\d+)/i,                // "Score: 1/5"
-        /(\d+)\s*z\s*(\d+)/i,                             // "1 z 5" (česky)
-        /(\d+)\s+ze\s+(\d+)/i,                            // "1 ze 5" (česky)
         /(\d+)\s+out\s+of\s+(\d+)/i,                      // "1 out of 5"
-        /(\d+)\s+correct\s+out\s+of\s+(\d+)/i,           // "1 correct out of 5"
+        // Patterny s lomítkem
+        /(\d+)\s*\/\s*(\d+)/,                             // "1/5" nebo "3/5"
+        /score[:\s]+(\d+)\s*\/\s*(\d+)/i,                // "Score: 1/5"
+        // České varianty
+        /(\d+)\s+z\s+(\d+)/i,                             // "1 z 5" (česky)
+        /(\d+)\s+ze\s+(\d+)/i,                            // "1 ze 5" (česky)
     ];
+    
+    // Zkusit najít všechny shody a vybrat tu nejlepší
+    let bestMatch = null;
+    let bestPatternIndex = -1;
     
     for (let i = 0; i < patterns.length; i++) {
         const pattern = patterns[i];
@@ -31,14 +42,30 @@ function extractScoreFromText(text) {
             const score = parseInt(match[1]);
             const maxScore = parseInt(match[2]);
             console.log('Pattern', i, 'match:', match[0], 'score:', score, 'maxScore:', maxScore);
-            if (!isNaN(score) && !isNaN(maxScore) && score >= 0 && maxScore > 0 && score <= maxScore) {
-                console.log('extractScoreFromText našel:', score, '/', maxScore, 'pattern:', pattern);
-                return {
-                    score: score,
-                    max_score: maxScore
-                };
+            
+            // Validace: score musí být >= 0, maxScore > 0, score <= maxScore
+            // A maxScore by mělo být rozumné (např. 1-100)
+            if (!isNaN(score) && !isNaN(maxScore) && 
+                score >= 0 && maxScore > 0 && score <= maxScore && 
+                maxScore <= 100) {
+                
+                // Upřednostnit patterny s "correct" nebo "got" (první 4 patterny)
+                if (i < 4 && (!bestMatch || bestPatternIndex >= 4)) {
+                    bestMatch = {score: score, max_score: maxScore};
+                    bestPatternIndex = i;
+                    console.log('extractScoreFromText našel lepší match (pattern', i, '):', score, '/', maxScore);
+                } else if (!bestMatch) {
+                    bestMatch = {score: score, max_score: maxScore};
+                    bestPatternIndex = i;
+                    console.log('extractScoreFromText našel match (pattern', i, '):', score, '/', maxScore);
+                }
             }
         }
+    }
+    
+    if (bestMatch) {
+        console.log('extractScoreFromText FINÁLNÍ výsledek:', bestMatch, 'pattern:', bestPatternIndex);
+        return bestMatch;
     }
     
     // Zkusit najít čísla, která vypadají jako skóre (např. "1" a "5" blízko sebe)
@@ -63,14 +90,23 @@ function extractScoreFromText(text) {
     
     // Zkusit najít všechna čísla v textu a zkontrolovat, jestli některá vypadají jako skóre
     // Toto použijeme jen jako poslední možnost a s přísnějšími kontrolami
+    // DŮLEŽITÉ: Ignorovat procentuální hodnoty (např. "100%", "20%") - ty nejsou raw score
     const allNumbers = text.match(/\d+/g);
     if (allNumbers && allNumbers.length >= 2) {
         console.log('Všechna čísla v textu:', allNumbers);
         // Zkusit najít dvojice čísel, která by mohla být skóre
         // Ale jen pokud jsou blízko sebe a obsahují klíčová slova
+        // A IGNOROVAT pokud je druhé číslo > 100 (pravděpodobně procenta)
         for (let i = 0; i < allNumbers.length - 1; i++) {
             const num1 = parseInt(allNumbers[i]);
             const num2 = parseInt(allNumbers[i + 1]);
+            
+            // Ignorovat pokud num2 > 100 (pravděpodobně procenta, ne max score)
+            if (num2 > 100) {
+                console.log('Ignoruji dvojici čísel (num2 > 100, pravděpodobně procenta):', num1, num2);
+                continue;
+            }
+            
             if (!isNaN(num1) && !isNaN(num2) && num1 >= 0 && num2 > 0 && num1 <= num2 && num2 <= 100) {
                 // Zkontrolovat, jestli jsou tato čísla blízko sebe v textu
                 const index1 = text.indexOf(allNumbers[i]);
@@ -79,6 +115,12 @@ function extractScoreFromText(text) {
                     // Zkontrolovat, jestli mezi nimi jsou klíčová slova (of, /, correct, atd.)
                     const textBetween = text.substring(index1, index2 + allNumbers[i + 1].length).toLowerCase();
                     const hasKeywords = /of|correct|score|z|ze|\//.test(textBetween);
+                    
+                    // IGNOROVAT pokud obsahuje "%" (procenta)
+                    if (textBetween.includes('%')) {
+                        console.log('Ignoruji dvojici čísel (obsahuje %):', textBetween);
+                        continue;
+                    }
                     
                     if (hasKeywords) {
                         // Jsou blízko sebe a obsahují klíčová slova, pravděpodobně je to skóre
@@ -133,22 +175,23 @@ function startScoreObserver() {
     
     scoreObserver = new MutationObserver(function(mutations) {
         // Zkusit získat skóre při každé změně
-        const h5pContainer = document.getElementById('h5p-container') || document.querySelector('.h5p-container');
-        if (h5pContainer) {
+        const h5pContainerElement = document.getElementById('h5p-container') || document.querySelector('.h5p-container');
+        if (h5pContainerElement) {
             // Zkusit různé způsoby získání textu
             const texts = [
-                h5pContainer.innerText || '',
-                h5pContainer.textContent || '',
-                h5pContainer.innerHTML || ''
+                h5pContainerElement.innerText || '',
+                h5pContainerElement.textContent || '',
+                h5pContainerElement.innerHTML || ''
             ];
             
             for (let text of texts) {
                 if (text && text.length > 0) {
                     const results = extractScoreFromText(text);
-                    if (results) {
+                    // Použít jen finální skóre (max_score > 1), ignorovat mezilehlé
+                    if (results && results.max_score > 1) {
                         window.h5pLastResults = results;
-                        console.log('H5P výsledky získány z MutationObserver:', results);
-                        // Můžeme zastavit observer, protože jsme našli výsledky
+                        console.log('H5P výsledky získány z MutationObserver (finální):', results);
+                        // Můžeme zastavit observer, protože jsme našli finální výsledky
                         if (scoreObserver) {
                             scoreObserver.disconnect();
                             scoreObserver = null;
@@ -159,12 +202,13 @@ function startScoreObserver() {
             }
             
             // Také zkusit prohledat všechny potomky
-            const allText = h5pContainer.innerText || h5pContainer.textContent || '';
+            const allText = h5pContainerElement.innerText || h5pContainerElement.textContent || '';
             if (allText && allText.length > 0) {
                 const results = extractScoreFromText(allText);
-                if (results) {
+                // Použít jen finální skóre (max_score > 1)
+                if (results && results.max_score > 1) {
                     window.h5pLastResults = results;
-                    console.log('H5P výsledky získány z MutationObserver (všechny potomky):', results);
+                    console.log('H5P výsledky získány z MutationObserver (všechny potomky, finální):', results);
                     if (scoreObserver) {
                         scoreObserver.disconnect();
                         scoreObserver = null;
@@ -174,7 +218,7 @@ function startScoreObserver() {
             }
             
             // Zkusit najít iframe a poslat mu zprávu
-            const iframes = h5pContainer.querySelectorAll('iframe');
+            const iframes = h5pContainerElement.querySelectorAll('iframe');
             for (let iframe of iframes) {
                 try {
                     iframe.contentWindow.postMessage({type: 'get-score'}, '*');
@@ -231,9 +275,13 @@ function getH5PResults() {
         console.log('Zkouším získat H5P výsledky...');
         
         // 1. Zkusit použít uložené výsledky z xAPI (nejspolehlivější)
-        if (window.h5pLastResults) {
-            console.log('H5P výsledky získány z cache (xAPI/interval):', window.h5pLastResults);
+        // DŮLEŽITÉ: Použít jen pokud max_score > 1 (finální skóre), ne mezilehlé (max: 1)
+        if (window.h5pLastResults && window.h5pLastResults.max_score > 1) {
+            console.log('H5P výsledky získány z cache (xAPI/interval, finální):', window.h5pLastResults);
             return window.h5pLastResults;
+        } else if (window.h5pLastResults && window.h5pLastResults.max_score <= 1) {
+            console.log('Ignoruji mezilehlé výsledky z cache (max_score <= 1):', window.h5pLastResults);
+            // Pokračovat s dalšími metodami
         }
         
         // 1.5. Zkusit získat instanci různými způsoby
@@ -267,11 +315,28 @@ function getH5PResults() {
                 try {
                     const score = content.getScore();
                     const maxScore = content.getMaxScore ? content.getMaxScore() : 100;
+                    console.log('getScore() raw hodnoty:', {score, maxScore, scoreType: typeof score});
+                    
+                    // Zkontrolovat, jestli score není už procentuální hodnota (0-1) nebo procenta (0-100)
+                    let finalScore = score;
+                    let finalMaxScore = maxScore;
+                    
+                    // Pokud je score mezi 0 a 1, je to pravděpodobně procentuální hodnota (0.2 pro 20%)
+                    if (score >= 0 && score <= 1 && maxScore === 1) {
+                        // Je to procentuální hodnota, přepočítat na raw score
+                        // Musíme zjistit skutečný maxScore z jiného zdroje
+                        console.log('Score vypadá jako procentuální hodnota (0-1), zkusím získat skutečný maxScore');
+                        // Zkusit získat z getXAPIData nebo z textu
+                    } else if (score > 1 && score <= 100 && maxScore === 100) {
+                        // Možná je to už procenta (0-100), ale potřebujeme raw score
+                        console.log('Score vypadá jako procenta (0-100), zkusím získat raw score z jiného zdroje');
+                    }
+                    
                     if (score !== null && score !== undefined) {
-                        console.log('H5P výsledky získány z getScore() při volání:', score, maxScore);
+                        console.log('H5P výsledky získány z getScore() při volání:', finalScore, finalMaxScore);
                         return {
-                            score: score,
-                            max_score: maxScore
+                            score: finalScore,
+                            max_score: finalMaxScore
                         };
                     }
                 } catch (e) {
@@ -337,7 +402,22 @@ function getH5PResults() {
             }
         }
         
-        // 3. Zkusit najít text v celém dokumentu (nejspolehlivější pro Single Choice Set)
+        // 3. Zkusit najít text v H5P kontejneru (prioritně)
+        const h5pContainerForText = document.getElementById('h5p-container') || document.querySelector('.h5p-container');
+        if (h5pContainerForText) {
+            // Zkusit získat jen viditelný text z H5P kontejneru
+            const containerText = h5pContainerForText.innerText || h5pContainerForText.textContent || '';
+            console.log('Prohledávám H5P kontejner text, délka:', containerText.length);
+            console.log('H5P kontejner text (prvních 500 znaků):', containerText.substring(0, 500));
+            
+            const containerResults = extractScoreFromText(containerText);
+            if (containerResults) {
+                console.log('H5P výsledky získány z H5P kontejneru:', containerResults);
+                return containerResults;
+            }
+        }
+        
+        // 4. Zkusit najít text v celém dokumentu (fallback)
         const bodyText = document.body.innerText || document.body.textContent || '';
         console.log('Prohledávám body text, délka:', bodyText.length);
         
@@ -345,19 +425,6 @@ function getH5PResults() {
         if (bodyResults) {
             console.log('H5P výsledky získány z body textu:', bodyResults);
             return bodyResults;
-        }
-        
-        // 4. Zkusit najít v H5P kontejneru
-        const h5pContainer = document.getElementById('h5p-container') || document.querySelector('.h5p-container');
-        if (h5pContainer) {
-            const containerText = h5pContainer.innerText || h5pContainer.textContent || '';
-            console.log('Prohledávám H5P kontejner, délka:', containerText.length);
-            
-            const containerResults = extractScoreFromText(containerText);
-            if (containerResults) {
-                console.log('H5P výsledky získány z kontejneru:', containerResults);
-                return containerResults;
-            }
         }
         
         // 5. Zkusit najít všechny elementy s textem obsahujícím "correct" nebo "of"
@@ -667,10 +734,10 @@ function submitQuizResults(quizId, attemptId) {
     }
     
     // 5. Zkusit získat text z H5P kontejneru přímo
-    const h5pContainer = document.getElementById('h5p-container') || document.querySelector('.h5p-container');
-    if (h5pContainer) {
+    const h5pContainerForSubmit = document.getElementById('h5p-container') || document.querySelector('.h5p-container');
+    if (h5pContainerForSubmit) {
         try {
-            const containerText = h5pContainer.innerText || h5pContainer.textContent || h5pContainer.innerHTML || '';
+            const containerText = h5pContainerForSubmit.innerText || h5pContainerForSubmit.textContent || h5pContainerForSubmit.innerHTML || '';
             if (containerText.length > 0) {
                 textSources.push({name: 'H5P container', text: containerText});
                 console.log('Text získán z H5P kontejneru, délka:', containerText.length);
@@ -680,12 +747,40 @@ function submitQuizResults(quizId, attemptId) {
         }
     }
     
-    // Prohledat všechny zdroje textu
+    // Prohledat všechny zdroje textu - UPŘEDNOSTNIT H5P kontejner
+    // Seřadit zdroje podle priority (H5P kontejner má nejvyšší prioritu)
+    const priorityOrder = ['H5P container', 'innerText', 'textContent', 'Range API', 'innerHTML'];
+    textSources.sort((a, b) => {
+        const aIndex = priorityOrder.indexOf(a.name);
+        const bIndex = priorityOrder.indexOf(b.name);
+        if (aIndex === -1 && bIndex === -1) return 0;
+        if (aIndex === -1) return 1;
+        if (bIndex === -1) return -1;
+        return aIndex - bIndex;
+    });
+    
     for (let source of textSources) {
         console.log('Hledám skóre v', source.name, ', prvních 500 znaků:', source.text.substring(0, 500));
         const results = extractScoreFromText(source.text);
         if (results) {
             console.log('H5P výsledky získány z', source.name, ':', results);
+            const calculatedPercent = (results.score / results.max_score * 100).toFixed(2);
+            console.log('Výpočet procent:', results.score, '/', results.max_score, '=', calculatedPercent + '%');
+            
+            // Ověřit, že skóre dává smysl
+            if (results.score < 0 || results.score > results.max_score) {
+                console.warn('Varování: Skóre neodpovídá max_score!', results);
+                // Pokračovat s dalším zdrojem
+                continue;
+            }
+            
+            // Validace: max_score by mělo být rozumné (1-100)
+            if (results.max_score < 1 || results.max_score > 100) {
+                console.warn('Varování: max_score není v rozumném rozsahu!', results);
+                // Pokračovat s dalším zdrojem
+                continue;
+            }
+            
             // Pokračovat s odesláním
             const payload = {
                 quiz_id: quizId,
@@ -749,6 +844,7 @@ function submitQuizResults(quizId, attemptId) {
     console.log('Nenašli jsme výsledky v žádném ze zdrojů textu, zkouším fallback metody...');
     
     // Získat výsledky z H5P (fallback)
+    // DŮLEŽITÉ: Prioritně použít finální skóre z xAPI (max_score > 1)
     const results = getH5PResults();
     console.log('Získané výsledky:', results);
     
@@ -757,10 +853,30 @@ function submitQuizResults(quizId, attemptId) {
     let maxScoreValue = 100;
     
     if (results) {
-        scoreValue = results.score;
-        maxScoreValue = results.max_score || 100;
-        console.log('Používám výsledky z H5P:', scoreValue, maxScoreValue);
-    } else {
+        // Validace: Ignorovat mezilehlé výsledky (max_score <= 1)
+        if (results.max_score <= 1) {
+            console.warn('Ignoruji mezilehlé výsledky (max_score <= 1):', results);
+            // Pokračovat s dalšími metodami
+        } else {
+            scoreValue = results.score;
+            maxScoreValue = results.max_score || 100;
+            console.log('Používám výsledky z H5P (finální):', {score: scoreValue, max_score: maxScoreValue, scoreType: typeof scoreValue});
+            
+            // Validace: zkontrolovat, že skóre dává smysl
+            if (scoreValue < 0 || scoreValue > maxScoreValue) {
+                console.error('VAROVÁNÍ: Skóre neodpovídá max_score!', {score: scoreValue, max_score: maxScoreValue});
+                scoreValue = null; // Resetovat, zkusit další metody
+            } else {
+                // Výpočet procent pro kontrolu
+                const calculatedPercent = maxScoreValue > 0 ? ((scoreValue / maxScoreValue) * 100).toFixed(2) : 'N/A';
+                console.log('Výpočet procent:', scoreValue, '/', maxScoreValue, '=', calculatedPercent + '%');
+            }
+        }
+    }
+    
+    if (!scoreValue) {
+        // Pokud nemáme finální skóre, zkusit další metody
+        console.log('Nemám finální skóre, zkouším další metody...');
         // Zkusit získat ručně zadané skóre
         const manualScoreInput = document.getElementById('manual-score');
         if (manualScoreInput && manualScoreInput.value) {

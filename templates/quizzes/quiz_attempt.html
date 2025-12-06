@@ -33,19 +33,6 @@
     {% endif %}
     
     <div class="mt-3 mb-4">
-        <div class="alert alert-info">
-            <strong>Poznámka:</strong> Pokud se skóre automaticky nenašlo, zadej ho ručně do pole níže.
-        </div>
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <label for="manual-score" class="form-label">Skóre (pokud se automaticky nenašlo):</label>
-                <div class="input-group">
-                    <input type="number" class="form-control" id="manual-score" min="0" max="100" placeholder="Např. 20 (pro 1/5 = 20%)">
-                    <span class="input-group-text">%</span>
-                </div>
-                <small class="form-text text-muted">Zadej skóre v procentech (např. 1 z 5 = 20%)</small>
-            </div>
-        </div>
         <button id="submit-quiz-btn" class="btn btn-success btn-lg" 
                 onclick="submitQuizResults({{ quiz.id }}, {% if attempt %}{{ attempt.id }}{% else %}null{% endif %})">
             <i class="bi bi-check-circle"></i> Odeslat výsledky testu
@@ -120,10 +107,28 @@ document.addEventListener('DOMContentLoaded', function() {
     const container = document.getElementById('h5p-container');
     console.log('H5P container:', container);
     console.log('H5PStandalone:', typeof H5PStandalone);
+    console.log('h5p_json_path: {{ h5p_json_path }}');
     
-    if (container) {
-        // Inicializace H5P Standalone Player
-        console.log('Inicializuji H5P Standalone...');
+    if (!container) {
+        console.error('H5P container nebyl nalezen!');
+        return;
+    }
+    
+    if (typeof H5PStandalone === 'undefined') {
+        console.error('H5PStandalone není definován! Zkontrolujte, zda jsou načteny všechny potřebné skripty.');
+        container.innerHTML = '<div class="alert alert-danger">Chyba: H5P Standalone knihovny nejsou načteny. Zkontrolujte konzoli prohlížeče.</div>';
+        return;
+    }
+    
+    // Inicializace H5P Standalone Player
+    console.log('Inicializuji H5P Standalone...');
+    console.log('Konfigurace:', {
+        h5pJsonPath: "{{ h5p_json_path }}",
+        frameJs: "{{ h5p_frame_js }}",
+        frameCss: "{{ h5p_frame_css }}"
+    });
+    
+    try {
         new H5PStandalone.H5P(container, {
             h5pJsonPath: "{{ h5p_json_path }}",
             frameJs: "{{ h5p_frame_js }}",
@@ -277,20 +282,29 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     console.log('xAPI score data:', {raw: rawScore, scaled: scaledScore, max: maxScore});
                     
-                    // Použít raw score nebo scaled score
+                    // IGNOROVAT mezilehlé události (max: 1) - ty jsou pro jednotlivé otázky
+                    // Použít jen finální skóre (max > 1), které obsahuje celkové výsledky
+                    if (maxScore <= 1) {
+                        console.log('Ignoruji mezilehlou xAPI událost (max:', maxScore, ') - čekám na finální skóre');
+                        return; // Neukládat mezilehlé výsledky
+                    }
+                    
+                    // Použít raw score nebo scaled score (jen pro finální skóre)
                     if (rawScore !== undefined && rawScore !== null) {
                         window.h5pLastResults = {
                             score: rawScore,
                             max_score: maxScore
                         };
-                        console.log('H5P výsledky uloženy z xAPI (raw):', window.h5pLastResults);
+                        console.log('H5P výsledky uloženy z xAPI (raw, finální):', window.h5pLastResults);
+                        console.log('Výpočet procent:', rawScore, '/', maxScore, '=', ((rawScore / maxScore) * 100).toFixed(2) + '%');
                     } else if (scaledScore !== undefined && scaledScore !== null && maxScore) {
                         // Pokud je jen scaled score, přepočítat na raw
                         window.h5pLastResults = {
                             score: Math.round(scaledScore * maxScore),
                             max_score: maxScore
                         };
-                        console.log('H5P výsledky uloženy z xAPI (scaled):', window.h5pLastResults);
+                        console.log('H5P výsledky uloženy z xAPI (scaled, finální):', window.h5pLastResults);
+                        console.log('Výpočet procent:', window.h5pLastResults.score, '/', maxScore, '=', ((window.h5pLastResults.score / maxScore) * 100).toFixed(2) + '%');
                     }
                 } else {
                     console.log('xAPI statement neobsahuje score data');
@@ -374,8 +388,36 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }).catch(function(error) {
             console.error('Chyba při načítání H5P obsahu:', error);
-            container.innerHTML = '<div class="alert alert-danger">Chyba při načítání H5P obsahu. Zkontrolujte, zda je H5P obsah správně rozbalen.</div>';
+            console.error('Error details:', error.message, error.stack);
+            
+            // Zobrazit chybu jen pokud je to skutečná chyba (ne jen varování)
+            // H5PIntegration chyby jsou často jen varování a H5P může fungovat i bez nich
+            if (error.message && (error.message.includes('H5PIntegration') || error.message.includes('HSPIntegration'))) {
+                console.warn('H5PIntegration chyba ignorována (často jen varování, H5P může fungovat i bez toho)');
+                // Nezobrazovat chybu, H5P může fungovat i bez H5PIntegration
+                // Zkontrolovat, jestli se H5P obsah skutečně načetl
+                setTimeout(function() {
+                    const h5pContent = container.querySelector('.h5p-content, .h5p-iframe-wrapper, iframe');
+                    if (h5pContent) {
+                        console.log('H5P obsah se načetl navzdory H5PIntegration chybě');
+                    } else {
+                        console.warn('H5P obsah se možná nenačetl');
+                    }
+                }, 2000);
+                return;
+            }
+            
+            let errorMsg = 'Chyba při načítání H5P obsahu. ';
+            if (error.message && !error.message.includes('H5PIntegration')) {
+                errorMsg += error.message;
+            } else {
+                errorMsg += 'Zkontrolujte, zda je H5P obsah správně rozbalen a cesta k h5p.json je správná.';
+            }
+            container.innerHTML = '<div class="alert alert-danger">' + errorMsg + '</div>';
         });
+    } catch (error) {
+        console.error('Chyba při inicializaci H5P:', error);
+        container.innerHTML = '<div class="alert alert-danger">Chyba při inicializaci H5P: ' + error.message + '</div>';
     }
 });
 </script>

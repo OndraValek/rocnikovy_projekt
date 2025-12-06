@@ -39,21 +39,36 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 3. Nastavení databáze
+### 3. Nastavení environment variables
 
-Pro vývoj můžete použít SQLite (výchozí) nebo PostgreSQL.
+**Automatické nastavení (doporučeno):**
 
-Pro PostgreSQL vytvořte soubor `.env`:
-
+**Windows:**
+```bash
+setup.bat
 ```
-SECRET_KEY=your-secret-key-here
-DEBUG=True
-DB_NAME=maturitni_projekt
-DB_USER=postgres
-DB_PASSWORD=postgres
-DB_HOST=localhost
-DB_PORT=5432
+
+**Linux/Mac:**
+```bash
+chmod +x setup.sh
+./setup.sh
 ```
+
+**Nebo ručně:**
+
+**Windows:**
+```bash
+copy .env.example .env
+```
+
+**Linux/Mac:**
+```bash
+cp .env.example .env
+```
+
+Soubor `.env.example` obsahuje všechny potřebné proměnné včetně OAuth2 credentials. Po zkopírování můžeš upravit `.env` soubor podle potřeby.
+
+**DŮLEŽITÉ:** Soubor `.env.example` je commitován do Gitu a obsahuje OAuth2 credentials. Pokud chceš použít jiné credentials, uprav je v `.env` souboru.
 
 ### 4. Migrace databáze
 
@@ -67,8 +82,40 @@ python manage.py migrate
 python manage.py createsuperuser
 ```
 
+### 6. Vytvoření základní struktury (volitelné)
 
-### 7. Spuštění vývojového serveru
+Pro vytvoření základní struktury (předmět "Programové vybavení" a 3 okruhy):
+
+```bash
+python manage.py setup_basic_data
+```
+
+**POZNÁMKA:** Tento příkaz vytvoří pouze předmět a okruhy. Materiály a testy musíš přidat ručně přes admin panel nebo pomocí jiných management commands.
+
+### 7. Nastavení OAuth2 (volitelné)
+
+Pokud chceš používat OAuth2 autentizaci (Google, GitHub, Microsoft):
+
+1. **Přidej OAuth2 credentials do `.env` souboru** (získej je z příslušných developer konzolí):
+   ```env
+   GOOGLE_CLIENT_ID=your-client-id
+   GOOGLE_CLIENT_SECRET=your-client-secret
+   GITHUB_CLIENT_ID=your-client-id
+   GITHUB_CLIENT_SECRET=your-client-secret
+   MICROSOFT_CLIENT_ID=your-client-id
+   MICROSOFT_CLIENT_SECRET=your-client-secret
+   ```
+
+2. **Spusť příkaz pro vytvoření Social Applications:**
+   ```bash
+   python manage.py create_social_apps
+   ```
+   
+   Tento příkaz automaticky vytvoří Social Applications z hodnot v `.env` souboru. Pokud některé credentials chybí, příkaz přeskočí daného poskytovatele.
+
+Podrobnější návod najdeš v `docs/OAUTH2_SETUP.md` nebo `OAUTH2_PODROBNY_NAVOD.md`.
+
+### 8. Spuštění vývojového serveru
 
 ```bash
 python manage.py runserver

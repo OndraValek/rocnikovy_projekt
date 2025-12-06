@@ -22,3 +22,264 @@ main {
     background-color: #f8f9fa;
 }
 
+/* Časová osa */
+.timeline {
+    position: relative;
+    padding-left: 30px;
+    margin-top: 20px;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 10px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #dee2e6;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 20px;
+    padding-left: 20px;
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -25px;
+    top: 5px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #0d6efd;
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 2px #0d6efd;
+}
+
+.timeline-item.active::before {
+    background: #198754;
+    box-shadow: 0 0 0 2px #198754;
+}
+
+.timeline-item.completed::before {
+    background: #6c757d;
+    box-shadow: 0 0 0 2px #6c757d;
+}
+
+.timeline-item-title {
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+    color: #212529;
+}
+
+.timeline-item-title a {
+    color: #212529;
+    text-decoration: none;
+}
+
+.timeline-item-title a:hover {
+    color: #0d6efd;
+    text-decoration: underline;
+}
+
+.timeline-item-description {
+    font-size: 0.75rem;
+    color: #6c757d;
+    margin-bottom: 0;
+    line-height: 1.3;
+}
+
+.timeline-item-number {
+    position: absolute;
+    left: -30px;
+    top: 0;
+    width: 20px;
+    height: 20px;
+    background: #fff;
+    border: 2px solid #0d6efd;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: bold;
+    color: #0d6efd;
+}
+
+.timeline-item.active .timeline-item-number {
+    background: #198754;
+    border-color: #198754;
+    color: #fff;
+}
+
+.timeline-item.completed .timeline-item-number {
+    background: #6c757d;
+    border-color: #6c757d;
+    color: #fff;
+}
+
+/* Kompaktní kalendář */
+#compact-calendar {
+    font-size: 0.7rem;
+    margin-left: 0;
+    margin-right: 0;
+    padding: 0;
+    width: 100%;
+    max-width: 100%;
+}
+
+/* Přepsat padding containeru pro stránku s kalendářem */
+body .container:has(#compact-calendar) {
+    padding-left: 0;
+}
+
+/* Zajistit, že kalendář je viditelný */
+#compact-calendar {
+    overflow: visible !important;
+}
+
+/* Silné CSS pravidlo pro posunutí kalendáře doleva */
+#calendar-column {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+#calendar-card {
+    margin-left: 0 !important;
+    margin-right: 50px !important;
+    position: relative !important;
+    left: 0 !important;
+}
+
+body main.container {
+    padding-left: 0 !important;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+    padding: 0;
+}
+
+.calendar-header button {
+    padding: 1px 4px;
+    font-size: 0.7rem;
+    line-height: 1.2;
+    border: 1px solid #dee2e6;
+}
+
+.calendar-header strong {
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.calendar-header button {
+    padding: 2px 6px;
+    font-size: 0.75rem;
+    line-height: 1.2;
+    border: 1px solid #dee2e6;
+}
+
+.calendar-header strong {
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.calendar-grid {
+    width: 100%;
+}
+
+.calendar-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0;
+    margin-bottom: 1px;
+}
+
+.calendar-weekday {
+    text-align: center;
+    font-weight: 600;
+    color: #6c757d;
+    padding: 1px 0;
+    font-size: 0.6rem;
+}
+
+.calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0;
+}
+
+.calendar-day {
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    border: 1px solid #e9ecef;
+    border-radius: 1px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-size: 0.65rem;
+    padding: 1px;
+    min-height: 24px;
+    position: relative;
+}
+
+.calendar-day:hover:not(.empty) {
+    background-color: #f8f9fa;
+}
+
+.calendar-day.today {
+    background-color: #0d6efd;
+    color: white;
+    font-weight: bold;
+    border-color: #0d6efd;
+}
+
+.calendar-day.empty {
+    border: none;
+    cursor: default;
+    background: transparent;
+}
+
+.calendar-day.has-event {
+    padding-bottom: 4px;
+}
+
+.calendar-day-number {
+    line-height: 1;
+    margin-bottom: 1px;
+}
+
+.calendar-event {
+    font-size: 0.55rem;
+    line-height: 1.1;
+    color: #6c757d;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+    margin-top: 1px;
+}
+
+.calendar-event-indicator {
+    display: inline-block;
+    width: 4px;
+    height: 4px;
+    background-color: #ffc107;
+    border-radius: 50%;
+    margin-right: 2px;
+    vertical-align: middle;
+}
+
+.calendar-day.today .calendar-event {
+    color: rgba(255, 255, 255, 0.9);
+}
+

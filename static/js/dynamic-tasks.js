@@ -260,7 +260,6 @@ class DynamicTasksLoader {
             } else if (task.type === 'quiz') {
                 // Test
                 const attemptsInfo = task.user_attempts || {};
-                const canAttempt = task.can_attempt !== false;
                 const bestScore = attemptsInfo.best_score;
                 
                 html += `
@@ -274,18 +273,14 @@ class DynamicTasksLoader {
                                 ${task.description ? `<p class="card-text text-muted small">${this.escapeHtml(task.description.substring(0, 100))}${task.description.length > 100 ? '...' : ''}</p>` : ''}
                                 <div class="mt-2">
                                     ${task.time_limit ? `<small class="text-muted">⏱ ${task.time_limit} min</small><br>` : ''}
-                                    ${attemptsInfo.count > 0 ? `
+                                    ${bestScore !== null ? `
                                         <small class="text-muted">
-                                            Pokusy: ${attemptsInfo.count}/${task.max_attempts}
-                                            ${bestScore !== null ? ` • Nejlepší: ${bestScore}%` : ''}
+                                            Nejlepší: ${bestScore}%
                                         </small>
                                     ` : ''}
                                 </div>
                                 <div class="mt-auto">
-                                    ${canAttempt ? 
-                                        `<a href="${task.url}" class="btn btn-sm btn-primary">Spustit test</a>` :
-                                        `<button class="btn btn-sm btn-secondary" disabled>Max pokusů dosaženo</button>`
-                                    }
+                                    <a href="${task.url}" class="btn btn-sm btn-primary">Spustit test</a>
                                     <small class="text-muted d-block mt-2">${task.created_at}</small>
                                 </div>
                             </div>

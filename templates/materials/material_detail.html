@@ -43,12 +43,20 @@
             Otevřít odkaz
         </a>
     </div>
-{% elif material.material_type == 'h5p' and material.h5p_embed_code %}
-    <div class="mb-4">
-        <div class="h5p-container" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%;">
-            {{ material.h5p_embed_code|safe }}
+{% elif material.material_type == 'h5p' %}
+    {% if material.h5p_path %}
+        {# H5P Standalone Player #}
+        <div class="mb-4">
+            <div id="h5p-container" style="width: 100%; max-width: 100%;"></div>
         </div>
-    </div>
+    {% elif material.h5p_embed_code %}
+        {# Starší způsob - embed kód #}
+        <div class="mb-4">
+            <div class="h5p-container" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%;">
+                {{ material.h5p_embed_code|safe }}
+            </div>
+        </div>
+    {% endif %}
 {% elif material.material_type == 'text' and material.content %}
     <div class="mb-4">
         <div class="card">
@@ -66,5 +74,93 @@
 <a href="{% url 'subjects:topic_detail' material.topic.subject.slug material.topic.slug %}" class="btn btn-secondary">
     Zpět na okruh
 </a>
+{% endblock %}
+
+{% block extra_js %}
+{% load static %}
+{% if material.h5p_path %}
+{# H5P Standalone Player #}
+<script src="{{ h5p_frame_js }}"></script>
+<script src="{{ h5p_player_js }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOMContentLoaded - zkouším načíst H5P...');
+    const container = document.getElementById('h5p-container');
+    console.log('H5P container:', container);
+    console.log('H5PStandalone:', typeof H5PStandalone);
+    console.log('h5p_json_path: {{ h5p_json_path }}');
+    
+    if (!container) {
+        console.error('H5P container nebyl nalezen!');
+        return;
+    }
+    
+    if (typeof H5PStandalone === 'undefined') {
+        console.error('H5PStandalone není definován! Zkontrolujte, zda jsou načteny všechny potřebné skripty.');
+        container.innerHTML = '<div class="alert alert-danger">Chyba: H5P Standalone knihovny nejsou načteny. Zkontrolujte konzoli prohlížeče.</div>';
+        return;
+    }
+    
+    // Inicializace H5P Standalone Player
+    console.log('Inicializuji H5P Standalone...');
+    console.log('Konfigurace:', {
+        h5pJsonPath: "{{ h5p_json_path }}",
+        frameJs: "{{ h5p_frame_js }}",
+        frameCss: "{{ h5p_frame_css }}"
+    });
+    
+    try {
+        new H5PStandalone.H5P(container, {
+            h5pJsonPath: "{{ h5p_json_path }}",
+            frameJs: "{{ h5p_frame_js }}",
+            frameCss: "{{ h5p_frame_css }}",
+            frame: true,
+            reportingIsEnabled: true,
+            postUserStatistics: true,
+            saveFreq: 5, // Ukládat stav každých 5 sekund
+            ajax: {
+                contentUserDataUrl: "{{ h5p_user_data_url }}"
+            },
+            user: {
+                name: "{{ request.user.get_full_name|default:request.user.email }}",
+                mail: "{{ request.user.email }}"
+            }
+        }).then(function(h5pInstance) {
+            // Uložit instanci H5P pro pozdější použití
+            window.h5pInstance = h5pInstance;
+            console.log('H5P instance načtena:', h5pInstance);
+        }).catch(function(error) {
+            console.error('Chyba při načítání H5P obsahu:', error);
+            const container = document.getElementById('h5p-container');
+            if (container) {
+                let errorMsg = 'Chyba při načítání H5P obsahu. ';
+                if (error && error.message) {
+                    errorMsg += error.message;
+                } else if (typeof error === 'string') {
+                    errorMsg += error;
+                } else {
+                    errorMsg += 'Neznámá chyba.';
+                }
+                container.innerHTML = '<div class="alert alert-danger">' + errorMsg + '</div>';
+            }
+        });
+    } catch (error) {
+        console.error('Chyba při inicializaci H5P:', error);
+        const container = document.getElementById('h5p-container');
+        if (container) {
+            let errorMsg = 'Chyba při inicializaci H5P. ';
+            if (error && error.message) {
+                errorMsg += error.message;
+            } else if (typeof error === 'string') {
+                errorMsg += error;
+            } else {
+                errorMsg += 'Neznámá chyba.';
+            }
+            container.innerHTML = '<div class="alert alert-danger">' + errorMsg + '</div>';
+        }
+    }
+});
+</script>
+{% endif %}
 {% endblock %}
 

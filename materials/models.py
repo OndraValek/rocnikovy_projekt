@@ -66,12 +66,20 @@ class Material(ClusterableModel):
         help_text=_('URL pro video, odkaz nebo H5P obsah')
     )
     
-    # Pro H5P embed kód
+    # Pro H5P embed kód (starší způsob)
     h5p_embed_code = models.TextField(
         blank=True,
         null=True,
         verbose_name=_('H5P embed kód'),
-        help_text=_('Vložte iframe kód pro H5P obsah')
+        help_text=_('Vložte iframe kód pro H5P obsah (starší způsob)')
+    )
+    # Pro H5P standalone player (nový způsob)
+    h5p_path = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        verbose_name=_('Cesta k H5P obsahu'),
+        help_text=_('Relativní cesta k rozbalenému H5P obsahu (např. h5p/quiz-14/)')
     )
     
     # Pro textové materiály
