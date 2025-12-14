@@ -19,25 +19,207 @@
             <p class="lead">{{ subject.description }}</p>
         {% endif %}
 
-        <h2 class="mt-4">Maturitní okruhy</h2>
+        <div class="d-flex justify-content-between align-items-center mt-4">
+            <h2 class="mb-0">Maturitní okruhy</h2>
+            {% if user.is_authenticated %}
+                {% if user.is_teacher or user.is_admin %}
+                <a href="{% url 'subjects:topic_create' subject.slug %}" class="btn btn-success">
+                    <i class="bi bi-plus-circle"></i> Přidat okruh
+                </a>
+                {% endif %}
+            {% endif %}
+        </div>
 
 {% if topics %}
-    <div class="list-group">
+    <div class="list-group mt-3">
         {% for topic in topics %}
-            <a href="{% url 'subjects:topic_detail' subject.slug topic.slug %}" class="list-group-item list-group-item-action">
-                <div class="d-flex w-100 justify-content-between">
-                    <h5 class="mb-1">{{ topic.name }}</h5>
-                    <small>{{ topic.order }}</small>
+            <div class="list-group-item">
+                <div class="d-flex w-100 justify-content-between align-items-start">
+                    <div class="flex-grow-1">
+                        <a href="{% url 'subjects:topic_detail' subject.slug topic.slug %}" class="text-decoration-none">
+                            <h5 class="mb-1">{{ topic.name }}</h5>
+                        </a>
+                        {% if topic.description %}
+                            <p class="mb-1">{{ topic.description|truncatewords:20|striptags }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="d-flex gap-2 align-items-center">
+                        <small class="text-muted me-2">{{ topic.order }}</small>
+                        {% if user.is_authenticated %}
+                            {% if user.is_teacher or user.is_admin %}
+                            <a href="{% url 'subjects:topic_delete' subject.slug topic.slug %}" class="btn btn-sm btn-danger" onclick="return confirm('Opravdu chcete smazat okruh \"{{ topic.name }}\"? Tato akce je nevratná!');">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                            {% endif %}
+                        {% endif %}
+                    </div>
                 </div>
-                {% if topic.description %}
-                    <p class="mb-1">{{ topic.description|truncatewords:20|striptags }}</p>
-                {% endif %}
-            </a>
+            </div>
         {% endfor %}
     </div>
 {% else %}
-    <p>Zatím nejsou k dispozici žádné okruhy.</p>
+    <p class="mt-3">Zatím nejsou k dispozici žádné okruhy.</p>
 {% endif %}
+
+        <!-- Statistiky pro studenty -->
+        {% if user.is_authenticated and user.is_student and student_stats %}
+        <div class="mt-5">
+            <h2>Statistiky testů</h2>
+            
+            {% if student_stats.quizzes %}
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Přehled testů</h5>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Okruh</th>
+                                    <th>Test</th>
+                                    <th>Počet pokusů</th>
+                                    <th>Průměrné skóre</th>
+                                    <th>Poslední pokus</th>
+                                    <th>Poslední výsledek</th>
+                                    <th>Známka</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for quiz_stat in student_stats.quizzes %}
+                                <tr>
+                                    <td>{{ quiz_stat.topic.name }}</td>
+                                    <td>
+                                        <a href="{% url 'subjects:topic_detail' subject.slug quiz_stat.topic.slug %}">
+                                            {{ quiz_stat.quiz.title }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        {% if quiz_stat.attempt_count > 0 %}
+                                            <span class="badge bg-primary">{{ quiz_stat.attempt_count }}</span>
+                                        {% else %}
+                                            <span class="text-muted">0</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if quiz_stat.average_score is not None %}
+                                            <span class="fw-bold">{{ quiz_stat.average_score }}%</span>
+                                        {% else %}
+                                            <span class="text-muted">-</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if quiz_stat.last_date %}
+                                            {{ quiz_stat.last_date|date:"d.m.Y H:i" }}
+                                        {% else %}
+                                            <span class="text-muted">-</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if quiz_stat.last_score is not None %}
+                                            <span class="fw-bold">{{ quiz_stat.last_score }}%</span>
+                                        {% else %}
+                                            <span class="text-muted">-</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if quiz_stat.grade %}
+                                            <span class="badge {% if quiz_stat.grade == 1 %}bg-success{% elif quiz_stat.grade == 2 %}bg-info{% elif quiz_stat.grade == 3 %}bg-warning{% elif quiz_stat.grade == 4 %}bg-danger{% else %}bg-dark{% endif %}">
+                                                {{ quiz_stat.grade }}
+                                            </span>
+                                        {% else %}
+                                            <span class="text-muted">-</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Graf výsledků -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Graf výsledků testů</h5>
+                    <canvas id="quizResultsChart" height="100"></canvas>
+                </div>
+            </div>
+            {% else %}
+            <div class="alert alert-info">
+                Zatím jste neabsolvovali žádné testy v tomto předmětu.
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <!-- Statistiky pro učitele -->
+        {% if user.is_authenticated and user.is_teacher and teacher_stats %}
+        <div class="mt-5">
+            <h2>Statistiky studentů</h2>
+            
+            {% if teacher_stats.students %}
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Přehled studentů</h5>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Jméno</th>
+                                    <th>Třída</th>
+                                    <th>Průměrné skóre</th>
+                                    <th>Průměrná známka</th>
+                                    <th>Počet pokusů</th>
+                                    <th>Testů absolvováno</th>
+                                    <th>Akce</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for student_stat in teacher_stats.students %}
+                                <tr>
+                                    <td>{{ student_stat.student.get_full_name|default:student_stat.student.email }}</td>
+                                    <td>{{ student_stat.student.class_name|default:"-" }}</td>
+                                    <td>
+                                        {% if student_stat.average_score is not None %}
+                                            <span class="fw-bold">{{ student_stat.average_score }}%</span>
+                                        {% else %}
+                                            <span class="text-muted">-</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if student_stat.average_grade %}
+                                            <span class="badge {% if student_stat.average_grade == 1 %}bg-success{% elif student_stat.average_grade == 2 %}bg-info{% elif student_stat.average_grade == 3 %}bg-warning{% elif student_stat.average_grade == 4 %}bg-danger{% else %}bg-dark{% endif %}">
+                                                {{ student_stat.average_grade }}
+                                            </span>
+                                        {% else %}
+                                            <span class="text-muted">-</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-primary">{{ student_stat.total_attempts }}</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-info">{{ student_stat.quizzes_attempted }} / {{ teacher_stats.total_quizzes }}</span>
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'subjects:student_statistics' subject.slug student_stat.student.id %}" class="btn btn-sm btn-outline-primary">
+                                            Detail
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="alert alert-info">
+                Zatím žádní studenti neabsolvovali testy v tomto předmětu.
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
 
         <!-- Sekce připomínek -->
         <div class="mt-5">
@@ -75,8 +257,90 @@
 {% endblock %}
 
 {% block extra_js %}
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Vykreslit graf výsledků testů pro studenty
+    {% if user.is_authenticated and user.is_student and student_stats %}
+    const quizResultsChart = document.getElementById('quizResultsChart');
+    if (quizResultsChart) {
+        const quizData = [
+            {% for quiz_stat in student_stats.quizzes %}
+            {
+                label: '{{ quiz_stat.quiz.title|escapejs }}',
+                score: {{ quiz_stat.last_score|default:"null" }},
+                average: {{ quiz_stat.average_score|default:"null" }},
+                attempts: {{ quiz_stat.attempt_count }}
+            }{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ];
+        
+        // Filtrovat pouze testy s pokusy
+        const filteredData = quizData.filter(q => q.attempts > 0);
+        
+        if (filteredData.length > 0) {
+            new Chart(quizResultsChart, {
+                type: 'bar',
+                data: {
+                    labels: filteredData.map(q => q.label),
+                    datasets: [
+                        {
+                            label: 'Poslední výsledek (%)',
+                            data: filteredData.map(q => q.score),
+                            backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Průměrné skóre (%)',
+                            data: filteredData.map(q => q.average),
+                            backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            title: {
+                                display: true,
+                                text: 'Skóre (%)'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Testy'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + context.parsed.y + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    }
+    {% endif %}
+    
+    // Načíst připomínky
     // Načíst připomínky
     const feedbackSection = document.getElementById('feedback-section');
     if (!feedbackSection) return;

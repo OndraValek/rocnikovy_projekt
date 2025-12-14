@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Smazat test - {{ block.super }}{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'subjects:subject_list' %}">Předměty</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'subjects:subject_detail' quiz.topic.subject.slug %}">{{ quiz.topic.subject.name }}</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'subjects:topic_detail' quiz.topic.subject.slug quiz.topic.slug %}">{{ quiz.topic.name }}</a></li>
+        <li class="breadcrumb-item active">Smazat test</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-md-8">
+        <h1>Smazat test</h1>
+        
+        <div class="alert alert-warning">
+            <strong>Varování!</strong> Opravdu chcete smazat test <strong>"{{ quiz.title }}"</strong>?
+            <br><br>
+            Tato akce je nevratná a smaže také všechny pokusy studentů v tomto testu!
+        </div>
+        
+        <form method="post">
+            {% csrf_token %}
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-danger">Ano, smazat</button>
+                <a href="{% url 'subjects:topic_detail' quiz.topic.subject.slug quiz.topic.slug %}" class="btn btn-secondary">Zrušit</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+

@@ -20,6 +20,20 @@ class DynamicTasksLoader {
             ...options
         };
         
+        // Zkontrolovat, jestli je uživatel učitel/admin
+        // Zkusit získat atribut z containeru
+        let isTeacherAttr = this.container ? this.container.getAttribute('data-is-teacher') : null;
+        
+        // Pokud není v containeru, zkusit najít dynamic-tasks-container
+        if (!isTeacherAttr) {
+            const dynamicContainer = document.getElementById('dynamic-tasks-container');
+            if (dynamicContainer) {
+                isTeacherAttr = dynamicContainer.getAttribute('data-is-teacher');
+            }
+        }
+        
+        this.isTeacher = isTeacherAttr === 'true';
+        
         this.currentPage = 1;
         this.currentFilters = {
             search: '',
@@ -226,6 +240,9 @@ class DynamicTasksLoader {
         const container = document.getElementById('tasks-container');
         if (!container) return;
         
+        // Použít uloženou hodnotu isTeacher
+        const isTeacher = this.isTeacher || false;
+        
         if (tasks.length === 0) {
             container.innerHTML = `
                 <div class="alert alert-info">
@@ -250,7 +267,16 @@ class DynamicTasksLoader {
                                 </div>
                                 ${task.description ? `<p class="card-text text-muted small">${this.escapeHtml(task.description.substring(0, 100))}${task.description.length > 100 ? '...' : ''}</p>` : ''}
                                 <div class="mt-auto">
-                                    <a href="${task.url}" class="btn btn-sm btn-primary">Otevřít</a>
+                                    <div class="d-flex gap-2">
+                                        <a href="${task.url}" class="btn btn-sm btn-primary">Otevřít</a>
+                                        ${isTeacher ? `
+                                            <a href="/material/${task.id}/delete/" 
+                                               class="btn btn-sm btn-danger" 
+                                               onclick="return confirm('Opravdu chcete smazat materiál \\'${this.escapeHtml(task.title)}\\'? Tato akce je nevratná!');">
+                                                <i class="bi bi-trash"></i> Smazat
+                                            </a>
+                                        ` : ''}
+                                    </div>
                                     <small class="text-muted d-block mt-2">${task.created_at}</small>
                                 </div>
                             </div>
@@ -280,7 +306,16 @@ class DynamicTasksLoader {
                                     ` : ''}
                                 </div>
                                 <div class="mt-auto">
-                                    <a href="${task.url}" class="btn btn-sm btn-primary">Spustit test</a>
+                                    <div class="d-flex gap-2">
+                                        <a href="${task.url}" class="btn btn-sm btn-primary">Spustit test</a>
+                                        ${isTeacher ? `
+                                            <a href="/quiz/${task.id}/delete/" 
+                                               class="btn btn-sm btn-danger" 
+                                               onclick="return confirm('Opravdu chcete smazat test \\'${this.escapeHtml(task.title)}\\'? Tato akce je nevratná!');">
+                                                <i class="bi bi-trash"></i> Smazat
+                                            </a>
+                                        ` : ''}
+                                    </div>
                                     <small class="text-muted d-block mt-2">${task.created_at}</small>
                                 </div>
                             </div>

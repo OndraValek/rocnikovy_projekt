@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Smazat materiál - {{ block.super }}{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'subjects:subject_list' %}">Předměty</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'subjects:subject_detail' material.topic.subject.slug %}">{{ material.topic.subject.name }}</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'subjects:topic_detail' material.topic.subject.slug material.topic.slug %}">{{ material.topic.name }}</a></li>
+        <li class="breadcrumb-item active">Smazat materiál</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-md-8">
+        <h1>Smazat materiál</h1>
+        
+        <div class="alert alert-warning">
+            <strong>Varování!</strong> Opravdu chcete smazat materiál <strong>"{{ material.title }}"</strong>?
+            <br><br>
+            Tato akce je nevratná!
+        </div>
+        
+        <form method="post">
+            {% csrf_token %}
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-danger">Ano, smazat</button>
+                <a href="{% url 'subjects:topic_detail' material.topic.subject.slug material.topic.slug %}" class="btn btn-secondary">Zrušit</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+

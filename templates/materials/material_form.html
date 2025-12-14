@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block title %}Přidat materiál - {{ block.super }}{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'subjects:subject_list' %}">Předměty</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'subjects:subject_detail' subject.slug %}">{{ subject.name }}</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'subjects:topic_detail' subject.slug topic.slug %}">{{ topic.name }}</a></li>
+        <li class="breadcrumb-item active">Přidat materiál</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-md-8">
+        <h1>Přidat nový materiál</h1>
+        <p class="text-muted">Okruh: <strong>{{ topic.name }}</strong></p>
+        
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="mb-3">
+                <label for="{{ form.title.id_for_label }}" class="form-label">Název materiálu *</label>
+                {{ form.title }}
+                {% if form.title.errors %}
+                    <div class="text-danger">{{ form.title.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="mb-3">
+                <label for="{{ form.description.id_for_label }}" class="form-label">Popis</label>
+                {{ form.description }}
+                {% if form.description.errors %}
+                    <div class="text-danger">{{ form.description.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="mb-3">
+                <label for="{{ form.material_type.id_for_label }}" class="form-label">Typ materiálu *</label>
+                {{ form.material_type }}
+                {% if form.material_type.errors %}
+                    <div class="text-danger">{{ form.material_type.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="mb-3">
+                <label for="{{ form.h5p_path.id_for_label }}" class="form-label">Cesta k H5P obsahu</label>
+                {{ form.h5p_path }}
+                <small class="form-text text-muted">Relativní cesta k rozbalenému H5P obsahu (např. h5p/material-1/)</small>
+                {% if form.h5p_path.errors %}
+                    <div class="text-danger">{{ form.h5p_path.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="mb-3">
+                <label for="{{ form.external_url.id_for_label }}" class="form-label">Externí URL</label>
+                {{ form.external_url }}
+                <small class="form-text text-muted">URL pro video, odkaz nebo H5P obsah</small>
+                {% if form.external_url.errors %}
+                    <div class="text-danger">{{ form.external_url.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="mb-3">
+                <div class="form-check">
+                    {{ form.is_published }}
+                    <label class="form-check-label" for="{{ form.is_published.id_for_label }}">
+                        Publikováno
+                    </label>
+                </div>
+                {% if form.is_published.errors %}
+                    <div class="text-danger">{{ form.is_published.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Vytvořit materiál</button>
+                <a href="{% url 'subjects:topic_detail' subject.slug topic.slug %}" class="btn btn-secondary">Zrušit</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+

@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Avg, Count, Max
 from django.utils.translation import gettext_lazy as _
 from django.core.validators import MinValueValidator, MaxValueValidator
 from modelcluster.models import ClusterableModel
@@ -79,6 +80,72 @@ class Quiz(ClusterableModel):
     
     def __str__(self):
         return f"{self.topic.name} - {self.title}"
+    
+    def get_user_statistics(self, user):
+        """
+        Vrátí statistiky pro konkrétního uživatele u tohoto testu.
+        
+        Returns:
+            dict: {
+                'attempt_count': int,
+                'average_score': float nebo None,
+                'last_attempt': QuizAttempt nebo None,
+                'last_score': int nebo None,
+                'last_date': datetime nebo None,
+                'grade': int nebo None
+            }
+        """
+        attempts = self.attempts.filter(user=user, completed_at__isnull=False)
+        
+        stats = {
+            'attempt_count': attempts.count(),
+            'average_score': None,
+            'last_attempt': None,
+            'last_score': None,
+            'last_date': None,
+            'grade': None
+        }
+        
+        if attempts.exists():
+            # Průměrné skóre
+            avg = attempts.aggregate(Avg('score'))['score__avg']
+            stats['average_score'] = round(avg, 1) if avg else None
+            
+            # Poslední pokus
+            last_attempt = attempts.order_by('-completed_at').first()
+            if last_attempt:
+                stats['last_attempt'] = last_attempt
+                stats['last_score'] = last_attempt.score
+                stats['last_date'] = last_attempt.completed_at
+                if last_attempt.score is not None:
+                    stats['grade'] = self.calculate_grade(last_attempt.score)
+        
+        return stats
+    
+    @staticmethod
+    def calculate_grade(score_percentage):
+        """
+        Vypočítá známku podle procentuálního skóre.
+        
+        Args:
+            score_percentage: Procentuální skóre (0-100)
+        
+        Returns:
+            int: Známka (1-5) nebo None pokud score není validní
+        """
+        if score_percentage is None:
+            return None
+        
+        if score_percentage >= 85:
+            return 1
+        elif score_percentage >= 70:
+            return 2
+        elif score_percentage >= 55:
+            return 3
+        elif score_percentage >= 40:
+            return 4
+        else:
+            return 5
 
 
 class QuizAttempt(models.Model):
@@ -135,6 +202,13 @@ class QuizAttempt(models.Model):
             self.is_passed = self.score >= self.quiz.passing_score
             self.save()
         return self.score
+    
+    @property
+    def grade(self):
+        """Vrátí známku pro tento pokus."""
+        if self.score is not None:
+            return Quiz.calculate_grade(self.score)
+        return None
 
 
 class H5PUserData(models.Model):

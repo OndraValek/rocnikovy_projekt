@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}Smazat předmět - {{ block.super }}{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'subjects:subject_list' %}">Předměty</a></li>
+        <li class="breadcrumb-item active">Smazat předmět</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-md-8">
+        <h1>Smazat předmět</h1>
+        
+        <div class="alert alert-warning">
+            <strong>Varování!</strong> Opravdu chcete smazat předmět <strong>"{{ subject.name }}"</strong>?
+            <br><br>
+            Tato akce je nevratná a smaže také všechny okruhy, testy a materiály v tomto předmětu!
+        </div>
+        
+        <form method="post">
+            {% csrf_token %}
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-danger">Ano, smazat</button>
+                <a href="{% url 'subjects:subject_detail' subject.slug %}" class="btn btn-secondary">Zrušit</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+

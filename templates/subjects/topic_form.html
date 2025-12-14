@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}Přidat okruh - {{ block.super }}{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'subjects:subject_list' %}">Předměty</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'subjects:subject_detail' subject.slug %}">{{ subject.name }}</a></li>
+        <li class="breadcrumb-item active">Přidat okruh</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-md-8">
+        <h1>Přidat nový okruh</h1>
+        <p class="text-muted">Předmět: <strong>{{ subject.name }}</strong></p>
+        
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="mb-3">
+                <label for="{{ form.name.id_for_label }}" class="form-label">Název okruhu *</label>
+                {{ form.name }}
+                {% if form.name.errors %}
+                    <div class="text-danger">{{ form.name.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="mb-3">
+                <label for="{{ form.description.id_for_label }}" class="form-label">Popis</label>
+                {{ form.description }}
+                {% if form.description.errors %}
+                    <div class="text-danger">{{ form.description.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="mb-3">
+                <label for="{{ form.order.id_for_label }}" class="form-label">Pořadí</label>
+                {{ form.order }}
+                <small class="form-text text-muted">Pořadí zobrazení okruhu (nižší číslo = výše)</small>
+                {% if form.order.errors %}
+                    <div class="text-danger">{{ form.order.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Vytvořit okruh</button>
+                <a href="{% url 'subjects:subject_detail' subject.slug %}" class="btn btn-secondary">Zrušit</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+

@@ -22,10 +22,24 @@
 
 <div class="row">
     <div class="col-12">
-        <h2>Úlohy</h2>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="mb-0">Úlohy</h2>
+            {% if user.is_authenticated %}
+                {% if user.is_teacher or user.is_admin %}
+                <div class="d-flex gap-2">
+                    <a href="{% url 'subjects:quiz_create' subject.slug topic.slug %}" class="btn btn-success">
+                        <i class="bi bi-plus-circle"></i> Přidat test
+                    </a>
+                    <a href="{% url 'subjects:material_create' subject.slug topic.slug %}" class="btn btn-success">
+                        <i class="bi bi-plus-circle"></i> Přidat materiál
+                    </a>
+                </div>
+                {% endif %}
+            {% endif %}
+        </div>
         
         <!-- Container pro dynamické načítání úloh -->
-        <div id="dynamic-tasks-container" data-topic-id="{{ topic.id }}"></div>
+        <div id="dynamic-tasks-container" data-topic-id="{{ topic.id }}" data-is-teacher="{% if user.is_authenticated %}{% if user.is_teacher or user.is_admin %}true{% else %}false{% endif %}{% else %}false{% endif %}"></div>
     </div>
 </div>
 
