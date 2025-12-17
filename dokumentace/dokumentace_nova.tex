@@ -1,0 +1,716 @@
+% ZÁVĚREČNÁ STUDIJNÍ PRÁCE - DOKUMENTACE
+% Webová aplikace pro přípravu k maturitám s podporou interaktivního obsahu
+% Autor: Ondřej Válek
+%
+\documentclass[12pt, a4paper,
+twoside,
+openany
+]{report}
+
+% --- odstraneni zbytkoveho textu "superiorSup" a pod. ---
+\AtBeginDocument{%
+	\immediate\write16{(cleaning stray figureversions output...)}%
+	\thispagestyle{empty}
+	\let\superiorSup\relax
+	\let\textOsF\relax
+	\let\textTOsF\relax
+	\let\liningLF\relax
+	\let\liningTLF\relax
+	\let\tabularTab\relax
+	\let\proportionalProp\relax
+	\let\tabularmath\relax
+	\let\proportionalmath\relax
+	\let\fontspechyperref\relax
+}
+
+%% Proměnné
+\newcommand\obor{INFORMAČNÍ TECHNOLOGIE}
+\newcommand\kodOboru{18-20-M/01}
+\newcommand\zamereni{se zaměřením na počítačové sítě a programování}
+\newcommand\skola{Střední škola průmyslová a umělecká, Opava}
+\newcommand\trida{IT4}
+\newcommand\jmenoAutora{Ondřej Válek}
+\newcommand\skolniRok{2025/2026}
+\newcommand\datumOdevzdani{\today}
+\newcommand\nazevPrace{Webová aplikace pro přípravu k maturitám\\s podporou interaktivního obsahu}
+
+\title{\nazevPrace}
+\author{\jmenoAutora}
+\date{\datumOdevzdani}
+
+\usepackage[top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm]{geometry}
+
+\usepackage[czech]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{cmap}
+
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{hyperref}
+
+\linespread{1.25}
+\setlength{\parskip}{0.5em}
+
+\usepackage[pagestyles]{titlesec}
+\titleformat{\chapter}[block]{\scshape\bfseries\LARGE}{\thechapter}{10pt}{\vspace{0pt}}[\vspace{-22pt}]
+\titleformat{\section}[block]{\scshape\bfseries\Large}{\thesection}{10pt}{\vspace{0pt}}
+\titleformat{\subsection}[block]{\bfseries\large}{\thesubsection}{10pt}{\vspace{0pt}}
+
+\usepackage{tocloft}
+\setlength{\cftbeforechapskip}{0.25em}
+\setlength{\cftbeforesecskip}{0.12em}
+\setlength{\cftsubsecindent}{1.5em}
+\setlength{\cftsubsubsecindent}{3em}
+\setlength{\cftchapnumwidth}{2em}
+\setlength{\cftsecnumwidth}{2.5em}
+\setlength{\cftsubsecnumwidth}{3em}
+\setlength{\cftaftertoctitleskip}{0pt}
+\renewcommand{\cftchapfont}{\normalsize\bfseries}
+\renewcommand{\cftsecfont}{\normalsize}
+\renewcommand{\cftsubsecfont}{\small}
+\renewcommand{\cftsubsubsecfont}{\small}
+\renewcommand{\cftchappagefont}{\normalsize}
+\renewcommand{\cftsecpagefont}{\normalsize}
+\renewcommand{\cftsubsecpagefont}{\small}
+\renewcommand{\cftsubsubsecpagefont}{\small}
+
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{2}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\renewcommand{\headrulewidth}{0.025pt}
+
+\usepackage{booktabs}
+\usepackage{url}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{enumitem}
+
+% Nastavení pro kód
+\lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    backgroundcolor=\color{gray!10},
+    language=Python,
+    keywordstyle=\color{blue},
+    stringstyle=\color{red},
+    commentstyle=\color{green!60!black}
+}
+
+\renewcommand{\lstlistingname}{Kód}
+\renewcommand{\lstlistlistingname}{Seznam programových kódů}
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{helvet}
+\usepackage{mathptmx}
+\usepackage{Oswald}
+
+\makeatletter
+\@namedef{ver@figureversions.sty}{9999/99/99}
+\newcommand{\DeclareFigureVersion}[2]{}
+\newcommand{\figureversion}[1]{}
+\makeatother
+
+\makeatletter
+\providecommand{\superiorSup}{}
+\providecommand{\textOsF}{}
+\providecommand{\textTOsF}{}
+\providecommand{\liningLF}{}
+\providecommand{\liningTLF}{}
+\providecommand{\tabularTab}{}
+\providecommand{\proportionalProp}{}
+\providecommand{\tabularmath}{}
+\providecommand{\proportionalmath}{}
+\makeatother
+
+\setlength{\headheight}{15pt}
+
+% Odstranění prázdných stránek po kapitolách
+\let\cleardoublepage\clearpage
+\makeatletter
+\renewcommand{\@openrightfalse}{\let\cleardoublepage\clearpage}
+\makeatother
+
+\begin{document}
+	
+	\pagestyle{empty}
+	\pagenumbering{Roman}
+
+%% Titulní stránka
+	\thispagestyle{empty}
+	{\fontfamily{phv}\selectfont
+		\vspace*{-1cm}
+		%% Logo školy
+		\begin{figure}[h!]
+			\centering
+			\includegraphics[width=0.5\linewidth]{obrazky/logo-skoly.png} 
+		\end{figure}
+		
+		{\bfseries
+			\begin{center}
+				\vspace{0.5cm}
+				\LARGE{ZÁVĚREČNÁ STUDIJNÍ PRÁCE}\\
+				\large{dokumentace}\\
+				\vspace{0.8cm}
+				\LARGE {\nazevPrace}\\
+			\end{center}  
+		}
+		
+		\vspace{0.5cm}
+		\begin{figure}[h!]
+			\centering
+			\includegraphics[width=0.7\linewidth]{obrazky/logo.png} 
+		\end{figure}
+		
+		\vspace{0.8cm}
+		\begin{center}
+			\begin{tabular}{ll}
+				\textbf{Autor:} & \jmenoAutora\\ 
+				\textbf{Obor:} & \kodOboru~{}\obor\\
+				\textbf{} & \zamereni\\
+				\textbf{Třída:} & \trida\\
+				\textbf{Školní rok:} & \skolniRok\\
+			\end{tabular}
+		\end{center}
+		\vfill
+	}
+	
+\newpage
+
+%% Poděkování a prohlášení
+	\noindent{\large{\bfseries{Poděkování}\\}}
+	\noindent Rád~bych poděkoval pánům učitelům Ing.~Petru Grussmannovi a~Mgr.~Marku Lučnému za~jejich odborné vedení a~cenné rady, které mi výrazně pomohly při realizaci projektu.
+	
+	\vspace*{0.7\textheight}
+
+	\noindent{\large{\bfseries{Prohlášení}\\}}
+	\noindent{Prohlašuji, že~jsem závěrečnou práci vypracoval samostatně a~uvedl veškeré použité 
+		informační zdroje.\\}
+	\noindent{Souhlasím, aby tato studijní práce byla použita k~výukovým a~prezentačním účelům na~Střední průmyslové a~umělecké škole v~Opavě, Praskova~399/8.}
+	\vfill
+	\noindent{V~Opavě~\datumOdevzdani\\}
+	\noindent
+	\begin{minipage}{\linewidth}
+		\hspace{9.5cm} 
+		\begin{tabular}{@{}p{6cm}@{}}
+			\dotfill \\
+			Podpis autora
+		\end{tabular}
+	\end{minipage}
+	
+\newpage
+
+%% Abstrakt
+	\noindent{\Large{\bfseries{Abstrakt}\\}}
+	\noindent Výsledkem projektu je funkční webová aplikace pro~přípravu studentů k~maturitním zkouškám z~předmětu Programové vybavení. Aplikace zahrnuje registraci uživatelů přes OAuth2 (Google, GitHub, Microsoft), včetně standardních operací s~uživatelským účtem. Uživatelé si mohou prohlížet studijní materiály, řešit interaktivní testy vytvořené v~H5P a~účastnit se diskusního fóra. Stěžejní částí aplikace je systém statistik, který studentům zobrazuje přehled jejich výsledků v~testech včetně grafického zobrazení a~automatického známkování. Učitelé a~administrátoři mohou spravovat předměty, okruhy, materiály a~testy. Aplikace má zcela responzivní design a~funguje na~všech zařízeních. Aplikace je postavena na~Django frameworku s~Wagtail CMS, využívá PostgreSQL databázi a~je připravena pro~nasazení pomocí Dockeru.
+	
+	\vspace{18pt}
+	
+	\noindent{\large{\bfseries{Klíčová slova}}}
+	
+	\noindent webová aplikace, Django, Wagtail CMS, H5P, OAuth2, PostgreSQL, responzivní design, vzdělávací platforma
+	
+	\vspace{18pt}
+
+	\noindent{\Large{\bfseries{Abstract}}}
+	
+	\noindent The result of this project is a functional web application for preparing students for final exams in the subject of Programming Equipment. The application includes user registration via OAuth2 (Google, GitHub, Microsoft), including standard user account operations. Users can browse study materials, solve interactive tests created in H5P, and participate in a discussion forum. The core part of the application is a statistics system that displays an overview of students' test results including graphical representation and automatic grading. Teachers and administrators can manage subjects, topics, materials, and tests. The application has a fully responsive design and works on all devices. The application is built on the Django framework with Wagtail CMS, uses PostgreSQL database, and is ready for deployment using Docker.
+	
+	\vspace{18pt}
+	
+	\noindent{\large{\bfseries{Keywords}}}
+	
+	\noindent web application, Django, Wagtail CMS, H5P, OAuth2, PostgreSQL, responsive design, educational platform
+	
+	\clearpage
+
+%% Obsah
+	\thispagestyle{empty}
+	\vspace*{-1.5cm}
+	\begingroup
+	\renewcommand{\baselinestretch}{0.85}\normalsize
+	\tableofcontents
+	\endgroup
+	
+	\pagenumbering{arabic}
+	\setcounter{page}{1}
+
+%% Úvod
+	\chapter*{Úvod}
+	\addcontentsline{toc}{chapter}{Úvod}
+	
+	Příprava k~maturitní zkoušce vyžaduje systematický přístup a~přehledný systém pro~organizaci studijních materiálů, testů a~sledování pokroku. Tradiční metody přípravy pomocí papírových poznámek a~tištěných materiálů jsou v~dnešní době nahrazovány moderními elektronickými řešeními, která nabízejí větší flexibilitu, interaktivitu a~možnost okamžité zpětné vazby.
+	
+	Mým cílem bylo vytvoření komplexní webové aplikace, která by studentům poskytla přehledný systém pro~přípravu k~maturitě z~předmětu Programové vybavení. Aplikace by měla obsahovat registraci a~přihlášení uživatelů včetně OAuth2 autentizace, umožnit správu studijních materiálů a~interaktivních testů vytvořených v~H5P, poskytovat statistické přehledy výsledků s~grafickým zobrazením a~automatickým známkováním, a~nabízet diskusní fórum pro~komunikaci mezi studenty a~učiteli.
+	
+	Celá webová aplikace by měla být plně responzivní, aby fungovala na~různých zařízeních od~desktopových počítačů až po~mobilní telefony. Aplikace by také měla být připravena pro~snadné nasazení pomocí Dockeru.
+	
+	V~této dokumentaci podrobně popisuji postup vytvoření dané aplikace. V~úvodu se zabývám návrhem databázového modelu a~architekturou aplikace. Následně řeším uživatelský systém s~OAuth2 autentizací, integraci H5P obsahu, systém statistik a~správu obsahu. V~závěru popisuji výsledky projektu a~možnosti dalšího rozvoje.
+
+	\chapter{Teoretická a metodická východiska}
+
+	\section{Webové vzdělávací platformy}
+	
+	Moderní vzdělávací platformy (Learning Management Systems~--~LMS) poskytují komplexní řešení pro~správu výukového obsahu, hodnocení studentů a~komunikaci. Mezi nejznámější patří Moodle, Canvas, Blackboard a~další. Tyto platformy obvykle zahrnují moduly pro~správu kurzů, testování, diskusní fóra a~statistiky.
+	
+	V~rámci tohoto projektu jsem se zaměřil na~vytvoření specializované platformy pro~přípravu k~maturitním zkouškám, která kombinuje prvky LMS s~moderními webovými technologiemi a~interaktivním obsahem.
+
+	\section{Architektura webových aplikací}
+	
+	Moderní webové aplikace obvykle využívají architekturu Model-View-Controller (MVC) nebo její varianty. Django framework implementuje Model-View-Template (MVT) architekturu, kde:
+	\begin{itemize}
+		\item \textbf{Model}~--~reprezentuje datovou strukturu a~logiku přístupu k~datům
+		\item \textbf{View}~--~zpracovává požadavky a~vrací odpovědi
+		\item \textbf{Template}~--~definuje prezentaci dat uživateli
+	\end{itemize}
+	
+	Tato architektura umožňuje oddělení logiky aplikace od~prezentace, což zajišťuje lepší udržovatelnost a~škálovatelnost kódu.
+
+	\section{Interaktivní vzdělávací obsah}
+	
+	H5P (HTML5 Package) je open-source framework pro~vytváření interaktivního vzdělávacího obsahu. Umožňuje vytvářet interaktivní videa, kvízy, prezentace a~další typy obsahu, které lze snadno integrovat do~webových aplikací. H5P obsah lze zobrazit buď pomocí iframe embed kódu, nebo pomocí standalone playeru, který umožňuje větší kontrolu nad~zobrazením a~ukládáním výsledků.
+
+	\chapter{Využité technologie}
+
+	\section{Django Framework}
+	
+	Django je vysokoúrovňový Python webový framework, který podporuje rychlý vývoj a~čistý, pragmatický design. Poskytuje množství vestavěných funkcí pro~autentizaci, správu databáze, administrační rozhraní a~další. Pro~tento projekt jsem použil Django~4.2+. Hlavní výhody Django zahrnují automatickou administraci (Django Admin), ORM pro~práci s~databází, zabudovanou autentizaci a~autorizaci, šablony pro~generování HTML, URL routing a~middleware pro~zpracování požadavků.
+
+	\section{Wagtail CMS}
+	
+	Wagtail je open-source CMS postavený na~Django, který poskytuje flexibilní systém pro~správu obsahu. Umožňuje vytvářet stránky s~různými typy bloků obsahu pomocí StreamField, což je ideální pro~vzdělávací obsah. Pro~tento projekt jsem použil Wagtail~5.2+.
+	
+	Wagtail poskytuje:
+	\begin{itemize}
+		\item Redakční rozhraní pro správu obsahu
+		\item StreamField pro flexibilní strukturu stránek
+		\item Správu obrázků a dokumentů
+		\item Vyhledávání
+		\item ModelViewSet API pro správu vlastních modelů
+	\end{itemize}
+	
+	\subsection{Bližší vysvětlení využití CMS Wagtail při tvorbě webu}
+	
+	Wagtail CMS byl v~tomto projektu využit jako nástroj pro~správu strukturovaného obsahu a~poskytuje redakční rozhraní pro~správu stránek. Hlavní výhoda Wagtailu spočívá v~jeho flexibilním systému StreamField, který umožňuje vytvářet stránky s~různými typy bloků obsahu (text, obrázky, H5P obsah, videa atd.) bez~nutnosti programování.
+	
+	V~rámci projektu jsem využil Wagtail pro:
+	\begin{itemize}
+		\item \textbf{Správu domovské stránky}~--~Wagtail poskytuje redakční rozhraní pro~úpravu hlavní stránky aplikace, kde lze přidávat různé bloky obsahu (text, obrázky, odkazy)
+		\item \textbf{Integraci s~vlastními modely}~--~Wagtail umožňuje integraci vlastních Django modelů (Subject, Topic, Material, Quiz) do~redakčního rozhraní pomocí ModelViewSet API, což umožňuje správu těchto entit přímo z~Wagtail adminu
+		\item \textbf{StreamField pro~flexibilní obsah}~--~Pro~stránky okruhů lze použít StreamField, který umožňuje učitelům přidávat různé typy bloků obsahu (text, H5P, obrázky) bez~nutnosti znalosti HTML nebo programování
+		\item \textbf{Správu médií}~--~Wagtail poskytuje integrovaný systém pro~správu obrázků a~dokumentů, který lze využít pro~ukládání a~zobrazování studijních materiálů
+	\end{itemize}
+	
+	Wagtail tedy slouží jako vrstva mezi databázovými modely a~uživatelským rozhraním, která umožňuje neprogramátorům (učitelům) spravovat obsah aplikace pomocí intuitivního redakčního rozhraní, zatímco programátor definuje strukturu a~typy bloků obsahu.
+
+	\section{PostgreSQL}
+	
+	PostgreSQL je pokročilý open-source relační databázový systém. Pro~produkční prostředí je PostgreSQL ideální volbou díky své spolehlivosti, výkonu a~podpoře pokročilých funkcí. Pro~vývoj jsem použil SQLite, což zjednodušuje nastavení vývojového prostředí. PostgreSQL poskytuje ACID compliance, pokročilé datové typy, full-textové vyhledávání a~JSON podporu, což je důležité pro~vzdělávací platformu s~více současnými uživateli. V~rámci projektu využívám PostgreSQL pro~ukládání všech dat aplikace pomocí Django ORM.
+
+	\section{Bootstrap 5}
+	
+	Bootstrap je front-end framework pro~rychlý vývoj responzivních webových aplikací. Poskytuje předpřipravené CSS třídy a~JavaScript komponenty pro~vytváření moderních uživatelských rozhraní. Bootstrap~5 zajišťuje, že~aplikace vypadá dobře a~funguje na~všech zařízeních. Grid systém umožňuje vytvářet responzivní layouty, které se automaticky přizpůsobují různým velikostem obrazovek. V~projektu jsem využil Bootstrap~5 pro~vytvoření jednotného a~moderního vzhledu aplikace, včetně layoutu stránek, komponent karet a~responzivních tabulek.
+
+	\section{Chart.js}
+	
+	Chart.js je JavaScriptová knihovna pro~vytváření grafů a~diagramů. Použil jsem ji pro~zobrazení statistik výsledků testů studentů. Chart.js poskytuje jednoduché API pro~vytváření různých typů grafů (sloupcové, čárové, koláčové atd.) s~možností interakce. Je to lehká knihovna, která nevyžaduje závislosti jako jQuery. V~projektu jsem použil sloupcové grafy pro~zobrazení výsledků testů, které jsou dynamicky generovány pomocí JavaScriptu na~základě dat získaných z~API.
+
+	\section{H5P Standalone Player}
+	
+	H5P Standalone Player umožňuje zobrazovat H5P obsah bez~nutnosti externího H5P serveru. Obsahuje všechny potřebné JavaScript a~CSS soubory pro~zobrazení interaktivního obsahu. Toto řešení je ideální pro~aplikace, které chtějí mít plnou kontrolu nad~zobrazením a~ukládáním výsledků.
+	
+	H5P Standalone Player je distribuován jako sada JavaScript a~CSS souborů, které lze zahrnout přímo do~projektu. H5P soubory (.h5p) jsou ve~skutečnosti ZIP archivy obsahující JSON konfigurační soubory, JavaScript, CSS a~další zdroje. Standalone Player tyto soubory rozbalí a~zobrazí pomocí vlastního renderovacího engine.
+	
+	V~projektu jsem integroval H5P Standalone Player pro~zobrazení interaktivních testů. H5P soubory jsou uloženy v~adresáři \texttt{media/h5p/} a~jsou zobrazovány pomocí JavaScript API. Standalone Player poskytuje callback funkce, které umožňují zachytit výsledky testů a~uložit je do~databáze. Toto je klíčové pro~systém statistik, protože umožňuje sledovat pokusy studentů a~vypočítávat průměrné skóre a~známky.
+
+	\section{Django-allauth}
+	
+	Django-allauth je balíček pro~Django, který poskytuje komplexní řešení pro~autentizaci, registraci a~správu účtů. Podporuje také OAuth2 autentizaci přes různé poskytovatele (Google, GitHub, Microsoft, Facebook atd.). Tento balíček výrazně zjednodušuje implementaci uživatelského systému.
+	
+	Django-allauth poskytuje hotové šablony a~views pro~registraci, přihlášení, odhlášení, změnu hesla, reset hesla a~ověření emailu. Pro~OAuth2 autentizaci stačí nakonfigurovat Social Applications v~Django adminu s~client ID a~secret key od~poskytovatele. Django-allauth pak automaticky zpracuje celý OAuth2 flow včetně redirectů a~získání uživatelských dat.
+	
+	V~projektu jsem využil django-allauth pro~implementaci autentizace přes Google, GitHub a~Microsoft. OAuth2 credentials jsou uloženy v~.env souboru a~automaticky se načítají při~spuštění aplikace pomocí management commandu. Django-allauth také poskytuje možnost propojení více OAuth2 účtů s~jedním uživatelským účtem, což zvyšuje flexibilitu pro~uživatele.
+
+	\section{Docker}
+	
+	Docker je platforma pro~kontejnerizaci aplikací. Umožňuje zabalit aplikaci a~všechny její závislosti do~kontejneru, který lze spustit na~jakémkoli systému s~Dockerem. Toto řešení zajišťuje konzistentní prostředí pro~vývoj i~produkci. V~projektu jsem vytvořil Dockerfile, který definuje image aplikace včetně Python prostředí, závislostí a~konfigurace. Docker Compose pak umožňuje spustit aplikaci spolu s~PostgreSQL databází v~jednom příkazu. Výhody Dockeru zahrnují snadné nasazení, konzistentní prostředí pro~všechny vývojáře a~zjednodušenou správu závislostí.
+
+	\chapter{Způsoby řešení a použité postupy}
+
+	\section{Založení projektu}
+	
+	Projekt byl vytvořen pomocí standardního Django projektu s~následující strukturou:
+	
+	\begin{lstlisting}
+maturitni_projekt_druhy_pokus/
+├── accounts/          # Uživatelské účty a role
+├── subjects/          # Předměty a maturitní okruhy
+├── materials/         # Výukové materiály
+├── quizzes/           # Testy a kvízy
+├── forum/             # Diskusní fórum
+├── maturitni_projekt/ # Hlavní konfigurace projektu
+├── templates/         # HTML šablony
+├── static/            # Statické soubory (CSS, JS)
+└── media/             # Uživatelsky nahrané soubory
+	\end{lstlisting}
+	
+	Každá aplikace obsahuje modely (models.py), views (views.py), URL konfiguraci (urls.py) a~šablony v~adresáři templates.
+
+	\section{Databázový model}
+	
+	Databázový model aplikace je navržen tak, aby podporoval hierarchickou strukturu předmětů a~okruhů, různé typy materiálů a~testů, a~sledování pokusů studentů.
+	
+	Hlavní modely:
+	\begin{itemize}
+		\item \textbf{User}~--~rozšířený uživatelský model s~rolemi (Student, Učitel, Admin)
+		\item \textbf{Subject}~--~maturitní předmět
+		\item \textbf{Topic}~--~okruh v~rámci předmětu
+		\item \textbf{Material}~--~výukový materiál (PDF, video, H5P, odkaz, text, obrázek)
+		\item \textbf{Quiz}~--~test/kvíz s~H5P integrací
+		\item \textbf{QuizAttempt}~--~pokus studenta o~vyplnění testu
+		\item \textbf{ForumThread}~--~diskusní vlákno
+		\item \textbf{ForumPost}~--~příspěvek ve~fóru
+	\end{itemize}
+	
+	Vztahy mezi modely:
+	\begin{itemize}
+		\item Subject má více Topic (one-to-many)
+		\item Topic má více Material a~Quiz (one-to-many)
+		\item Quiz má více QuizAttempt (one-to-many)
+		\item User má více QuizAttempt (one-to-many)
+		\item ForumThread má více ForumPost (one-to-many)
+	\end{itemize}
+
+	\section{Autentizace a autorizace}
+	
+	\subsection{Balíček django-allauth}
+	
+	Pro~autentizaci jsem použil balíček django-allauth, který poskytuje:
+	\begin{itemize}
+		\item Registraci uživatelů
+		\item Přihlášení a~odhlášení
+		\item Ověření emailu
+		\item Reset hesla
+		\item OAuth2 autentizaci přes Google, GitHub a~Microsoft
+	\end{itemize}
+	
+	Konfigurace OAuth2 probíhá pomocí Social Applications v~Django adminu, které jsou automaticky vytvářeny z~hodnot v~.env souboru pomocí management commandu.
+	
+	\subsection{Role uživatelů}
+	
+	Aplikace rozlišuje tři role uživatelů:
+	\begin{itemize}
+		\item \textbf{Student}~--~může prohlížet materiály, řešit testy, účastnit se diskusí
+		\item \textbf{Učitel}~--~může vše co~student + vytvářet a~spravovat obsah (předměty, okruhy, materiály, testy)
+		\item \textbf{Administrátor}~--~má plná oprávnění včetně správy uživatelů
+	\end{itemize}
+	
+	Autorizace je kontrolována pomocí Django mixinů (LoginRequiredMixin) a~vlastních kontrol v~views.
+
+	\section{Integrace H5P obsahu}
+	
+	H5P obsah je integrován do~aplikace dvěma způsoby:
+	
+	\subsection{H5P Standalone Player}
+	
+	Pro~novější implementaci jsem použil H5P Standalone Player, který umožňuje zobrazovat H5P obsah přímo v~aplikaci bez~nutnosti externího serveru. H5P soubory (.h5p) jsou rozbalovány do~adresáře media/h5p/ a~zobrazovány pomocí JavaScript API.
+	
+	Výhody tohoto přístupu:
+	\begin{itemize}
+		\item Plná kontrola nad~zobrazením
+		\item Možnost ukládání výsledků do~vlastní databáze
+		\item Žádná závislost na~externím serveru
+		\item Lepší výkon
+	\end{itemize}
+	
+	\subsection{Iframe embed kód}
+	
+	Pro~starší obsah nebo obsah hostovaný na~externím serveru lze použít iframe embed kód, který je uložen v~databázi a~zobrazován přímo v~šabloně.
+
+	\section{Systém statistik}
+	
+	Systém statistik poskytuje studentům a~učitelům přehled o~výsledcích testů:
+	
+	\subsection{Statistiky pro~studenty}
+	
+	Student vidí na~stránce předmětu:
+	\begin{itemize}
+		\item Tabulku všech testů v~předmětu s~informacemi o:
+		\begin{itemize}
+			\item Počtu pokusů
+			\item Průměrném skóre
+			\item Datumu a~výsledku posledního pokusu
+			\item Automaticky vypočítané známce
+		\end{itemize}
+		\item Graf výsledků testů (Chart.js) zobrazující poslední výsledek a~průměrné skóre
+	\end{itemize}
+	
+	\subsection{Statistiky pro~učitele}
+	
+	Učitel vidí:
+	\begin{itemize}
+		\item Tabulku všech studentů v~předmětu s:
+		\begin{itemize}
+			\item Průměrným skóre přes všechny testy
+			\item Průměrnou známkou
+			\item Celkovým počtem pokusů
+			\item Počtem absolvovaných testů
+		\end{itemize}
+		\item Možnost zobrazit detailní statistiky konkrétního studenta
+	\end{itemize}
+	
+	\subsection{Automatické známkování}
+	
+	Známky jsou automaticky vypočítávány podle procentuálního skóre:
+	\begin{itemize}
+		\item 85--100\,\% = 1 (výborně)
+		\item 70--84\,\% = 2 (chvalitebně)
+		\item 55--69\,\% = 3 (dobře)
+		\item 40--54\,\% = 4 (dostatečně)
+		\item 0--39\,\% = 5 (nedostatečně)
+	\end{itemize}
+
+	\section{Správa obsahu (CRUD operace)}
+	
+	Učitelé a~administrátoři mohou spravovat obsah aplikace:
+	
+	\subsection{Správa předmětů}
+	
+	\begin{itemize}
+		\item Vytváření nových předmětů
+		\item Mazání předmětů (s~potvrzením)
+		\item Automatické vytváření slugů z~názvu
+	\end{itemize}
+	
+	\subsection{Správa okruhů}
+	
+	\begin{itemize}
+		\item Vytváření okruhů v~rámci předmětu
+		\item Mazání okruhů
+		\item Nastavení pořadí zobrazení
+	\end{itemize}
+	
+	\subsection{Správa testů a~materiálů}
+	
+	\begin{itemize}
+		\item Vytváření testů s~H5P obsahem
+		\item Vytváření materiálů různých typů
+		\item Mazání testů a~materiálů
+		\item Nastavení parametrů testů (časový limit, maximální počet pokusů, passing score)
+	\end{itemize}
+	
+	Všechny CRUD operace jsou implementovány pomocí Django class-based views (CreateView, DeleteView) s~kontrolou oprávnění.
+
+	\section{Diskusní fórum}
+	
+	Každý okruh má své vlastní diskusní fórum, kde studenti a~učitelé mohou:
+	\begin{itemize}
+		\item Vytvářet nová diskusní vlákna
+		\item Přidávat příspěvky do~vláken
+		\item Upravovat a~mazat vlastní příspěvky
+		\item Učitelé mohou připínat a~zamykat vlákna
+	\end{itemize}
+
+	\section{Responzivní design}
+	
+	Aplikace je navržena s~responzivním designem pomocí Bootstrap~5, což zajišťuje:
+	\begin{itemize}
+		\item Správné zobrazení na~všech velikostech obrazovek
+		\item Adaptivní layout pro~mobilní zařízení
+		\item Touch-friendly ovládání
+		\item Optimalizované zobrazení tabulek a~grafů
+	\end{itemize}
+
+	\chapter{Výsledky řešení, výstupy, uživatelský manuál}
+
+	\section{Funkce aplikace}
+	
+	Aplikace poskytuje následující funkce:
+	
+	\subsection{Pro studenty}
+	
+	\begin{itemize}
+		\item Registrace a~přihlášení (včetně OAuth2)
+		\item Prohlížení předmětů a~okruhů
+		\item Prohlížení a~stahování studijních materiálů
+		\item Řešení interaktivních testů (H5P)
+		\item Zobrazení statistik výsledků s~grafy
+		\item Účast v~diskusním fóru
+		\item Přidávání připomínek a~zpětné vazby
+	\end{itemize}
+	
+	\subsection{Pro~učitele}
+	
+	Všechny funkce studenta plus:
+	\begin{itemize}
+		\item Správa předmětů a~okruhů
+		\item Vytváření a~správa materiálů
+		\item Vytváření a~správa testů
+		\item Zobrazení statistik všech studentů
+		\item Detailní statistiky jednotlivých studentů
+		\item Moderování diskusního fóra
+	\end{itemize}
+	
+	\subsection{Pro~administrátory}
+	
+	Všechny funkce učitele plus:
+	\begin{itemize}
+		\item Správa uživatelů
+		\item Přístup do~Django adminu
+		\item Přístup do~Wagtail CMS
+		\item Konfigurace aplikace
+	\end{itemize}
+
+	\section{Grafická podoba uživatelského rozhraní}
+	
+	V této sekci jsou zobrazeny screenshoty jednotlivých částí uživatelského rozhraní aplikace. Tyto obrázky ilustrují vzhled a funkčnost aplikace z pohledu různých typů uživatelů.
+	
+	% Místa pro screenshoty - uživatel je může přidat později
+	% \begin{figure}[h!]
+	% 	\centering
+	% 	\includegraphics[width=0.9\textwidth]{screenshots/domovska-stranka.png}
+	% 	\caption{Domovská stránka aplikace}
+	% 	\label{fig:domovska-stranka}
+	% \end{figure}
+	
+	% \begin{figure}[h!]
+	% 	\centering
+	% 	\includegraphics[width=0.9\textwidth]{screenshots/seznam-predmetu.png}
+	% 	\caption{Seznam maturitních předmětů}
+	% 	\label{fig:seznam-predmetu}
+	% \end{figure}
+	
+	% \begin{figure}[h!]
+	% 	\centering
+	% 	\includegraphics[width=0.9\textwidth]{screenshots/detail-predmetu.png}
+	% 	\caption{Detail předmětu se statistikami}
+	% 	\label{fig:detail-predmetu}
+	% \end{figure}
+	
+	% \begin{figure}[h!]
+	% 	\centering
+	% 	\includegraphics[width=0.9\textwidth]{screenshots/h5p-test.png}
+	% 	\caption{Interaktivní H5P test}
+	% 	\label{fig:h5p-test}
+	% \end{figure}
+	
+	% \begin{figure}[h!]
+	% 	\centering
+	% 	\includegraphics[width=0.9\textwidth]{screenshots/statistiky-studenta.png}
+	% 	\caption{Statistiky studenta s grafem}
+	% 	\label{fig:statistiky-studenta}
+	% \end{figure}
+	
+	% \begin{figure}[h!]
+	% 	\centering
+	% 	\includegraphics[width=0.9\textwidth]{screenshots/admin-rozhrani.png}
+	% 	\caption{Administrační rozhraní pro učitele}
+	% 	\label{fig:admin-rozhrani}
+	% \end{figure}
+
+	\section{Instalace a nasazení}
+	
+	Aplikace je připravena pro~snadné nasazení pomocí Dockeru. Pro~vývoj lze použít standardní Django vývojový server.
+	
+	\subsection{Požadavky}
+	
+	\begin{itemize}
+		\item Python~3.10+
+		\item PostgreSQL (pro~produkci) nebo SQLite (pro~vývoj)
+		\item Docker a~Docker Compose (volitelně)
+	\end{itemize}
+	
+	\subsection{Rychlý start}
+	
+	\begin{enumerate}
+		\item Klonování repositáře z~GitHubu
+		\item Spuštění setup skriptu (setup.bat nebo setup.sh)
+		\item Instalace závislostí: \texttt{pip install -r requirements.txt}
+		\item Spuštění migrací: \texttt{python manage.py migrate}
+		\item Vytvoření superuživatele: \texttt{python manage.py createsuperuser}
+		\item Vytvoření základní struktury: \texttt{python manage.py setup\_basic\_data}
+		\item Spuštění serveru: \texttt{python manage.py runserver}
+	\end{enumerate}
+
+	\section{Splněné a nesplněné cíle}
+	
+	\subsection{Splněné cíle}
+	
+	\begin{itemize}
+		\item Komplexní uživatelský systém s~OAuth2 autentizací
+		\item Správa předmětů, okruhů, materiálů a~testů
+		\item Integrace H5P interaktivního obsahu
+		\item Systém statistik s~grafickým zobrazením
+		\item Automatické známkování
+		\item Diskusní fórum
+		\item Responzivní design
+		\item CRUD operace pro~učitele/admin
+		\item Dockerizace aplikace
+		\item Automatizované nastavení OAuth2 credentials
+	\end{itemize}
+	
+	\subsection{Možnosti dalšího rozvoje}
+	
+	\begin{itemize}
+		\item Export výsledků testů do~PDF/Excel
+		\item Notifikace o~nových materiálech a~testech
+		\item Pokročilejší analýzy výsledků
+		\item Mobilní aplikace
+		\item Offline režim
+		\item Více jazyků (i18n)
+		\item Integrace s~dalšími vzdělávacími platformami
+	\end{itemize}
+
+	\chapter*{Závěr}
+	\addcontentsline{toc}{chapter}{Závěr}
+	
+	Cílem projektu bylo vytvoření komplexní webové aplikace pro~přípravu studentů k~maturitním zkouškám z~předmětu Programové vybavení. Aplikace je postavena na~Django frameworku s~Wagtail CMS, využívá PostgreSQL databázi a~je připravena pro~nasazení pomocí Dockeru.
+	
+	Základem aplikace je hierarchická struktura předmětů a~okruhů, do~kterých jsou organizovány studijní materiály a~testy. Interaktivní obsah je integrován pomocí H5P Standalone Player, což umožňuje plnou kontrolu nad~zobrazením a~ukládáním výsledků.
+	
+	Stěžejní částí aplikace je systém statistik, který poskytuje studentům přehled o~jejich výsledcích v~testech včetně grafického zobrazení a~automatického známkování. Učitelé mají k~dispozici přehledné statistiky všech studentů s~možností zobrazit detailní informace o~jednotlivých studentech.
+	
+	Uživatelský systém podporuje OAuth2 autentizaci přes Google, GitHub a~Microsoft, což zjednodušuje registraci a~přihlášení. Aplikace rozlišuje tři role uživatelů (Student, Učitel, Administrátor) s~odpovídajícími oprávněními.
+	
+	Aplikace je zcela funkční a~připravená k~použití. Díky responzivnímu designu funguje na~všech zařízeních od~desktopových počítačů až po~mobilní telefony. Dockerizace zajišťuje snadné nasazení na~jakémkoli systému.
+	
+	Aplikace je zálohovaná na~GitHubu a~může být použita jako základ pro~další rozvoj vzdělávací platformy.
+
+	\chapter*{Seznam použité literatury}
+	\addcontentsline{toc}{chapter}{Seznam použité literatury}
+	
+	\begin{enumerate}
+		\item Django: The web framework for perfectionists with deadlines. [online]. Dostupné z: \url{https://www.djangoproject.com/}
+		
+		\item Wagtail CMS: Enterprise Content Management with Django. [online]. Dostupné z: \url{https://www.wagtail.org/}
+		
+		\item PostgreSQL: The World's Most Advanced Open Source Relational Database. [online]. Dostupné z: \url{https://www.postgresql.org/}
+		
+		\item Bootstrap: The most popular HTML, CSS, and JavaScript framework. [online]. Dostupné z: \url{https://getbootstrap.com/}
+		
+		\item Chart.js: Simple yet flexible JavaScript charting library. [online]. Dostupné z: \url{https://www.chartjs.org/}
+		
+		\item H5P: Create, share and reuse interactive HTML5 content. [online]. Dostupné z: \url{https://h5p.org/}
+		
+		\item Django-allauth: Integrated set of Django applications addressing authentication, registration, account management. [online]. Dostupné z: \url{https://django-allauth.readthedocs.io/}
+		
+		\item Docker: Empowering App Development for Developers. [online]. Dostupné z: \url{https://www.docker.com/}
+		
+		\item MDN Web Docs: Django Web Framework (Python). [online]. Dostupné z: \url{https://developer.mozilla.org/en-US/docs/Learn/Server-side/Django}
+		
+		\item W3Schools: Online Web Tutorials. [online]. Dostupné z: \url{https://www.w3schools.com/}
+		
+		\item Simple is Better Than Complex: Stories about Python, Django and Web Development. [online]. Dostupné z: \url{https://simpleisbetterthancomplex.com/}
+		
+		\item Django REST Framework: Powerful and flexible toolkit for building Web APIs. [online]. Dostupné z: \url{https://www.django-rest-framework.org/}
+	\end{enumerate}
+
+	\listoffigures
+	\listoftables
+	\lstlistoflistings
+
+\end{document}
+
