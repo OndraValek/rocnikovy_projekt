@@ -70,6 +70,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'accounts.middleware.StaffStatusMiddleware',  # Automatické nastavení is_staff pro učitele/adminy
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'accounts.middleware.OAuth2LoggingMiddleware',  # Před allauth middleware
@@ -164,6 +165,7 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 # Django Allauth
 AUTHENTICATION_BACKENDS = [
+    'accounts.backends.RoleBasedStaffBackend',  # Vlastní backend pro automatické nastavení is_staff
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
@@ -217,6 +219,7 @@ SOCIALACCOUNT_PROVIDERS = {
             'openid',
             'email',
             'profile',
+            'User.Read',  # Potřebné pro získání uživatelských dat
         ],
         'TENANT': 'common',  # Pro multi-tenant aplikace (podporuje osobní Microsoft účty i organizační)
         'APP': {

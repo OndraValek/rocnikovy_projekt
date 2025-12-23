@@ -49,11 +49,26 @@ class User(AbstractUser):
     
     @property
     def is_teacher(self):
-        return self.role == self.Role.TEACHER
+        """Vrátí True, pokud je uživatel učitel nebo admin."""
+        return self.role == self.Role.TEACHER or self.role == self.Role.ADMIN or self.is_superuser
     
     @property
     def is_admin(self):
         return self.role == self.Role.ADMIN or self.is_superuser
+    
+    def save(self, *args, **kwargs):
+        """
+        Přepsat save metodu, aby automaticky nastavila is_staff a is_active podle role.
+        """
+        # Před uložením nastavit is_staff a is_active podle role
+        if self.role in [self.Role.TEACHER, self.Role.ADMIN] or self.is_superuser:
+            self.is_staff = True
+            self.is_active = True  # Učitelé a admini musí být aktivní pro přístup do Wagtail
+        elif self.role == self.Role.STUDENT and not self.is_superuser:
+            self.is_staff = False
+            # Studenti mohou být aktivní (pro přístup do aplikace)
+        
+        super().save(*args, **kwargs)
 
 
 class UserProfile(models.Model):

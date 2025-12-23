@@ -1,84 +1,123 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}{{ subject.name }} - {{ block.super }}{% endblock %}
 
 {% block content %}
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{% url 'subjects:subject_list' %}">Předměty</a></li>
-        <li class="breadcrumb-item active">{{ subject.name }}</li>
-    </ol>
-</nav>
+<div class="fade-in">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'subjects:subject_list' %}"><i class="bi bi-house"></i> Předměty</a></li>
+            <li class="breadcrumb-item active">{{ subject.name }}</li>
+        </ol>
+    </nav>
 
-<div class="row">
-    <!-- Pravá část - Hlavní obsah -->
-    <div class="col-12">
-        <h1>{{ subject.name }}</h1>
-
-        {% if subject.description %}
-            <p class="lead">{{ subject.description }}</p>
-        {% endif %}
-
-        <div class="d-flex justify-content-between align-items-center mt-4">
-            <h2 class="mb-0">Maturitní okruhy</h2>
-            {% if user.is_authenticated %}
-                {% if user.is_teacher or user.is_admin %}
-                <a href="{% url 'subjects:topic_create' subject.slug %}" class="btn btn-success">
-                    <i class="bi bi-plus-circle"></i> Přidat okruh
-                </a>
-                {% endif %}
-            {% endif %}
-        </div>
-
-{% if topics %}
-    <div class="list-group mt-3">
-        {% for topic in topics %}
-            <div class="list-group-item">
-                <div class="d-flex w-100 justify-content-between align-items-start">
-                    <div class="flex-grow-1">
-                        <a href="{% url 'subjects:topic_detail' subject.slug topic.slug %}" class="text-decoration-none">
-                            <h5 class="mb-1">{{ topic.name }}</h5>
-                        </a>
-                        {% if topic.description %}
-                            <p class="mb-1">{{ topic.description|truncatewords:20|striptags }}</p>
-                        {% endif %}
-                    </div>
-                    <div class="d-flex gap-2 align-items-center">
-                        <small class="text-muted me-2">{{ topic.order }}</small>
-                        {% if user.is_authenticated %}
-                            {% if user.is_teacher or user.is_admin %}
-                            <a href="{% url 'subjects:topic_delete' subject.slug topic.slug %}" class="btn btn-sm btn-danger" onclick="return confirm('Opravdu chcete smazat okruh \"{{ topic.name }}\"? Tato akce je nevratná!');">
-                                <i class="bi bi-trash"></i>
-                            </a>
-                            {% endif %}
-                        {% endif %}
-                    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-soft mb-4">
+                <div class="card-body p-4">
+                    <h1 class="text-gradient mb-3">{{ subject.name }}</h1>
+                    {% if subject.description %}
+                        <p class="lead text-muted mb-0">{{ subject.description }}</p>
+                    {% endif %}
                 </div>
             </div>
-        {% endfor %}
-    </div>
-{% else %}
-    <p class="mt-3">Zatím nejsou k dispozici žádné okruhy.</p>
-{% endif %}
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="mb-0">
+                    <i class="bi bi-list-ul text-primary"></i> Maturitní okruhy
+                </h2>
+                {% if user.is_authenticated %}
+                    {% if user.is_teacher or user.is_admin %}
+                    <a href="{% url 'subjects:topic_create' subject.slug %}" class="btn btn-success">
+                        <i class="bi bi-plus-circle"></i> Přidat okruh
+                    </a>
+                    {% endif %}
+                {% endif %}
+            </div>
+
+            {% if topics %}
+                <div class="row g-3">
+                    {% for topic in topics %}
+                        <div class="col-12">
+                            <div class="topic-item {% if user.is_authenticated and user.is_student and topic.id in completed_topic_ids %}topic-completed{% endif %}">
+                                <div class="d-flex w-100 justify-content-between align-items-start">
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex align-items-center gap-2 mb-2">
+                                            <span class="badge bg-primary">{{ topic.order }}</span>
+                                            {% if user.is_authenticated and user.is_student %}
+                                                <div class="form-check form-check-lg d-inline-flex align-items-center">
+                                                    <input class="form-check-input topic-checkbox" 
+                                                           type="checkbox" 
+                                                           data-topic-id="{{ topic.id }}"
+                                                           id="topic-checkbox-{{ topic.id }}"
+                                                           {% if topic.id in completed_topic_ids %}checked{% endif %}
+                                                           style="display: none;">
+                                                    <label class="form-check-label mb-0" for="topic-checkbox-{{ topic.id }}" title="Označit jako dokončený">
+                                                        <i class="bi {% if topic.id in completed_topic_ids %}bi-check-circle-fill text-success{% else %}bi-circle text-muted{% endif %}" style="font-size: 1.5rem;"></i>
+                                                    </label>
+                                                </div>
+                                            {% endif %}
+                                            <a href="{% url 'subjects:topic_detail' subject.slug topic.slug %}" class="text-decoration-none">
+                                                <h5 class="mb-0">{{ topic.name }}</h5>
+                                            </a>
+                                        </div>
+                                        {% if topic.description %}
+                                            <p class="text-muted mb-0">{{ topic.description|truncatewords:25|striptags }}</p>
+                                        {% endif %}
+                                    </div>
+                                    <div class="d-flex gap-2 align-items-center ms-3">
+                                        <a href="{% url 'subjects:topic_detail' subject.slug topic.slug %}" class="btn btn-sm btn-primary">
+                                            <i class="bi bi-arrow-right"></i> Otevřít
+                                        </a>
+                                        {% if user.is_authenticated %}
+                                            {% if user.is_teacher or user.is_admin %}
+                                            <a href="{% url 'subjects:topic_delete' subject.slug topic.slug %}" 
+                                               class="btn btn-sm btn-danger" 
+                                               onclick="return confirm('Opravdu chcete smazat okruh \"{{ topic.name }}\"? Tato akce je nevratná!');"
+                                               title="Smazat okruh">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                            {% endif %}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <div class="empty-state-icon">
+                        <i class="bi bi-folder-x"></i>
+                    </div>
+                    <h3 class="text-muted">Zatím nejsou k dispozici žádné okruhy</h3>
+                    <p class="text-muted">Okruhy budou zobrazeny, jakmile budou přidány do systému.</p>
+                </div>
+            {% endif %}
 
         <!-- Statistiky pro studenty -->
         {% if user.is_authenticated and user.is_student and student_stats %}
         <div class="mt-5">
-            <h2>Statistiky testů</h2>
+            <div class="card shadow-soft mb-4">
+                <div class="card-header">
+                    <h2 class="mb-0"><i class="bi bi-graph-up"></i> Statistiky testů</h2>
+                </div>
+            </div>
             
             {% if student_stats.quizzes %}
-            <div class="card mb-4">
+            <div class="card shadow-soft mb-4">
                 <div class="card-body">
-                    <h5 class="card-title">Přehled testů</h5>
+                    <h5 class="card-title mb-4">
+                        <i class="bi bi-list-check text-primary"></i> Přehled testů
+                    </h5>
                     <div class="table-responsive">
                         <table class="table table-hover">
                             <thead>
                                 <tr>
                                     <th>Okruh</th>
                                     <th>Test</th>
-                                    <th>Počet pokusů</th>
                                     <th>Průměrné skóre</th>
-                                    <th>Poslední pokus</th>
                                     <th>Poslední výsledek</th>
                                     <th>Známka</th>
                                 </tr>
@@ -93,22 +132,8 @@
                                         </a>
                                     </td>
                                     <td>
-                                        {% if quiz_stat.attempt_count > 0 %}
-                                            <span class="badge bg-primary">{{ quiz_stat.attempt_count }}</span>
-                                        {% else %}
-                                            <span class="text-muted">0</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>
                                         {% if quiz_stat.average_score is not None %}
                                             <span class="fw-bold">{{ quiz_stat.average_score }}%</span>
-                                        {% else %}
-                                            <span class="text-muted">-</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% if quiz_stat.last_date %}
-                                            {{ quiz_stat.last_date|date:"d.m.Y H:i" }}
                                         {% else %}
                                             <span class="text-muted">-</span>
                                         {% endif %}
@@ -136,17 +161,9 @@
                     </div>
                 </div>
             </div>
-            
-            <!-- Graf výsledků -->
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h5 class="card-title">Graf výsledků testů</h5>
-                    <canvas id="quizResultsChart" height="100"></canvas>
-                </div>
-            </div>
             {% else %}
             <div class="alert alert-info">
-                Zatím jste neabsolvovali žádné testy v tomto předmětu.
+                <i class="bi bi-info-circle"></i> Zatím jste neabsolvovali žádné testy v tomto předmětu.
             </div>
             {% endif %}
         </div>
@@ -155,12 +172,18 @@
         <!-- Statistiky pro učitele -->
         {% if user.is_authenticated and user.is_teacher and teacher_stats %}
         <div class="mt-5">
-            <h2>Statistiky studentů</h2>
+            <div class="card shadow-soft mb-4">
+                <div class="card-header">
+                    <h2 class="mb-0"><i class="bi bi-people"></i> Statistiky studentů</h2>
+                </div>
+            </div>
             
             {% if teacher_stats.students %}
-            <div class="card mb-4">
+            <div class="card shadow-soft mb-4">
                 <div class="card-body">
-                    <h5 class="card-title">Přehled studentů</h5>
+                    <h5 class="card-title mb-4">
+                        <i class="bi bi-list-check text-primary"></i> Přehled studentů
+                    </h5>
                     <div class="table-responsive">
                         <table class="table table-hover">
                             <thead>
@@ -169,7 +192,6 @@
                                     <th>Třída</th>
                                     <th>Průměrné skóre</th>
                                     <th>Průměrná známka</th>
-                                    <th>Počet pokusů</th>
                                     <th>Testů absolvováno</th>
                                     <th>Akce</th>
                                 </tr>
@@ -196,9 +218,6 @@
                                         {% endif %}
                                     </td>
                                     <td>
-                                        <span class="badge bg-primary">{{ student_stat.total_attempts }}</span>
-                                    </td>
-                                    <td>
                                         <span class="badge bg-info">{{ student_stat.quizzes_attempted }} / {{ teacher_stats.total_quizzes }}</span>
                                     </td>
                                     <td>
@@ -223,124 +242,52 @@
 
         <!-- Sekce připomínek -->
         <div class="mt-5">
-            <h2>Připomínky a zpětná vazba</h2>
+            <div class="card shadow-soft mb-4">
+                <div class="card-header">
+                    <h2 class="mb-0"><i class="bi bi-chat-dots"></i> Připomínky a zpětná vazba</h2>
+                </div>
+            </div>
             <div id="feedback-section" data-content-type="subject" data-object-id="{{ subject.id }}">
                 <!-- Formulář pro přidání připomínky -->
                 {% if user.is_authenticated %}
-                <div class="card mb-4">
+                <div class="card shadow-soft mb-4">
                     <div class="card-body">
-                        <h5 class="card-title">Přidat připomínku</h5>
+                        <h5 class="card-title mb-3">
+                            <i class="bi bi-pencil-square text-primary"></i> Přidat připomínku
+                        </h5>
                         <form id="feedback-form">
                             <div class="mb-3">
-                                <textarea class="form-control" id="feedback-text" rows="3" placeholder="Napište svou připomínku nebo zpětnou vazbu..." required></textarea>
+                                <textarea class="form-control" id="feedback-text" rows="4" placeholder="Napište svou připomínku nebo zpětnou vazbu..." required></textarea>
                             </div>
-                            <button type="submit" class="btn btn-primary">Odeslat připomínku</button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-send"></i> Odeslat připomínku
+                            </button>
                         </form>
                     </div>
                 </div>
                 {% else %}
                 <div class="alert alert-info">
-                    Pro přidání připomínky se musíte <a href="{% url 'account_login' %}">přihlásit</a>.
+                    <i class="bi bi-info-circle"></i> Pro přidání připomínky se musíte <a href="{% url 'account_login' %}">přihlásit</a>.
                 </div>
                 {% endif %}
                 
                 <!-- Seznam připomínek -->
                 <div id="feedback-list">
-                    <div class="text-center">
-                        <div class="spinner-border" role="status">
+                    <div class="text-center py-4">
+                        <div class="spinner-border text-primary" role="status">
                             <span class="visually-hidden">Načítání...</span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block extra_js %}
-<!-- Chart.js -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Vykreslit graf výsledků testů pro studenty
-    {% if user.is_authenticated and user.is_student and student_stats %}
-    const quizResultsChart = document.getElementById('quizResultsChart');
-    if (quizResultsChart) {
-        const quizData = [
-            {% for quiz_stat in student_stats.quizzes %}
-            {
-                label: '{{ quiz_stat.quiz.title|escapejs }}',
-                score: {{ quiz_stat.last_score|default:"null" }},
-                average: {{ quiz_stat.average_score|default:"null" }},
-                attempts: {{ quiz_stat.attempt_count }}
-            }{% if not forloop.last %},{% endif %}
-            {% endfor %}
-        ];
-        
-        // Filtrovat pouze testy s pokusy
-        const filteredData = quizData.filter(q => q.attempts > 0);
-        
-        if (filteredData.length > 0) {
-            new Chart(quizResultsChart, {
-                type: 'bar',
-                data: {
-                    labels: filteredData.map(q => q.label),
-                    datasets: [
-                        {
-                            label: 'Poslední výsledek (%)',
-                            data: filteredData.map(q => q.score),
-                            backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                            borderColor: 'rgba(54, 162, 235, 1)',
-                            borderWidth: 1
-                        },
-                        {
-                            label: 'Průměrné skóre (%)',
-                            data: filteredData.map(q => q.average),
-                            backgroundColor: 'rgba(255, 99, 132, 0.6)',
-                            borderColor: 'rgba(255, 99, 132, 1)',
-                            borderWidth: 1
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 100,
-                            title: {
-                                display: true,
-                                text: 'Skóre (%)'
-                            }
-                        },
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Testy'
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'top'
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return context.dataset.label + ': ' + context.parsed.y + '%';
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-    }
-    {% endif %}
-    
-    // Načíst připomínky
     // Načíst připomínky
     const feedbackSection = document.getElementById('feedback-section');
     if (!feedbackSection) return;
@@ -437,6 +384,81 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Načíst připomínky při načtení stránky
     loadFeedbacks();
+    
+    // Zpracování checkboxů pro dokončené okruhy (pouze pro studenty)
+    {% if user.is_authenticated and user.is_student %}
+    const topicCheckboxes = document.querySelectorAll('.topic-checkbox');
+    topicCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const topicId = this.getAttribute('data-topic-id');
+            const completed = this.checked;
+            const topicItem = this.closest('.topic-item');
+            
+            // Zobrazit loading stav
+            const originalIcon = this.nextElementSibling.querySelector('i');
+            const originalClass = originalIcon.className;
+            originalIcon.className = 'bi bi-hourglass-split text-warning';
+            this.disabled = true;
+            
+            // Odeslat požadavek na API
+            fetch('/api/completed-topic/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({
+                    topic_id: parseInt(topicId),
+                    completed: completed
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Aktualizovat UI
+                    if (completed) {
+                        topicItem.classList.add('topic-completed');
+                        originalIcon.className = 'bi bi-check-circle-fill text-success';
+                        originalIcon.style.color = '';
+                    } else {
+                        topicItem.classList.remove('topic-completed');
+                        originalIcon.className = 'bi bi-circle text-muted';
+                        originalIcon.style.color = '';
+                    }
+                } else {
+                    // Vrátit checkbox zpět, pokud selhalo
+                    this.checked = !completed;
+                    alert('Chyba: ' + (data.error || 'Nepodařilo se aktualizovat stav okruhu'));
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Vrátit checkbox zpět
+                this.checked = !completed;
+                alert('Chyba při aktualizaci stavu okruhu');
+            })
+            .finally(() => {
+                this.disabled = false;
+            });
+        });
+    });
+    
+    // Funkce pro získání CSRF tokenu
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    {% endif %}
 });
 </script>
 {% endblock %}

@@ -8,10 +8,11 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.core.paginator import Paginator
 from django.db.models import Q
+from django.db import connection
 from django.contrib.contenttypes.models import ContentType
 from materials.models import Material
 from quizzes.models import Quiz
-from subjects.models import Topic, Subject, Feedback
+from subjects.models import Topic, Subject, Feedback, CompletedTopic, CompletedMaterial, CompletedQuiz
 
 
 class MaterialsAPIView(LoginRequiredMixin, View):
@@ -315,6 +316,40 @@ class AllTasksAPIView(LoginRequiredMixin, View):
                 
                 tasks.append(quiz_data)
         
+        # Získat informace o dokončených materiálech a testech pro studenty
+        completed_materials = []
+        completed_quizzes = []
+        if request.user.is_authenticated and hasattr(request.user, 'role') and request.user.role == 'student':
+            material_ids = [t['id'] for t in tasks if t.get('type') == 'material']
+            quiz_ids = [t['id'] for t in tasks if t.get('type') == 'quiz']
+            
+            try:
+                if material_ids:
+                    completed_materials = list(CompletedMaterial.objects.filter(
+                        user=request.user,
+                        material_id__in=material_ids
+                    ).values_list('material_id', flat=True))
+            except Exception:
+                # Pokud tabulka ještě neexistuje
+                completed_materials = []
+            
+            try:
+                if quiz_ids:
+                    completed_quizzes = list(CompletedQuiz.objects.filter(
+                        user=request.user,
+                        quiz_id__in=quiz_ids
+                    ).values_list('quiz_id', flat=True))
+            except Exception:
+                # Pokud tabulka ještě neexistuje
+                completed_quizzes = []
+        
+        # Přidat informace o dokončení do každé úlohy
+        for task in tasks:
+            if task.get('type') == 'material':
+                task['is_completed'] = task['id'] in completed_materials
+            elif task.get('type') == 'quiz':
+                task['is_completed'] = task['id'] in completed_quizzes
+        
         # Seřadit podle data (nejnovější první)
         tasks.sort(key=lambda x: x['sort_date'], reverse=True)
         
@@ -487,4 +522,355 @@ class FeedbackAPIView(LoginRequiredMixin, View):
                 'can_edit': True,
             }
         })
+
+
+class CompletedTopicAPIView(LoginRequiredMixin, View):
+    """
+    API endpoint pro označení/odznačení okruhu jako dokončený.
+    
+    POST parametry:
+    - topic_id: ID okruhu (povinné)
+    - completed: true/false (povinné)
+    """
+    
+    @method_decorator(csrf_exempt)
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+    
+    def post(self, request):
+        import json
+        try:
+            data = json.loads(request.body)
+        except:
+            return JsonResponse({
+                'error': 'Neplatný JSON'
+            }, status=400)
+        
+        topic_id = data.get('topic_id')
+        completed = data.get('completed')
+        
+        if topic_id is None:
+            return JsonResponse({
+                'error': 'topic_id je povinný'
+            }, status=400)
+        
+        if completed is None:
+            return JsonResponse({
+                'error': 'completed je povinný'
+            }, status=400)
+        
+        try:
+            topic = Topic.objects.get(id=topic_id)
+        except Topic.DoesNotExist:
+            return JsonResponse({
+                'error': 'Okruh neexistuje'
+            }, status=404)
+        
+        # Zkontrolovat, zda je uživatel student
+        if not hasattr(request.user, 'role') or request.user.role != 'student':
+            return JsonResponse({
+                'error': 'Pouze studenti mohou označovat okruhy jako dokončené'
+            }, status=403)
+        
+        # Toggle dokončení
+        completed_topic, created = CompletedTopic.objects.get_or_create(
+            user=request.user,
+            topic=topic
+        )
+        
+        if not completed:
+            # Odstranit, pokud má být odznačeno
+            completed_topic.delete()
+            return JsonResponse({
+                'success': True,
+                'completed': False,
+                'message': 'Okruh byl odznačen jako nedokončený'
+            })
+        else:
+            # Už je vytvořený, jen potvrdit
+            return JsonResponse({
+                'success': True,
+                'completed': True,
+                'message': 'Okruh byl označen jako dokončený',
+                'completed_at': completed_topic.completed_at.strftime('%d.%m.%Y %H:%M')
+            })
+    
+    def get(self, request):
+        """Získat seznam dokončených okruhů pro aktuálního uživatele."""
+        topic_ids = request.GET.getlist('topic_ids[]')  # Může být více ID
+        
+        if not topic_ids:
+            return JsonResponse({
+                'success': True,
+                'completed_topics': []
+            })
+        
+        # Získat dokončené okruhy pro aktuálního uživatele
+        completed_topics = CompletedTopic.objects.filter(
+            user=request.user,
+            topic_id__in=topic_ids
+        ).values_list('topic_id', flat=True)
+        
+        return JsonResponse({
+            'success': True,
+            'completed_topics': list(completed_topics)
+        })
+
+
+class CompletedMaterialAPIView(LoginRequiredMixin, View):
+    """
+    API endpoint pro označení/odznačení materiálu jako dokončený.
+    
+    POST parametry:
+    - material_id: ID materiálu (povinné)
+    - completed: true/false (povinné)
+    """
+    
+    @method_decorator(csrf_exempt)
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+    
+    def post(self, request):
+        import json
+        try:
+            data = json.loads(request.body)
+        except:
+            return JsonResponse({
+                'error': 'Neplatný JSON'
+            }, status=400)
+        
+        material_id = data.get('material_id')
+        completed = data.get('completed')
+        
+        if material_id is None:
+            return JsonResponse({
+                'error': 'material_id je povinný'
+            }, status=400)
+        
+        if completed is None:
+            return JsonResponse({
+                'error': 'completed je povinný'
+            }, status=400)
+        
+        try:
+            material = Material.objects.get(id=material_id)
+        except Material.DoesNotExist:
+            return JsonResponse({
+                'error': 'Materiál neexistuje'
+            }, status=404)
+        
+        # Zkontrolovat, zda je uživatel student
+        if not hasattr(request.user, 'role') or request.user.role != 'student':
+            return JsonResponse({
+                'error': 'Pouze studenti mohou označovat materiály jako dokončené'
+            }, status=403)
+        
+        # Zkontrolovat, zda tabulka existuje
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='subjects_completedmaterial'")
+                if not cursor.fetchone():
+                    # Tabulka neexistuje, vytvořit ji
+                    cursor.execute("""
+                        CREATE TABLE subjects_completedmaterial (
+                            id INTEGER PRIMARY KEY AUTOINCREMENT,
+                            completed_at DATETIME NOT NULL,
+                            material_id INTEGER NOT NULL REFERENCES materials_material(id) ON DELETE CASCADE,
+                            user_id INTEGER NOT NULL REFERENCES accounts_user(id) ON DELETE CASCADE,
+                            UNIQUE(user_id, material_id)
+                        )
+                    """)
+                    cursor.execute("""
+                        CREATE INDEX subjects_completedmaterial_user_material_idx 
+                        ON subjects_completedmaterial(user_id, material_id)
+                    """)
+        except Exception:
+            pass  # Ignorovat chyby při kontrole/vytváření tabulky
+        
+        # Toggle dokončení
+        try:
+            completed_material, created = CompletedMaterial.objects.get_or_create(
+                user=request.user,
+                material=material
+            )
+            
+            if not completed:
+                # Odstranit, pokud má být odznačeno
+                completed_material.delete()
+                return JsonResponse({
+                    'success': True,
+                    'completed': False,
+                    'message': 'Materiál byl odznačen jako nedokončený'
+                })
+            else:
+                # Už je vytvořený, jen potvrdit
+                return JsonResponse({
+                    'success': True,
+                    'completed': True,
+                    'message': 'Materiál byl označen jako dokončený',
+                    'completed_at': completed_material.completed_at.strftime('%d.%m.%Y %H:%M')
+                })
+        except Exception as e:
+            # Pokud tabulka neexistuje nebo jiná chyba
+            import traceback
+            return JsonResponse({
+                'error': f'Chyba při aktualizaci stavu materiálu: {str(e)}',
+                'traceback': traceback.format_exc() if hasattr(traceback, 'format_exc') else str(e)
+            }, status=500)
+    
+    def get(self, request):
+        """Získat seznam dokončených materiálů pro aktuálního uživatele."""
+        material_ids = request.GET.getlist('material_ids[]')
+        
+        if not material_ids:
+            return JsonResponse({
+                'success': True,
+                'completed_materials': []
+            })
+        
+        try:
+            completed_materials = CompletedMaterial.objects.filter(
+                user=request.user,
+                material_id__in=material_ids
+            ).values_list('material_id', flat=True)
+            
+            return JsonResponse({
+                'success': True,
+                'completed_materials': list(completed_materials)
+            })
+        except Exception:
+            # Pokud tabulka neexistuje
+            return JsonResponse({
+                'success': True,
+                'completed_materials': []
+            })
+
+
+class CompletedQuizAPIView(LoginRequiredMixin, View):
+    """
+    API endpoint pro označení/odznačení testu jako dokončený.
+    
+    POST parametry:
+    - quiz_id: ID testu (povinné)
+    - completed: true/false (povinné)
+    """
+    
+    @method_decorator(csrf_exempt)
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+    
+    def post(self, request):
+        import json
+        try:
+            data = json.loads(request.body)
+        except:
+            return JsonResponse({
+                'error': 'Neplatný JSON'
+            }, status=400)
+        
+        quiz_id = data.get('quiz_id')
+        completed = data.get('completed')
+        
+        if quiz_id is None:
+            return JsonResponse({
+                'error': 'quiz_id je povinný'
+            }, status=400)
+        
+        if completed is None:
+            return JsonResponse({
+                'error': 'completed je povinný'
+            }, status=400)
+        
+        try:
+            quiz = Quiz.objects.get(id=quiz_id)
+        except Quiz.DoesNotExist:
+            return JsonResponse({
+                'error': 'Test neexistuje'
+            }, status=404)
+        
+        # Zkontrolovat, zda je uživatel student
+        if not hasattr(request.user, 'role') or request.user.role != 'student':
+            return JsonResponse({
+                'error': 'Pouze studenti mohou označovat testy jako dokončené'
+            }, status=403)
+        
+        # Zkontrolovat, zda tabulka existuje
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='subjects_completedquiz'")
+                if not cursor.fetchone():
+                    # Tabulka neexistuje, vytvořit ji
+                    cursor.execute("""
+                        CREATE TABLE subjects_completedquiz (
+                            id INTEGER PRIMARY KEY AUTOINCREMENT,
+                            completed_at DATETIME NOT NULL,
+                            quiz_id INTEGER NOT NULL REFERENCES quizzes_quiz(id) ON DELETE CASCADE,
+                            user_id INTEGER NOT NULL REFERENCES accounts_user(id) ON DELETE CASCADE,
+                            UNIQUE(user_id, quiz_id)
+                        )
+                    """)
+                    cursor.execute("""
+                        CREATE INDEX subjects_completedquiz_user_quiz_idx 
+                        ON subjects_completedquiz(user_id, quiz_id)
+                    """)
+        except Exception:
+            pass  # Ignorovat chyby při kontrole/vytváření tabulky
+        
+        # Toggle dokončení
+        try:
+            completed_quiz, created = CompletedQuiz.objects.get_or_create(
+                user=request.user,
+                quiz=quiz
+            )
+            
+            if not completed:
+                # Odstranit, pokud má být odznačeno
+                completed_quiz.delete()
+                return JsonResponse({
+                    'success': True,
+                    'completed': False,
+                    'message': 'Test byl odznačen jako nedokončený'
+                })
+            else:
+                # Už je vytvořený, jen potvrdit
+                return JsonResponse({
+                    'success': True,
+                    'completed': True,
+                    'message': 'Test byl označen jako dokončený',
+                    'completed_at': completed_quiz.completed_at.strftime('%d.%m.%Y %H:%M')
+                })
+        except Exception as e:
+            # Pokud tabulka neexistuje nebo jiná chyba
+            import traceback
+            return JsonResponse({
+                'error': f'Chyba při aktualizaci stavu testu: {str(e)}',
+                'traceback': traceback.format_exc() if hasattr(traceback, 'format_exc') else str(e)
+            }, status=500)
+    
+    def get(self, request):
+        """Získat seznam dokončených testů pro aktuálního uživatele."""
+        quiz_ids = request.GET.getlist('quiz_ids[]')
+        
+        if not quiz_ids:
+            return JsonResponse({
+                'success': True,
+                'completed_quizzes': []
+            })
+        
+        try:
+            completed_quizzes = CompletedQuiz.objects.filter(
+                user=request.user,
+                quiz_id__in=quiz_ids
+            ).values_list('quiz_id', flat=True)
+            
+            return JsonResponse({
+                'success': True,
+                'completed_quizzes': list(completed_quizzes)
+            })
+        except Exception:
+            # Pokud tabulka neexistuje
+            return JsonResponse({
+                'success': True,
+                'completed_quizzes': []
+            })
 

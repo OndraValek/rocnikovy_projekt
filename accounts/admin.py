@@ -6,22 +6,68 @@ from .models import User, UserProfile, StudentClass
 
 @admin.register(User)
 class UserAdmin(BaseUserAdmin):
-    list_display = ['email', 'first_name', 'last_name', 'role', 'class_name', 'is_active', 'date_joined']
-    list_filter = ['role', 'is_active', 'is_staff', 'date_joined']
-    search_fields = ['email', 'first_name', 'last_name', 'username']
+    list_display = ['email', 'first_name', 'last_name', 'role', 'class_name']
+    list_filter = ['role']
+    search_fields = ['email', 'first_name', 'last_name']
     ordering = ['last_name', 'first_name']
     
-    fieldsets = BaseUserAdmin.fieldsets + (
-        ('Další informace', {
-            'fields': ('role', 'class_name')
+    # Zobrazit jen požadovaná pole: role, email, křestní jméno, příjmení, třída
+    # Odstranit všechna ostatní pole (Superuživatel, Uživatelské jméno, Administrační přístup, Aktivní)
+    fieldsets = (
+        (None, {
+            'fields': ('email', 'first_name', 'last_name', 'role', 'class_name')
         }),
     )
     
-    add_fieldsets = BaseUserAdmin.add_fieldsets + (
-        ('Další informace', {
-            'fields': ('role', 'class_name', 'email')
+    add_fieldsets = (
+        (None, {
+            'fields': ('email', 'first_name', 'last_name', 'role', 'class_name', 'password1', 'password2')
         }),
     )
+    
+    # Vyloučit všechna pole, která nechceme zobrazovat
+    exclude = ('username', 'is_superuser', 'is_staff', 'is_active', 'date_joined', 'last_login', 
+               'user_permissions', 'groups', 'created_at', 'updated_at')
+    
+    def has_change_permission(self, request, obj=None):
+        """Učitel může upravovat jen studenty, admin může upravovat všechny."""
+        if request.user.is_superuser or request.user.is_admin:
+            return True
+        if request.user.is_teacher:
+            # Učitel může upravovat jen studenty
+            if obj is None:
+                return True  # Při zobrazení seznamu
+            return obj.is_student
+        return False
+    
+    def get_readonly_fields(self, request, obj=None):
+        """Omezit editovatelná pole podle role."""
+        readonly = list(super().get_readonly_fields(request, obj))
+        
+        if request.user.is_teacher and not request.user.is_admin:
+            # Učitel (ne admin) může upravovat jen roli studentů
+            if obj and not obj.is_student:
+                readonly.append('role')  # Učitel nemůže měnit roli učitelů/adminů
+        elif not (request.user.is_superuser or request.user.is_admin):
+            # Student nemůže nic upravovat
+            readonly.extend(['role', 'class_name'])
+        
+        return readonly
+    
+    def get_form(self, request, obj=None, **kwargs):
+        """Upravit formulář podle role uživatele."""
+        form = super().get_form(request, obj, **kwargs)
+        
+        if request.user.is_teacher and not request.user.is_admin:
+            # Učitel může nastavit jen roli studenta
+            if obj is None or obj.is_student:
+                # Omezit výběr rolí jen na studenta
+                from django.utils.translation import gettext_lazy as _
+                form.base_fields['role'].choices = [
+                    (User.Role.STUDENT, _('Student'))
+                ]
+        
+        return form
 
 
 @admin.register(UserProfile)

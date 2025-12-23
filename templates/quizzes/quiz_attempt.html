@@ -4,85 +4,63 @@
 {% block title %}Test: {{ quiz.title }} - {{ block.super }}{% endblock %}
 
 {% block content %}
-<h1>{{ quiz.title }}</h1>
-
-{% if quiz.description %}
-    <p class="lead">{{ quiz.description }}</p>
-{% endif %}
-
-{% if quiz.h5p_path %}
-    {# H5P Standalone Player #}
-    <div class="mb-4" data-quiz-id="{{ quiz.id }}" {% if attempt %}data-attempt-id="{{ attempt.id }}"{% endif %}>
-        <div id="h5p-container" class="h5p-container"></div>
-    </div>
-    
-    {% if attempt %}
-        <div class="alert alert-info">
-            <strong>Váš pokus:</strong> 
-            {% if attempt.score is not None %}
-                Skóre: {{ attempt.score }}% 
-                {% if attempt.is_passed %}
-                    <span class="badge bg-success">Úspěšně</span>
-                {% else %}
-                    <span class="badge bg-danger">Neúspěšně</span>
-                {% endif %}
-            {% else %}
-                Test ještě nebyl dokončen.
+<div class="fade-in">
+    <div class="card shadow-soft border-0 mb-4">
+        <div class="card-body p-4">
+            <h1 class="text-gradient mb-3">{{ quiz.title }}</h1>
+            {% if quiz.description %}
+                <p class="lead text-muted mb-3">{{ quiz.description }}</p>
             {% endif %}
+
+    {% if quiz.h5p_path %}
+        {# H5P Standalone Player #}
+        <div class="mb-4" data-quiz-id="{{ quiz.id }}" {% if attempt %}data-attempt-id="{{ attempt.id }}"{% endif %}>
+            <div id="h5p-container" class="h5p-container rounded-soft overflow-hidden shadow-md"></div>
+        </div>
+    {% elif quiz.h5p_embed_code %}
+        {# Starší způsob - embed kód #}
+        <div class="mb-4" data-quiz-id="{{ quiz.id }}" {% if attempt %}data-attempt-id="{{ attempt.id }}"{% endif %}>
+            <div class="h5p-container rounded-soft overflow-hidden shadow-md" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%;">
+                {{ quiz.h5p_embed_code|safe }}
+            </div>
         </div>
     {% endif %}
     
-    <div class="mt-3 mb-4">
-        <button id="submit-quiz-btn" class="btn btn-success btn-lg" 
-                onclick="submitQuizResults({{ quiz.id }}, {% if attempt %}{{ attempt.id }}{% else %}null{% endif %})">
-            <i class="bi bi-check-circle"></i> Odeslat výsledky testu
-        </button>
-        <div id="submit-status" class="mt-2"></div>
-    </div>
-{% elif quiz.h5p_embed_code %}
-    {# Starší způsob - embed kód #}
-    <div class="mb-4" data-quiz-id="{{ quiz.id }}" {% if attempt %}data-attempt-id="{{ attempt.id }}"{% endif %}>
-        <div class="h5p-container" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%;">
-            {{ quiz.h5p_embed_code|safe }}
-        </div>
-    </div>
-    
-    {% if attempt %}
-        <div class="alert alert-info">
-            <strong>Váš pokus:</strong> 
-            {% if attempt.score is not None %}
-                Skóre: {{ attempt.score }}% 
-                {% if attempt.is_passed %}
-                    <span class="badge bg-success">Úspěšně</span>
-                {% else %}
-                    <span class="badge bg-danger">Neúspěšně</span>
-                {% endif %}
-            {% else %}
-                Test ještě nebyl dokončen.
+    <div class="card shadow-soft border-0 mt-4">
+        <div class="card-body p-4">
+            {% if attempt %}
+                <div class="alert alert-info mb-3">
+                    <strong><i class="bi bi-info-circle"></i> Váš pokus:</strong> 
+                    {% if attempt.score is not None %}
+                        Skóre: <span class="badge {% if attempt.is_passed %}bg-success{% else %}bg-danger{% endif %}">{{ attempt.score }}%</span>
+                        {% if attempt.is_passed %}
+                            <span class="badge bg-success ms-2">Úspěšně</span>
+                        {% else %}
+                            <span class="badge bg-danger ms-2">Neúspěšně</span>
+                        {% endif %}
+                    {% else %}
+                        Test ještě nebyl dokončen.
+                    {% endif %}
+                </div>
             {% endif %}
+            
+                <button id="submit-quiz-btn" class="btn btn-success btn-lg" 
+                        onclick="submitQuizResults({{ quiz.id }}, {% if attempt %}{{ attempt.id }}{% else %}null{% endif %})">
+                    <i class="bi bi-check-circle"></i> Odeslat výsledky testu
+                </button>
+                <div id="submit-status" class="mt-2"></div>
+            </div>
         </div>
-    {% endif %}
-    
-    <div class="mt-3 mb-4">
-        <button id="submit-quiz-btn" class="btn btn-success btn-lg"
-                onclick="submitQuizResults({{ quiz.id }}, {% if attempt %}{{ attempt.id }}{% else %}null{% endif %})">
-            <i class="bi bi-check-circle"></i> Odeslat výsledky testu
-        </button>
-        <div id="submit-status" class="mt-2"></div>
     </div>
-{% else %}
-    <div class="alert alert-warning">
-        Test není k dispozici.
-    </div>
-{% endif %}
 
-<div class="mt-4">
-    <a href="{% url 'quizzes:quiz_detail' quiz.id %}" class="btn btn-primary me-2">
-        Zpět na test
-    </a>
-    <a href="{% url 'subjects:topic_detail' quiz.topic.subject.slug quiz.topic.slug %}" class="btn btn-secondary">
-        Zpět na okruh
-    </a>
+    <div class="mt-4">
+        <a href="{% url 'quizzes:quiz_detail' quiz.id %}" class="btn btn-primary me-2">
+            <i class="bi bi-arrow-left"></i> Zpět na test
+        </a>
+        <a href="{% url 'subjects:topic_detail' quiz.topic.subject.slug quiz.topic.slug %}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Zpět na okruh
+        </a>
+    </div>
 </div>
 
 {% endblock %}

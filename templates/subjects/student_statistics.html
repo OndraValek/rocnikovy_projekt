@@ -1,37 +1,48 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Statistiky studenta - {{ student.get_full_name|default:student.email }} - {{ subject.name }} - {{ block.super }}{% endblock %}
 
 {% block content %}
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{% url 'subjects:subject_list' %}">Předměty</a></li>
-        <li class="breadcrumb-item"><a href="{% url 'subjects:subject_detail' subject.slug %}">{{ subject.name }}</a></li>
-        <li class="breadcrumb-item active">Statistiky - {{ student.get_full_name|default:student.email }}</li>
-    </ol>
-</nav>
+<div class="fade-in">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'subjects:subject_list' %}"><i class="bi bi-house"></i> Předměty</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'subjects:subject_detail' subject.slug %}">{{ subject.name }}</a></li>
+            <li class="breadcrumb-item active">Statistiky - {{ student.get_full_name|default:student.email }}</li>
+        </ol>
+    </nav>
 
-<div class="row">
-    <div class="col-12">
-        <h1>Statistiky studenta: {{ student.get_full_name|default:student.email }}</h1>
-        
-        {% if student.class_name %}
-            <p class="lead">Třída: {{ student.class_name }}</p>
-        {% endif %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-soft border-0 mb-4">
+                <div class="card-body p-4">
+                    <h1 class="text-gradient mb-3">
+                        <i class="bi bi-person-circle"></i> Statistiky studenta: {{ student.get_full_name|default:student.email }}
+                    </h1>
+                    {% if student.class_name %}
+                        <p class="lead text-muted mb-0">
+                            <i class="bi bi-people"></i> Třída: {{ student.class_name }}
+                        </p>
+                    {% endif %}
+                </div>
+            </div>
 
-        {% if quiz_stats %}
-        <div class="card mb-4">
-            <div class="card-body">
-                <h5 class="card-title">Přehled testů</h5>
-                <div class="table-responsive">
-                    <table class="table table-hover">
+            {% if quiz_stats %}
+            <div class="card shadow-soft mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0 text-white">
+                        <i class="bi bi-list-check"></i> Přehled testů
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
                         <thead>
                             <tr>
                                 <th>Okruh</th>
                                 <th>Test</th>
-                                <th>Počet pokusů</th>
                                 <th>Průměrné skóre</th>
-                                <th>Poslední pokus</th>
                                 <th>Poslední výsledek</th>
                                 <th>Známka</th>
                             </tr>
@@ -46,22 +57,8 @@
                                     </a>
                                 </td>
                                 <td>
-                                    {% if quiz_stat.attempt_count > 0 %}
-                                        <span class="badge bg-primary">{{ quiz_stat.attempt_count }}</span>
-                                    {% else %}
-                                        <span class="text-muted">0</span>
-                                    {% endif %}
-                                </td>
-                                <td>
                                     {% if quiz_stat.average_score is not None %}
                                         <span class="fw-bold">{{ quiz_stat.average_score }}%</span>
-                                    {% else %}
-                                        <span class="text-muted">-</span>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if quiz_stat.last_date %}
-                                        {{ quiz_stat.last_date|date:"d.m.Y H:i" }}
                                     {% else %}
                                         <span class="text-muted">-</span>
                                     {% endif %}
@@ -85,108 +82,20 @@
                             </tr>
                             {% endfor %}
                         </tbody>
-                    </table>
+                        </table>
+                    </div>
                 </div>
             </div>
-        </div>
-        
-        <!-- Graf výsledků -->
-        <div class="card mb-4">
-            <div class="card-body">
-                <h5 class="card-title">Graf výsledků testů</h5>
-                <canvas id="quizResultsChart" height="100"></canvas>
+            {% else %}
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle"></i> Student zatím neabsolvoval žádné testy v tomto předmětu.
             </div>
+            {% endif %}
         </div>
-        {% else %}
-        <div class="alert alert-info">
-            Student zatím neabsolvoval žádné testy v tomto předmětu.
-        </div>
-        {% endif %}
     </div>
 </div>
 {% endblock %}
 
 {% block extra_js %}
-<!-- Chart.js -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const quizResultsChart = document.getElementById('quizResultsChart');
-    if (quizResultsChart) {
-        const quizData = [
-            {% for quiz_stat in quiz_stats %}
-            {
-                label: '{{ quiz_stat.quiz.title|escapejs }}',
-                score: {{ quiz_stat.last_score|default:"null" }},
-                average: {{ quiz_stat.average_score|default:"null" }},
-                attempts: {{ quiz_stat.attempt_count }}
-            }{% if not forloop.last %},{% endif %}
-            {% endfor %}
-        ];
-        
-        // Filtrovat pouze testy s pokusy
-        const filteredData = quizData.filter(q => q.attempts > 0);
-        
-        if (filteredData.length > 0) {
-            new Chart(quizResultsChart, {
-                type: 'bar',
-                data: {
-                    labels: filteredData.map(q => q.label),
-                    datasets: [
-                        {
-                            label: 'Poslední výsledek (%)',
-                            data: filteredData.map(q => q.score),
-                            backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                            borderColor: 'rgba(54, 162, 235, 1)',
-                            borderWidth: 1
-                        },
-                        {
-                            label: 'Průměrné skóre (%)',
-                            data: filteredData.map(q => q.average),
-                            backgroundColor: 'rgba(255, 99, 132, 0.6)',
-                            borderColor: 'rgba(255, 99, 132, 1)',
-                            borderWidth: 1
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 100,
-                            title: {
-                                display: true,
-                                text: 'Skóre (%)'
-                            }
-                        },
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Testy'
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'top'
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return context.dataset.label + ': ' + context.parsed.y + '%';
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-    }
-});
-</script>
 {% endblock %}
 

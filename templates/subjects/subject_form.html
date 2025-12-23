@@ -1,43 +1,61 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Přidat předmět - {{ block.super }}{% endblock %}
 
 {% block content %}
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{% url 'subjects:subject_list' %}">Předměty</a></li>
-        <li class="breadcrumb-item active">Přidat předmět</li>
-    </ol>
-</nav>
+<div class="fade-in">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'subjects:subject_list' %}"><i class="bi bi-house"></i> Předměty</a></li>
+            <li class="breadcrumb-item active">Přidat předmět</li>
+        </ol>
+    </nav>
 
-<div class="row">
-    <div class="col-md-8">
-        <h1>Přidat nový předmět</h1>
-        
-        <form method="post">
-            {% csrf_token %}
-            
-            <div class="mb-3">
-                <label for="{{ form.name.id_for_label }}" class="form-label">Název předmětu *</label>
-                {{ form.name }}
-                {% if form.name.errors %}
-                    <div class="text-danger">{{ form.name.errors }}</div>
-                {% endif %}
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-7">
+            <div class="card shadow-soft border-0">
+                <div class="card-header">
+                    <h1 class="mb-0 text-white">
+                        <i class="bi bi-plus-circle"></i> Přidat nový předmět
+                    </h1>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-4">
+                            <label for="{{ form.name.id_for_label }}" class="form-label">
+                                <i class="bi bi-book text-primary"></i> Název předmětu <span class="text-danger">*</span>
+                            </label>
+                            {{ form.name }}
+                            {% if form.name.errors %}
+                                <div class="text-danger small mt-1">{{ form.name.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="{{ form.description.id_for_label }}" class="form-label">
+                                <i class="bi bi-text-paragraph text-primary"></i> Popis
+                            </label>
+                            {{ form.description }}
+                            {% if form.description.errors %}
+                                <div class="text-danger small mt-1">{{ form.description.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="d-flex gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i> Vytvořit předmět
+                            </button>
+                            <a href="{% url 'subjects:subject_list' %}" class="btn btn-secondary">
+                                <i class="bi bi-x-circle"></i> Zrušit
+                            </a>
+                        </div>
+                    </form>
+                </div>
             </div>
-            
-            <div class="mb-3">
-                <label for="{{ form.description.id_for_label }}" class="form-label">Popis</label>
-                {{ form.description }}
-                {% if form.description.errors %}
-                    <div class="text-danger">{{ form.description.errors }}</div>
-                {% endif %}
-            </div>
-            
-            <div class="d-flex gap-2">
-                <button type="submit" class="btn btn-primary">Vytvořit předmět</button>
-                <a href="{% url 'subjects:subject_list' %}" class="btn btn-secondary">Zrušit</a>
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 {% endblock %}

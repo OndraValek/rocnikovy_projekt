@@ -30,6 +30,13 @@ class Subject(ClusterableModel):
         null=True,
         verbose_name=_('Popis')
     )
+    classes = models.ManyToManyField(
+        'accounts.StudentClass',
+        related_name='subjects',
+        blank=True,
+        verbose_name=_('Třídy'),
+        help_text=_('Třídy, které mají přístup k tomuto předmětu')
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
@@ -40,6 +47,14 @@ class Subject(ClusterableModel):
     
     def __str__(self):
         return self.name
+    
+    def get_classes_display(self):
+        """Zobrazit třídy přiřazené k předmětu."""
+        classes = self.classes.all()
+        if classes.exists():
+            return ', '.join([str(c) for c in classes])
+        return '-'
+    get_classes_display.short_description = 'Třídy'
 
 
 class Topic(ClusterableModel):
@@ -211,4 +226,97 @@ class Feedback(models.Model):
             }
             return role_map.get(self.author.role, self.author.role)
         return ''
+
+
+class CompletedTopic(models.Model):
+    """Sledování dokončených okruhů studenty."""
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='completed_topics',
+        verbose_name=_('Uživatel')
+    )
+    topic = models.ForeignKey(
+        Topic,
+        on_delete=models.CASCADE,
+        related_name='completed_by',
+        verbose_name=_('Okruh')
+    )
+    completed_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name=_('Dokončeno')
+    )
+    
+    class Meta:
+        verbose_name = _('Dokončený okruh')
+        verbose_name_plural = _('Dokončené okruhy')
+        unique_together = [['user', 'topic']]
+        indexes = [
+            models.Index(fields=['user', 'topic']),
+        ]
+    
+    def __str__(self):
+        return f"{self.user.email} - {self.topic.name}"
+
+
+class CompletedMaterial(models.Model):
+    """Sledování dokončených materiálů studenty."""
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='completed_materials',
+        verbose_name=_('Uživatel')
+    )
+    material = models.ForeignKey(
+        'materials.Material',
+        on_delete=models.CASCADE,
+        related_name='completed_by',
+        verbose_name=_('Materiál')
+    )
+    completed_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name=_('Dokončeno')
+    )
+    
+    class Meta:
+        verbose_name = _('Dokončený materiál')
+        verbose_name_plural = _('Dokončené materiály')
+        unique_together = [['user', 'material']]
+        indexes = [
+            models.Index(fields=['user', 'material']),
+        ]
+    
+    def __str__(self):
+        return f"{self.user.email} - {self.material.title}"
+
+
+class CompletedQuiz(models.Model):
+    """Sledování dokončených testů studenty."""
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='completed_quizzes',
+        verbose_name=_('Uživatel')
+    )
+    quiz = models.ForeignKey(
+        'quizzes.Quiz',
+        on_delete=models.CASCADE,
+        related_name='completed_by',
+        verbose_name=_('Test')
+    )
+    completed_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name=_('Dokončeno')
+    )
+    
+    class Meta:
+        verbose_name = _('Dokončený test')
+        verbose_name_plural = _('Dokončené testy')
+        unique_together = [['user', 'quiz']]
+        indexes = [
+            models.Index(fields=['user', 'quiz']),
+        ]
+    
+    def __str__(self):
+        return f"{self.user.email} - {self.quiz.title}"
 

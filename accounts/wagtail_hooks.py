@@ -7,6 +7,18 @@ from wagtail import hooks
 from .models import User, UserProfile, StudentClass
 
 
+@hooks.register('construct_wagtail_userbar')
+def add_custom_userbar_items(request, items):
+    """Přidat vlastní položky do userbar."""
+    pass
+
+
+@hooks.register('before_serve_page')
+def check_user_permissions(page, request, serve_args, serve_kwargs):
+    """Kontrola oprávnění před zobrazením stránky."""
+    pass
+
+
 class UserModelViewSet(ModelViewSet):
     """Správa uživatelů v Wagtail adminu."""
     model = User
@@ -14,19 +26,69 @@ class UserModelViewSet(ModelViewSet):
     menu_icon = 'user'
     menu_order = 50
     add_to_admin_menu = True
-    list_display = ('email', 'first_name', 'last_name', 'role', 'class_name', 'is_active', 'date_joined')
-    list_filter = ('role', 'is_active', 'is_staff', 'date_joined')
-    search_fields = ('email', 'first_name', 'last_name', 'username')
-    # Vyloučit citlivá pole a automaticky nastavovaná pole
+    list_display = ('email', 'first_name', 'last_name', 'role', 'class_name')
+    list_filter = ('role',)
+    search_fields = ('email', 'first_name', 'last_name')
+    # Vyloučit všechna pole kromě požadovaných: role, email, křestní jméno, příjmení, třída
     exclude_form_fields = (
         'password',  # Heslo se nastavuje jinak
+        'username',  # Nepoužíváme username
         'last_login',
         'date_joined',
         'created_at',
         'updated_at',
         'user_permissions',
         'groups',
+        'is_superuser',  # Odstranit superuser
+        'is_staff',  # Odstranit staff status (nastavuje se automaticky)
+        'is_active',  # Odstranit active status
     )
+    
+    def get_queryset(self, request):
+        """Omezit zobrazení podle role."""
+        qs = super().get_queryset(request)
+        if request.user.is_superuser or (hasattr(request.user, 'is_admin') and request.user.is_admin):
+            return qs
+        if hasattr(request.user, 'is_teacher') and request.user.is_teacher:
+            # Učitel vidí všechny uživatele (aby mohl upravovat studenty)
+            return qs
+        return qs.none()
+    
+    def get_form(self, request, obj=None, **kwargs):
+        """Upravit formulář podle role uživatele."""
+        form = super().get_form(request, obj, **kwargs)
+        
+        if hasattr(request.user, 'is_teacher') and request.user.is_teacher and not (hasattr(request.user, 'is_admin') and request.user.is_admin):
+            # Učitel (ne admin) může upravovat jen roli studentů
+            if obj is None or obj.is_student:
+                # Omezit výběr rolí jen na studenta
+                from django.utils.translation import gettext_lazy as _
+                form.base_fields['role'].choices = [
+                    (User.Role.STUDENT, _('Student'))
+                ]
+            elif obj:
+                # Učitel nemůže upravovat roli učitelů/adminů
+                form.base_fields['role'].widget.attrs['readonly'] = True
+                form.base_fields['role'].widget.attrs['disabled'] = True
+        
+        return form
+    
+    def has_add_permission(self, request):
+        """Kdo může přidávat uživatele."""
+        return request.user.is_superuser or (hasattr(request.user, 'is_admin') and request.user.is_admin)
+    
+    def has_edit_permission(self, request, obj):
+        """Kdo může upravovat uživatele."""
+        if request.user.is_superuser or (hasattr(request.user, 'is_admin') and request.user.is_admin):
+            return True
+        if hasattr(request.user, 'is_teacher') and request.user.is_teacher:
+            # Učitel může upravovat jen studenty
+            return obj.is_student
+        return False
+    
+    def has_delete_permission(self, request, obj):
+        """Kdo může mazat uživatele."""
+        return request.user.is_superuser or (hasattr(request.user, 'is_admin') and request.user.is_admin)
 
 
 class UserProfileModelViewSet(ModelViewSet):

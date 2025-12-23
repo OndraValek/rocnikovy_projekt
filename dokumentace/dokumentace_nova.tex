@@ -47,6 +47,8 @@ openany
 
 \usepackage{graphicx}
 \usepackage{subcaption}
+\usepackage{float}
+\usepackage{placeins}
 \usepackage{hyperref}
 
 \linespread{1.25}
@@ -144,7 +146,7 @@ openany
 	{\fontfamily{phv}\selectfont
 		\vspace*{-1cm}
 		%% Logo školy
-		\begin{figure}[h!]
+		\begin{figure}[H]
 			\centering
 			\includegraphics[width=0.5\linewidth]{obrazky/logo-skoly.png} 
 		\end{figure}
@@ -160,7 +162,7 @@ openany
 		}
 		
 		\vspace{0.5cm}
-		\begin{figure}[h!]
+		\begin{figure}[H]
 			\centering
 			\includegraphics[width=0.7\linewidth]{obrazky/logo.png} 
 		\end{figure}
@@ -260,27 +262,35 @@ openany
 
 	\chapter{Teoretická a metodická východiska}
 
-	\section{Webové vzdělávací platformy a architektura aplikace}
+	\section{O projektu}
 	
-	Moderní vzdělávací platformy (Learning Management Systems~--~LMS) poskytují komplexní řešení pro~správu výukového obsahu, hodnocení studentů a~komunikaci. V~rámci tohoto projektu jsem se zaměřil na~vytvoření specializované platformy pro~přípravu k~maturitním zkouškám, která kombinuje prvky LMS s~moderními webovými technologiemi a~interaktivním obsahem.
+	Výsledkem tohoto projektu je komplexní webová aplikace MaturiLab určená pro~přípravu studentů k~maturitním zkouškám z~předmětu Programové vybavení. Aplikace poskytuje studentům přehledný systém pro~organizaci studijních materiálů, interaktivních testů vytvořených v~H5P a~sledování jejich pokroku prostřednictvím systému statistik s~automatickým známkováním. Učitelé mohou spravovat obsah aplikace pomocí intuitivního rozhraní, vytvářet předměty, okruhy, materiály a~testy, a~sledovat pokrok všech studentů. Aplikace také obsahuje diskusní fórum pro~každý okruh, které umožňuje komunikaci mezi studenty a~učiteli. Pro~snadné přihlášení je integrována OAuth2 autentizace přes Google, GitHub a~Microsoft. Celá aplikace je plně responzivní a~funguje na~všech zařízeních od~desktopových počítačů až po~mobilní telefony.
+
+	\subsection{Architektura aplikace}
 	
 	Pro~realizaci této platformy jsem zvolil architekturu Model-View-Template (MVT), kterou implementuje Django framework. Tato architektura umožňuje oddělení logiky aplikace od~prezentace, což zajišťuje lepší udržovatelnost a~škálovatelnost kódu. Django poskytuje množství vestavěných funkcí pro~autentizaci, správu databáze, administrační rozhraní a~další, což výrazně urychluje vývoj. Pro~ukládání dat jsem zvolil PostgreSQL, který je ideální volbou pro~produkční prostředí díky své spolehlivosti, výkonu a~podpoře pokročilých funkcí, jako je ACID compliance, pokročilé datové typy a~full-textové vyhledávání. Pro~vývoj jsem použil SQLite, což zjednodušuje nastavení vývojového prostředí.
+
+	\subsection{Správa obsahu pomocí CMS}
 	
 	Pro~správu obsahu aplikace jsem integroval Wagtail CMS, který poskytuje flexibilní systém pro~správu strukturovaného obsahu. Wagtail umožňuje vytvářet stránky s~různými typy bloků obsahu pomocí StreamField, což je ideální pro~vzdělávací obsah. Hlavní výhoda Wagtailu spočívá v~jeho flexibilním systému StreamField, který umožňuje vytvářet stránky s~různými typy bloků obsahu (text, obrázky, H5P obsah, videa atd.) bez~nutnosti programování. Wagtail také poskytuje integraci vlastních Django modelů do~redakčního rozhraní pomocí ModelViewSet API, což umožňuje správu těchto entit přímo z~Wagtail adminu. Wagtail tedy slouží jako vrstva mezi databázovými modely a~uživatelským rozhraním, která umožňuje neprogramátorům (učitelům) spravovat obsah aplikace pomocí intuitivního redakčního rozhraní.
 
-	\section{Interaktivní vzdělávací obsah a uživatelské rozhraní}
+	\section{Interaktivní vzdělávací obsah}
 	
-	H5P (HTML5 Package) je open-source framework pro~vytváření interaktivního vzdělávacího obsahu. Umožňuje vytvářet interaktivní videa, kvízy, prezentace a~další typy obsahu, které lze snadno integrovat do~webových aplikací. Pro~tento projekt jsem zvolil H5P Standalone Player, který umožňuje zobrazovat H5P obsah bez~nutnosti externího H5P serveru. Toto řešení poskytuje plnou kontrolu nad~zobrazením a~ukládáním výsledků, což je klíčové pro~systém statistik. H5P Standalone Player je distribuován jako sada JavaScript a~CSS souborů, které lze zahrnout přímo do~projektu. H5P soubory (.h5p) jsou ve~skutečnosti ZIP archivy obsahující JSON konfigurační soubory, JavaScript, CSS a~další zdroje. Standalone Player tyto soubory rozbalí a~zobrazí pomocí vlastního renderovacího engine.
+	H5P (HTML5 Package) je open-source framework pro~vytváření interaktivního vzdělávacího obsahu. Umožňuje vytvářet širokou škálu interaktivních vzdělávacích aktivit, jako jsou interaktivní videa s~vloženými otázkami, kvízy s~různými typy otázek (více možností, doplňování, drag-and-drop, hotspoty), prezentace s~interaktivními prvky, flashcards pro~učení, timeline pro~chronologické zobrazení událostí a~mnoho dalších typů obsahu. H5P obsah lze snadno integrovat do~webových aplikací a~je plně responzivní, což znamená, že~funguje na~všech zařízeních.
 	
-	Pro~zajištění responzivního designu a~moderního uživatelského rozhraní jsem použil Bootstrap~5, front-end framework pro~rychlý vývoj responzivních webových aplikací. Bootstrap poskytuje předpřipravené CSS třídy a~JavaScript komponenty pro~vytváření moderních uživatelských rozhraní. Grid systém umožňuje vytvářet responzivní layouty, které se automaticky přizpůsobují různým velikostem obrazovek, což zajišťuje, že~aplikace vypadá dobře a~funguje na~všech zařízeních od~desktopových počítačů až po~mobilní telefony.
+	Pro~tento projekt jsem zvolil H5P Standalone Player, který umožňuje zobrazovat H5P obsah bez~nutnosti externího H5P serveru. Toto řešení poskytuje plnou kontrolu nad~zobrazením a~ukládáním výsledků, což je klíčové pro~systém statistik. H5P Standalone Player je distribuován jako sada JavaScript a~CSS souborů, které lze zahrnout přímo do~projektu. H5P soubory (.h5p) jsou ve~skutečnosti ZIP archivy obsahující JSON konfigurační soubory, JavaScript, CSS a~další zdroje. Standalone Player tyto soubory rozbalí a~zobrazí pomocí vlastního renderovacího engine. Standalone Player také poskytuje callback funkce, které umožňují zachytit výsledky testů a~uložit je do~databáze, což je klíčové pro~sledování pokroku studentů a~automatické známkování.
+
+	\section{Uživatelské rozhraní}
 	
-	Pro~zobrazení statistik výsledků testů studentů jsem použil Chart.js, JavaScriptovou knihovnu pro~vytváření grafů a~diagramů. Chart.js poskytuje jednoduché API pro~vytváření různých typů grafů (sloupcové, čárové, koláčové atd.) s~možností interakce. Je to lehká knihovna, která nevyžaduje závislosti jako jQuery. V~projektu jsem použil sloupcové grafy pro~zobrazení výsledků testů, které jsou dynamicky generovány pomocí JavaScriptu na~základě dat získaných z~API.
+	Pro~zajištění responzivního designu a~moderního uživatelského rozhraní jsem použil Bootstrap~5, front-end framework pro~rychlý vývoj responzivních webových aplikací. Bootstrap poskytuje předpřipravené CSS třídy a~JavaScript komponenty pro~vytváření moderních uživatelských rozhraní. Grid systém umožňuje vytvářet responzivní layouty, které se automaticky přizpůsobují různým velikostem obrazovek, což zajišťuje, že~aplikace vypadá dobře a~funguje na~všech zařízeních od~desktopových počítačů až po~mobilní telefony. Bootstrap také poskytuje komponenty jako navigační menu, karty, tabulky, formuláře a~další, které jsou předpřipravené a~lze je snadno přizpůsobit potřebám aplikace.
+	
+	Pro~zobrazení statistik výsledků testů studentů jsem použil Chart.js, JavaScriptovou knihovnu pro~vytváření grafů a~diagramů. Chart.js poskytuje jednoduché API pro~vytváření různých typů grafů (sloupcové, čárové, koláčové atd.) s~možností interakce. Je to lehká knihovna, která nevyžaduje závislosti jako jQuery. V~projektu jsem použil sloupcové grafy pro~zobrazení výsledků testů, které jsou dynamicky generovány pomocí JavaScriptu na~základě dat získaných z~API. Grafy jsou responzivní a~automaticky se přizpůsobují velikosti kontejneru.
 
 	\chapter{Způsoby řešení a použité postupy}
 
-	\section{Struktura projektu}
+	\section{Struktura backendu}
 	
-	Projekt byl vytvořen pomocí standardního Django projektu s~modulární strukturou, která umožňuje snadnou údržbu a~rozšiřitelnost. Aplikace je rozdělena do~několika samostatných modulů:
+	Backend aplikace je postaven na~Django frameworku a~poskytuje REST API pro~frontend, zpracovává obchodní logiku a~spravuje databázové operace. Projekt byl vytvořen pomocí standardního Django projektu s~modulární strukturou, která umožňuje snadnou údržbu a~rozšiřitelnost. Aplikace je rozdělena do~několika samostatných modulů:
 	
 	\begin{itemize}
 		\item \textbf{accounts}~--~správa uživatelských účtů a~rolí (Student, Učitel, Admin).
@@ -293,7 +303,42 @@ openany
 	
 	Každá aplikace obsahuje modely (models.py), views (views.py), URL konfiguraci (urls.py) a~šablony v~adresáři templates. Statické soubory (CSS, JavaScript) jsou umístěny v~adresáři static, zatímco uživatelsky nahrané soubory (H5P soubory, PDF dokumenty, obrázky) jsou ukládány v~adresáři media.
 
+	\subsection{Autentizace a autorizace}
+	
+	Pro~autentizaci jsem použil balíček django-allauth, který poskytuje komplexní řešení pro~autentizaci, registraci a~správu účtů. Django-allauth poskytuje hotové šablony a~views pro~registraci, přihlášení, odhlášení, změnu hesla, reset hesla a~ověření emailu. Pro~OAuth2 autentizaci stačí nakonfigurovat Social Applications v~Django adminu s~client ID a~secret key od~poskytovatele. Django-allauth pak automaticky zpracuje celý OAuth2 flow včetně redirectů a~získání uživatelských dat.
+	
+	V~projektu jsem využil django-allauth pro~implementaci autentizace přes Google, GitHub a~Microsoft. OAuth2 credentials jsou uloženy v~.env souboru a~automaticky se načítají při~spuštění aplikace pomocí management commandu. Django-allauth také poskytuje možnost propojení více OAuth2 účtů s~jedním uživatelským účtem, což zvyšuje flexibilitu pro~uživatele.
+	
+	Aplikace rozlišuje tři role uživatelů s~odpovídajícími oprávněními:
+	\begin{itemize}
+		\item \textbf{Student}~--~může prohlížet materiály, řešit testy, účastnit se diskusí a~zobrazovat vlastní statistiky.
+		\item \textbf{Učitel}~--~může vše co~student + vytvářet a~spravovat obsah (předměty, okruhy, materiály, testy) a~zobrazovat statistiky všech studentů.
+		\item \textbf{Administrátor}~--~má plná oprávnění včetně správy uživatelů, přístupu do~Django adminu a~Wagtail CMS.
+	\end{itemize}
+	
+	Autorizace je kontrolována pomocí Django mixinů (LoginRequiredMixin) a~vlastních kontrol v~views. Každá view kontroluje, zda má uživatel potřebná oprávnění pro~přístup k~dané funkcionalitě.
+
+	\subsection{URL routing a views}
+	
+	Django URL routing mapuje HTTP požadavky na~příslušné views, které zpracovávají logiku a~vracejí odpovědi. Aplikace využívá jak funkční, tak class-based views. Pro~CRUD operace jsou použity Django class-based views (CreateView, UpdateView, DeleteView, DetailView), které zjednodušují implementaci standardních operací s~daty. Vlastní logika je implementována v~metodách těchto views, například kontrola oprávnění, validace dat a~zpracování formulářů.
+
+	\subsection{API endpoints}
+	
+	Aplikace poskytuje REST API endpoints pro~frontend, které umožňují dynamické načítání dat bez~potřeby obnovení stránky. API endpoints jsou implementovány pomocí Django views, které vracejí JSON odpovědi. Hlavní API endpoints zahrnují:
+	\begin{itemize}
+		\item Seznam předmětů a~okruhů.
+		\item Statistiky studentů a~testů.
+		\item Data pro~grafy (Chart.js).
+		\item Informace o~materiálech a~testech.
+	\end{itemize}
+
+	\subsection{Integrace Wagtail CMS}
+	
+	Wagtail CMS je integrován do~aplikace jako vrstva pro~správu obsahu. Wagtail poskytuje ModelViewSet API, které umožňuje integraci vlastních Django modelů do~redakčního rozhraní. V~projektu jsem použil ModelViewSet pro~integraci modelů User, Subject, Topic, Material a~Quiz do~Wagtail adminu, což umožňuje učitelům spravovat tyto entity přímo z~intuitivního redakčního rozhraní bez~nutnosti přístupu do~Django adminu. Wagtail také poskytuje možnost filtrování a~vyhledávání v~integrovaných modelech, což zjednodušuje správu obsahu při~větším množství dat.
+
 	\section{Databázový model}
+	
+	% TODO: Zde bude vložen diagram databázového modelu
 	
 	Databázový model aplikace je navržen tak, aby podporoval hierarchickou strukturu předmětů a~okruhů, různé typy materiálů a~testů, a~sledování pokusů studentů. Model je implementován pomocí Django ORM, který zajišťuje abstrakci nad~databázovými dotazy a~zjednodušuje práci s~daty.
 	
@@ -320,74 +365,37 @@ openany
 	
 	Tato struktura umožňuje efektivní správu obsahu a~sledování pokroku studentů v~rámci jednotlivých předmětů a~okruhů.
 
-	\section{Backend aplikace}
-	
-	Backend aplikace je postaven na~Django frameworku a~poskytuje REST API pro~frontend, zpracovává obchodní logiku a~spravuje databázové operace. Hlavní komponenty backendu zahrnují modely, views, URL routing a~middleware.
-	
-	\subsection{Autentizace a autorizace}
-	
-	Pro~autentizaci jsem použil balíček django-allauth, který poskytuje komplexní řešení pro~autentizaci, registraci a~správu účtů. Django-allauth poskytuje hotové šablony a~views pro~registraci, přihlášení, odhlášení, změnu hesla, reset hesla a~ověření emailu. Pro~OAuth2 autentizaci stačí nakonfigurovat Social Applications v~Django adminu s~client ID a~secret key od~poskytovatele. Django-allauth pak automaticky zpracuje celý OAuth2 flow včetně redirectů a~získání uživatelských dat.
-	
-	V~projektu jsem využil django-allauth pro~implementaci autentizace přes Google, GitHub a~Microsoft. OAuth2 credentials jsou uloženy v~.env souboru a~automaticky se načítají při~spuštění aplikace pomocí management commandu. Django-allauth také poskytuje možnost propojení více OAuth2 účtů s~jedním uživatelským účtem, což zvyšuje flexibilitu pro~uživatele.
-	
-	Aplikace rozlišuje tři role uživatelů s~odpovídajícími oprávněními:
-	\begin{itemize}
-		\item \textbf{Student}~--~může prohlížet materiály, řešit testy, účastnit se diskusí a~zobrazovat vlastní statistiky.
-		\item \textbf{Učitel}~--~může vše co~student + vytvářet a~spravovat obsah (předměty, okruhy, materiály, testy) a~zobrazovat statistiky všech studentů.
-		\item \textbf{Administrátor}~--~má plná oprávnění včetně správy uživatelů, přístupu do~Django adminu a~Wagtail CMS.
-	\end{itemize}
-	
-	Autorizace je kontrolována pomocí Django mixinů (LoginRequiredMixin) a~vlastních kontrol v~views. Každá view kontroluje, zda má uživatel potřebná oprávnění pro~přístup k~dané funkcionalitě.
-	
-	\subsection{URL routing a views}
-	
-	Django URL routing mapuje HTTP požadavky na~příslušné views, které zpracovávají logiku a~vracejí odpovědi. Aplikace využívá jak funkční, tak class-based views. Pro~CRUD operace jsou použity Django class-based views (CreateView, UpdateView, DeleteView, DetailView), které zjednodušují implementaci standardních operací s~daty. Vlastní logika je implementována v~metodách těchto views, například kontrola oprávnění, validace dat a~zpracování formulářů.
-	
-	\subsection{API endpoints}
-	
-	Aplikace poskytuje REST API endpoints pro~frontend, které umožňují dynamické načítání dat bez~potřeby obnovení stránky. API endpoints jsou implementovány pomocí Django views, které vracejí JSON odpovědi. 	Hlavní API endpoints zahrnují:
-	\begin{itemize}
-		\item Seznam předmětů a~okruhů.
-		\item Statistiky studentů a~testů.
-		\item Data pro~grafy (Chart.js).
-		\item Informace o~materiálech a~testech.
-	\end{itemize}
-
 	\section{Frontend aplikace}
 	
 	Frontend aplikace je postaven na~Bootstrap~5 a~poskytuje responzivní uživatelské rozhraní, které funguje na~všech zařízeních. Frontend využívá kombinaci server-side renderingu (Django šablony) a~client-side JavaScriptu pro~dynamické načítání a~zobrazování dat.
+
+	\subsection{Diagram oprávnění uživatelů}
 	
+	% TODO: Zde bude vložen diagram zobrazující, co může student a co může učitel
+	
+	Aplikace rozlišuje tři role uživatelů s~odpovídajícími oprávněními. Student může prohlížet materiály, řešit testy, účastnit se diskusí a~zobrazovat vlastní statistiky. Učitel má navíc možnost vytvářet a~spravovat obsah (předměty, okruhy, materiály, testy) a~zobrazovat statistiky všech studentů. Administrátor má plná oprávnění včetně správy uživatelů, přístupu do~Django adminu a~Wagtail CMS.
+
 	\subsection{Šablony a layout}
 	
 	Django šablony poskytují základní strukturu HTML stránek a~umožňují dynamické vkládání dat z~backendu. Aplikace využívá dědičnost šablon, kde základní layout je definován v~hlavní šabloně a~jednotlivé stránky ho rozšiřují. Bootstrap~5 grid systém zajišťuje responzivní layout, který se automaticky přizpůsobuje různým velikostem obrazovek. Komponenty jako navigační menu, karty, tabulky a~formuláře jsou stylovány pomocí Bootstrap CSS tříd.
-	
+
 	\subsection{Dynamické načítání obsahu}
 	
 	Pro~dynamické načítání a~zobrazování úloh (materiálů a~testů) je použit JavaScript modul, který komunikuje s~backend API a~načítá data bez~potřeby obnovení stránky. Tento modul umožňuje filtrování úloh podle typu, zobrazení pouze dostupných úloh a~podmíněné zobrazení tlačítek pro~správu obsahu podle role uživatele. Modul také zpracovává mazání úloh pomocí AJAX požadavků s~potvrzením uživatele.
-	
+
 	\subsection{Integrace H5P obsahu}
 	
 	H5P obsah je integrován do~aplikace pomocí H5P Standalone Player, který umožňuje zobrazovat H5P obsah přímo v~aplikaci bez~nutnosti externího serveru. H5P soubory (.h5p) jsou rozbalovány do~adresáře media/h5p/ a~zobrazovány pomocí JavaScript API. Standalone Player poskytuje callback funkce, které umožňují zachytit výsledky testů a~uložit je do~databáze pomocí AJAX požadavku na~backend. Toto je klíčové pro~systém statistik, protože umožňuje sledovat pokusy studentů a~vypočítávat průměrné skóre a~známky.
 	
 	Výhody tohoto přístupu zahrnují plnou kontrolu nad~zobrazením, možnost ukládání výsledků do~vlastní databáze, žádnou závislost na~externím serveru a~lepší výkon. Pro~starší obsah nebo obsah hostovaný na~externím serveru lze použít iframe embed kód, který je uložen v~databázi a~zobrazován přímo v~šabloně.
-	
-	\subsection{Vizualizace dat}
-	
-	Pro~zobrazení statistik výsledků testů je použita knihovna Chart.js, která poskytuje interaktivní grafy. Grafy jsou dynamicky generovány pomocí JavaScriptu na~základě dat získaných z~API. Aplikace používá sloupcové grafy pro~zobrazení výsledků testů, které zobrazují poslední výsledek a~průměrné skóre pro~každý test. Grafy jsou responzivní a~automaticky se přizpůsobují velikosti kontejneru.
 
-	\section{Systém statistik}
+	\subsection{Systém statistik}
 	
 	Systém statistik poskytuje studentům a~učitelům přehled o~výsledcích testů. Statistiky jsou vypočítávány na~základě dat uložených v~databázi při~každém pokusu studenta o~vyplnění testu. Backend poskytuje API endpoints, které vracejí agregovaná data pro~zobrazení v~frontendu.
 	
-	\subsection{Statistiky pro~studenty}
-	
 	Student vidí na~stránce předmětu přehlednou tabulku všech testů v~předmětu s~informacemi o~počtu pokusů, průměrném skóre, datu a~výsledku posledního pokusu a~automaticky vypočítané známce. Kromě tabulky je zobrazen také interaktivní graf (Chart.js), který vizualizuje výsledky testů. Graf zobrazuje poslední výsledek a~průměrné skóre pro~každý test, což umožňuje studentovi rychle identifikovat oblasti, kde potřebuje zlepšit své výsledky.
 	
-	\subsection{Statistiky pro~učitele}
-	
 	Učitel má k~dispozici přehlednou tabulku všech studentů v~předmětu s~informacemi o~průměrném skóre přes všechny testy, průměrné známce, celkovém počtu pokusů a~počtu absolvovaných testů. Učitel může kliknout na~konkrétního studenta a~zobrazit detailní statistiky, které zahrnují výsledky pro~každý jednotlivý test, včetně grafu vývoje výsledků v~čase. Toto umožňuje učiteli identifikovat studenty, kteří potřebují pomoc, a~sledovat pokrok jednotlivých studentů.
-	
-	\subsection{Automatické známkování}
 	
 	Známky jsou automaticky vypočítávány na~backendu podle procentuálního skóre z~každého pokusu. Systém používá následující škálu:
 	\begin{itemize}
@@ -400,102 +408,146 @@ openany
 	
 	Pro~každý test je vypočítána průměrná známka ze~všech pokusů studenta, což poskytuje objektivní hodnocení jeho výkonu.
 
-	\section{Správa obsahu}
+	\subsection{Vizualizace dat}
 	
-	Učitelé a~administrátoři mohou spravovat obsah aplikace pomocí intuitivního uživatelského rozhraní. Všechny CRUD operace jsou implementovány pomocí Django class-based views (CreateView, UpdateView, DeleteView) s~kontrolou oprávnění. Každá operace je chráněna kontrolou, zda má uživatel potřebná oprávnění pro~její provedení.
-	
-	\subsection{Správa předmětů a~okruhů}
-	
-	Správa předmětů umožňuje vytváření nových předmětů s~automatickým vytvářením slugů z~názvu, což zajišťuje čisté URL adresy. Předměty mohou být mazány s~potvrzením uživatele, přičemž systém kontroluje, zda nejsou přidruženy žádné okruhy. Okruhy jsou vytvářeny v~rámci předmětu a~mají nastavení pořadí zobrazení, což umožňuje učitelům určit pořadí, v~jakém se okruhy zobrazí studentům.
-	
-	\subsection{Správa testů a~materiálů}
-	
-	Testy jsou vytvářeny s~možností nahrání H5P souboru nebo zadání iframe embed kódu. Při~vytváření testu lze nastavit parametry jako časový limit, maximální počet pokusů a~passing score (minimální skóre pro~úspěšné absolvování). Materiály mohou být různých typů (PDF, video, H5P, odkaz, text, obrázek), přičemž každý typ má specifické možnosti zobrazení a~zpracování. Mazání testů a~materiálů je chráněno kontrolou oprávnění a~vyžaduje potvrzení uživatele.
-
-	\section{Diskusní fórum}
-	
-	Každý okruh má své vlastní diskusní fórum, kde studenti a~učitelé mohou komunikovat a~sdílet informace. Fórum umožňuje vytváření nových diskusních vláken, přidávání příspěvků do~vláken a~upravování a~mazání vlastních příspěvků. Učitelé mají navíc možnost připínat důležitá vlákna a~zamykat vlákna, která již nejsou relevantní. Fórum je implementováno pomocí modelů ForumThread a~ForumPost, které jsou propojeny s~modelem Topic.
+	Pro~zobrazení statistik výsledků testů je použita knihovna Chart.js, která poskytuje interaktivní grafy. Grafy jsou dynamicky generovány pomocí JavaScriptu na~základě dat získaných z~API. Aplikace používá sloupcové grafy pro~zobrazení výsledků testů, které zobrazují poslední výsledek a~průměrné skóre pro~každý test. Grafy jsou responzivní a~automaticky se přizpůsobují velikosti kontejneru.
 
 	\section{Nasazení aplikace}
 	
 	Aplikace je připravena pro~snadné nasazení pomocí Dockeru, což zajišťuje konzistentní prostředí pro~vývoj i~produkci. Dockerizace umožňuje zabalit aplikaci a~všechny její závislosti do~kontejneru, který lze spustit na~jakémkoli systému s~Dockerem. V~projektu jsem vytvořil Dockerfile, který definuje image aplikace včetně Python prostředí, závislostí a~konfigurace. Docker Compose pak umožňuje spustit aplikaci spolu s~PostgreSQL databází v~jednom příkazu. Výhody Dockeru zahrnují snadné nasazení, konzistentní prostředí pro~všechny vývojáře a~zjednodušenou správu závislostí.
 
-	\section{Grafická podoba aplikace}
+	\chapter{Správa obsahu a diskusní fórum}
+
+	\section{Správa obsahu}
 	
-	V~této sekci jsou zobrazeny screenshoty jednotlivých částí uživatelského rozhraní aplikace. Tyto obrázky ilustrují vzhled a~funkčnost aplikace z~pohledu různých typů uživatelů.
+	Učitelé a~administrátoři mohou spravovat obsah aplikace pomocí intuitivního uživatelského rozhraní. Všechny CRUD operace jsou implementovány pomocí Django class-based views (CreateView, UpdateView, DeleteView) s~kontrolou oprávnění. Každá operace je chráněna kontrolou, zda má uživatel potřebná oprávnění pro~její provedení.
+
+	\subsection{Správa předmětů a~okruhů}
+	
+	Správa předmětů umožňuje vytváření nových předmětů s~automatickým vytvářením slugů z~názvu, což zajišťuje čisté URL adresy. Předměty mohou být mazány s~potvrzením uživatele, přičemž systém kontroluje, zda nejsou přidruženy žádné okruhy. Okruhy jsou vytvářeny v~rámci předmětu a~mají nastavení pořadí zobrazení, což umožňuje učitelům určit pořadí, v~jakém se okruhy zobrazí studentům. Učitelé mohou také přiřazovat předměty k~konkrétním třídám, což zajišťuje, že~studenti vidí pouze předměty, které jsou určeny pro~jejich třídu.
+
+	\subsection{Správa testů a~materiálů}
+	
+	Testy jsou vytvářeny s~možností nahrání H5P souboru nebo zadání iframe embed kódu. Při~vytváření testu lze nastavit parametry jako časový limit, maximální počet pokusů a~passing score (minimální skóre pro~úspěšné absolvování). Materiály mohou být různých typů (PDF, video, H5P, odkaz, text, obrázek), přičemž každý typ má specifické možnosti zobrazení a~zpracování. Mazání testů a~materiálů je chráněno kontrolou oprávnění a~vyžaduje potvrzení uživatele. Učitelé mohou také označovat materiály a~testy jako dokončené, což studentům pomáhá sledovat jejich pokrok.
+
+	\section{Diskusní fórum}
+	
+	Každý okruh má své vlastní diskusní fórum, kde studenti a~učitelé mohou komunikovat a~sdílet informace. Fórum umožňuje vytváření nových diskusních vláken, přidávání příspěvků do~vláken a~upravování a~mazání vlastních příspěvků. Učitelé mají navíc možnost připínat důležitá vlákna a~zamykat vlákna, která již nejsou relevantní. Fórum je implementováno pomocí modelů ForumThread a~ForumPost, které jsou propojeny s~modelem Topic. Každý příspěvek obsahuje informace o~autorovi, času vytvoření a~možnosti úpravy, což zajišťuje přehlednou komunikaci mezi studenty a~učiteli.
+
+	\section{Představení projektu uživateli}
+	
+	V~této sekci jsou představeny hlavní části aplikace z~pohledu různých typů uživatelů. Screenshoty ilustrují vzhled a~funkčnost aplikace a~ukazují, jaké možnosti má každý typ uživatele.
 	
 	\newgeometry{left=1.5cm, right=1.5cm, top=2.5cm, bottom=2.5cm}
 	
-	\subsection{Zobrazení pro přihlášeného učitele}
-	
-	Následující obrázky zobrazují rozhraní aplikace, které se zobrazuje, když je přihlášený uživatel s~rolí učitele. Učitel má přístup k~administračním funkcím a~může spravovat obsah aplikace.
-	
-	\begin{figure}[h!]
+	\FloatBarrier
+	\begin{figure}[H]
 		\centering
-		\includegraphics[width=\linewidth,keepaspectratio]{obrazky/domovska-stranka-U.png}
-		\caption{Domovská stránka aplikace (pohled učitele)}
-		\label{fig:domovska-stranka-U}
+		\includegraphics[width=\linewidth,keepaspectratio]{obrazky/prihlaseni.png}
+		\caption{Přihlašovací stránka s~možností OAuth2 autentizace (Google, GitHub, Microsoft) nebo klasického přihlášení}
+		\label{fig:prihlaseni}
 	\end{figure}
 	
-	\begin{figure}[h!]
+	Uživatel se může rychle přihlásit pomocí OAuth2 autentizace přes externí poskytovatele, konkrétně přes Google, GitHub nebo Microsoft. Alternativně se může registrovat nebo přihlásit pomocí klasického formuláře s~emailovou adresou a~heslem. OAuth2 přihlášení zjednodušuje proces registrace a~přihlášení, protože uživatel nemusí vytvářet nový účet~--~stačí použít existující účet od~jednoho z~podporovaných poskytovatelů.
+	
+	\begin{figure}[H]
 		\centering
-		\includegraphics[width=\linewidth,keepaspectratio]{obrazky/okruhy-U.png}
-		\caption{Okruhy v~předmětu s~možnostmi správy obsahu (pohled učitele)}
-		\label{fig:okruhy-U}
+		\includegraphics[width=\linewidth,keepaspectratio]{obrazky/uvod-U.png}
+		\caption{Domovská stránka s~přehledem předmětů (pohled učitele)~--~učitel může přidávat a~odebírat předměty}
+		\label{fig:uvod-U}
 	\end{figure}
 	
-	\begin{figure}[h!]
+	Toto je pohled učitele na~seznam všech předmětů v~aplikaci. Učitel vidí všechny předměty v~systému a~má možnost je spravovat~--~může přidávat nové předměty pomocí tlačítka "Přidat předmět" a~mazat existující předměty pomocí ikony koše. Každý předmět je zobrazen jako karta s~názvem, popisem a~informací o~počtu okruhů. Učitel také vidí navigační menu s~přístupem k~administračním funkcím.
+	
+	\begin{figure}[H]
 		\centering
-		\includegraphics[width=\linewidth,keepaspectratio]{obrazky/detail-predmetu-U.png}
-		\caption{Detail předmětu se statistikami (pohled učitele)}
-		\label{fig:detail-predmetu-U}
+		\includegraphics[width=\linewidth,keepaspectratio]{obrazky/uvod-S.png}
+		\caption{Domovská stránka s~přehledem předmětů (pohled studenta)~--~student vidí pouze předměty přiřazené k~jeho třídě}
+		\label{fig:uvod-S}
 	\end{figure}
 	
-	\begin{figure}[h!]
+	Toto je pohled studenta na~seznam předmětů. Student vidí pouze předměty, které jsou přiřazené k~jeho třídě. Student nemá možnost vytvářet nebo upravovat předměty~--~může pouze prohlížet dostupné předměty a~pracovat s~jejich obsahem. Každý předmět je zobrazen jako karta s~názvem, popisem a~informací o~počtu okruhů. Student může kliknout na~předmět a~otevřít jeho detail.
+	
+	\begin{figure}[H]
 		\centering
-		\includegraphics[width=\linewidth,keepaspectratio]{obrazky/testy-U.png}
-		\caption{Seznam testů s~možnostmi správy (pohled učitele)}
-		\label{fig:testy-U}
+		\includegraphics[width=\linewidth,keepaspectratio]{obrazky/predmet1-U.png}
+		\caption{Detail předmětu s~přehledem okruhů (pohled učitele)~--~učitel může přidávat a~odebírat okruhy}
+		\label{fig:predmet1-U}
 	\end{figure}
 	
-	\begin{figure}[h!]
+	Učitel je již v~konkrétním předmětu a~vidí seznam všech okruhů v~tomto předmětu. Učitel má možnost přidávat nové okruhy pomocí tlačítka "Přidat okruh" a~mazat existující okruhy pomocí ikony koše. Každý okruh je zobrazen jako karta s~názvem, popisem a~pořadím zobrazení. Učitel také vidí navigační breadcrumbs, které ukazují aktuální pozici v~aplikaci.
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\linewidth,keepaspectratio]{obrazky/predmet2-U.png}
+		\caption{Detail předmětu se statistikami studentů (pohled učitele)~--~učitel vidí přehled všech studentů a~jejich výsledků}
+		\label{fig:predmet2-U}
+	\end{figure}
+	
+	Zde učitel vidí statistiky všech studentů v~předmětu. Učitel má k~dispozici přehlednou tabulku všech studentů s~informacemi o~průměrném skóre, průměrné známce, počtu absolvovaných testů a~možností zobrazit detailní statistiky konkrétního studenta. Učitel také vidí sekci pro~připomínky a~zpětnou vazbu, kde může komunikovat se studenty.
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\linewidth,keepaspectratio]{obrazky/predmet1-S.png}
+		\caption{Detail předmětu s~přehledem okruhů (pohled studenta)~--~student může zaškrtávat dokončené okruhy, nemůže nic upravovat}
+		\label{fig:predmet1-S}
+	\end{figure}
+	
+	Student vidí seznam všech okruhů v~předmětu. Student nemá možnost přidávat nebo mazat okruhy~--~může pouze prohlížet dostupné okruhy a~otevřít jejich detail. Student také může označovat okruhy jako dokončené pomocí checkboxů, což mu pomáhá sledovat svůj pokrok v~předmětu. Každý okruh je zobrazen jako karta s~názvem a~popisem.
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\linewidth,keepaspectratio]{obrazky/predmet2-S.png}
+		\caption{Detail předmětu se statistikami testů (pohled studenta)~--~student vidí své skóre z~testů a~zpětnou vazbu ostatních}
+		\label{fig:predmet2-S}
+	\end{figure}
+	
+	Zde student vidí své vlastní statistiky z~testů v~předmětu. Student má k~dispozici přehlednou tabulku všech testů s~informacemi o~průměrném skóre, posledním výsledku a~automaticky vypočítané známce. Student také vidí sekci pro~připomínky a~zpětnou vazbu, kde může komunikovat s~učiteli a~ostatními studenty. Student může přidávat připomínky a~vidět připomínky ostatních uživatelů.
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\linewidth,keepaspectratio]{obrazky/okruh-U.png}
+		\caption{Detail okruhu s~materiály a~testy (pohled učitele)~--~učitel může přidávat a~odebírat materiály a~testy}
+		\label{fig:okruh-U}
+	\end{figure}
+	
+	Učitel vidí seznam všech materiálů a~testů v~okruhu. Učitel má možnost přidávat nové materiály pomocí tlačítka "Přidat materiál" a~nové testy pomocí tlačítka "Přidat test". Učitel také může mazat existující materiály a~testy pomocí ikony koše. Každý materiál a~test je zobrazen jako karta s~názvem, popisem, typem a~datem vytvoření. Učitel vidí také sekci pro~připomínky a~zpětnou vazbu.
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\linewidth,keepaspectratio]{obrazky/okruh-S.png}
+		\caption{Detail okruhu s~materiály a~testy (pohled studenta)~--~student může zaškrtávat dokončené úlohy, nemůže nic upravovat}
+		\label{fig:okruh-S}
+	\end{figure}
+	
+	Student vidí seznam všech materiálů a~testů v~okruhu. Student nemá možnost přidávat nebo mazat materiály a~testy~--~může pouze prohlížet dostupné materiály a~spouštět testy. Student také může označovat materiály, testy a~celý okruh jako dokončené pomocí checkboxů, což mu pomáhá sledovat svůj pokrok. Každý materiál a~test je zobrazen jako karta s~názvem, popisem a~typem.
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\linewidth,keepaspectratio]{obrazky/test-U.png}
+		\caption{Detail testu (pohled učitele)~--~učitel vidí všechny informace o~testu a~může ho spravovat}
+		\label{fig:test-U}
+	\end{figure}
+	
+	Učitel vidí všechny informace o~testu, včetně názvu, popisu, úspěšnosti (passing score) a~možností správy. Učitel může upravovat test, mazat test a~zobrazovat statistiky studentů, kteří test absolvovali. Učitel také vidí seznam všech pokusů studentů o~vyplnění testu s~informacemi o~skóre a~datumu dokončení.
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\linewidth,keepaspectratio]{obrazky/test-S.png}
+		\caption{Detail testu (pohled studenta)~--~student může spustit test a~vidět své výsledky}
+		\label{fig:test-S}
+	\end{figure}
+	
+	Student vidí informace o~testu, včetně názvu, popisu a~úspěšnosti (passing score). Student může spustit test kliknutím na~tlačítko "Spustit test" a~vidí své výsledky z~předchozích pokusů, pokud nějaké má. Student také může označit test jako dokončený pomocí checkboxu. Student nemá možnost upravovat nebo mazat test.
+	
+	\begin{figure}[H]
 		\centering
 		\includegraphics[width=\linewidth,keepaspectratio]{obrazky/admin-U.png}
-		\caption{Administrační rozhraní pro správu obsahu (pohled učitele)}
+		\caption{Administrační rozhraní Wagtail CMS~--~dostupné pouze pro~učitele, pokročilá správa obsahu aplikace}
 		\label{fig:admin-U}
 	\end{figure}
 	
-	\subsection{Zobrazení pro přihlášeného studenta}
-	
-	Následující obrázky zobrazují rozhraní aplikace, které se zobrazuje, když je přihlášený uživatel s~rolí studenta. Student může prohlížet materiály, řešit testy a~sledovat své statistiky.
-	
-	\begin{figure}[h!]
-		\centering
-		\includegraphics[width=\linewidth,keepaspectratio]{obrazky/domovska-stranka-S.png}
-		\caption{Domovská stránka aplikace (pohled studenta)}
-		\label{fig:domovska-stranka-S}
-	\end{figure}
-	
-	\begin{figure}[h!]
-		\centering
-		\includegraphics[width=\linewidth,keepaspectratio]{obrazky/okruhy-S.png}
-		\caption{Okruhy v~předmětu s~materiály a~testy (pohled studenta)}
-		\label{fig:okruhy-S}
-	\end{figure}
-	
-	\begin{figure}[h!]
-		\centering
-		\includegraphics[width=\linewidth,keepaspectratio]{obrazky/detail-predmetu-S.png}
-		\caption{Detail předmětu se statistikami a~grafy (pohled studenta)}
-		\label{fig:detail-predmetu-S}
-	\end{figure}
-	
-	\begin{figure}[h!]
-		\centering
-		\includegraphics[width=\linewidth,keepaspectratio]{obrazky/testy-S.png}
-		\caption{Seznam testů s~výsledky (pohled studenta)}
-		\label{fig:testy-S}
-	\end{figure}
+	Toto je pokročilé redakční rozhraní pro~správu obsahu aplikace. Učitel zde může spravovat předměty, okruhy, materiály, testy, uživatele a~další entity pomocí intuitivního rozhraní. Wagtail poskytuje možnost filtrování, vyhledávání a~pokročilé možnosti správy obsahu. Do~tohoto rozhraní se může dostat pouze uživatel s~rolí učitele nebo administrátora.
 	
 	\restoregeometry
 

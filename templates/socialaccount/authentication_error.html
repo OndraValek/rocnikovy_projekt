@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Chyba při autentizaci{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-lg border-0">
+                <div class="card-header text-center py-4 bg-danger">
+                    <h2 class="mb-0 text-white">
+                        <i class="bi bi-shield-exclamation"></i> Chyba při autentizaci
+                    </h2>
+                </div>
+                <div class="card-body p-5 text-center">
+                    <div class="mb-4">
+                        <i class="bi bi-x-octagon text-danger" style="font-size: 4rem;"></i>
+                    </div>
+                    
+                    <h4 class="mb-4 text-gradient">Nastala chyba při autentizaci</h4>
+                    
+                    <p class="text-muted mb-4">
+                        Omlouváme se, ale při autentizaci pomocí externího účtu došlo k chybě. 
+                        Zkuste to prosím znovu později.
+                    </p>
+                    
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                <i class="bi bi-info-circle me-2"></i>
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    
+                    <div class="d-grid gap-2 mt-4">
+                        <a href="{% url 'account_login' %}" class="btn btn-primary btn-lg">
+                            <i class="bi bi-arrow-left-circle me-2"></i> Zpět na přihlášení
+                        </a>
+                        <a href="{% url 'subjects:subject_list' %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-house me-2"></i> Domů
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

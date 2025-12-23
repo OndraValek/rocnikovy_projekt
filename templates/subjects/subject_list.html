@@ -1,195 +1,74 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Předměty - {{ block.super }}{% endblock %}
 
 {% block content %}
-<style>
-    /* Přepsat container padding */
-    body main.container {
-        padding-left: 0 !important;
-        padding-right: 15px !important;
-        max-width: 100% !important;
-    }
-    
-    /* Flexbox layout pro spolehlivé zarovnání */
-    .subject-list-container {
-        display: flex;
-        gap: 20px;
-        align-items: flex-start;
-    }
-    
-    /* Kalendář - fixní šířka, úplně vlevo */
-    #calendar-wrapper {
-        flex: 0 0 180px;
-        position: sticky;
-        top: 20px;
-    }
-    
-    /* Předměty - zbytek prostoru, zarovnané s navigací */
-    #subjects-wrapper {
-        flex: 1;
-        padding-left: 15px;
-        padding-right: 15px;
-        min-width: 0;
-    }
-</style>
-<div class="subject-list-container">
-    <!-- Levá část - Kalendář -->
-    <div id="calendar-wrapper">
-        <div class="card">
-            <div class="card-header py-2 px-2">
-                <h6 class="mb-0">Kalendář</h6>
-            </div>
-            <div class="card-body p-1">
-                <div id="compact-calendar"></div>
-            </div>
+<div class="fade-in">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="mb-2 text-gradient">Maturitní předměty</h1>
+            <p class="text-muted mb-0">Vyberte si předmět a začněte se připravovat k maturitě</p>
         </div>
-    </div>
-    
-    <!-- Pravá část - Seznam předmětů -->
-    <div id="subjects-wrapper">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h1 class="mb-0">Maturitní předměty</h1>
-            {% if user.is_authenticated %}
-                {% if user.is_teacher or user.is_admin %}
-                <a href="{% url 'subjects:subject_create' %}" class="btn btn-success">
-                    <i class="bi bi-plus-circle"></i> Přidat předmět
-                </a>
-                {% endif %}
+        {% if user.is_authenticated %}
+            {% if user.is_teacher or user.is_admin %}
+            <a href="{% url 'subjects:subject_create' %}" class="btn btn-success">
+                <i class="bi bi-plus-circle"></i> Přidat předmět
+            </a>
             {% endif %}
-        </div>
-
-        {% if subjects %}
-            <div class="row">
-                {% for subject in subjects %}
-                    <div class="col-md-6 mb-4">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title">
-                                    <a href="{% url 'subjects:subject_detail' subject.slug %}">{{ subject.name }}</a>
-                                </h5>
-                                {% if subject.description %}
-                                    <p class="card-text">{{ subject.description|truncatewords:30 }}</p>
-                                {% endif %}
-                                <div class="d-flex gap-2">
-                                    <a href="{% url 'subjects:subject_detail' subject.slug %}" class="btn btn-primary">
-                                        Zobrazit okruhy
-                                    </a>
-                                    {% if user.is_authenticated %}
-                                        {% if user.is_teacher or user.is_admin %}
-                                        <a href="{% url 'subjects:subject_delete' subject.slug %}" class="btn btn-danger" onclick="return confirm('Opravdu chcete smazat předmět \"{{ subject.name }}\"? Tato akce je nevratná!');">
-                                            <i class="bi bi-trash"></i> Smazat
-                                        </a>
-                                        {% endif %}
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-        {% else %}
-            <p>Zatím nejsou k dispozici žádné předměty.</p>
         {% endif %}
     </div>
-</div>
-{% endblock %}
 
-{% block extra_js %}
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Zajistit, že container má správný padding
-    const mainContainer = document.querySelector('main.container');
-    if (mainContainer) {
-        mainContainer.style.paddingLeft = '0';
-        mainContainer.style.paddingRight = '15px';
-    }
-    
-    const calendarContainer = document.getElementById('compact-calendar');
-    if (!calendarContainer) return;
-    
-    // Vytvořit kompaktní kalendář
-    function createCompactCalendar() {
-        const now = new Date();
-        let currentMonth = now.getMonth();
-        let currentYear = now.getFullYear();
-        
-        const monthNames = ['leden', 'únor', 'březen', 'duben', 'květen', 'červen',
-                           'červenec', 'srpen', 'září', 'říjen', 'listopad', 'prosinec'];
-        const dayNames = ['Po', 'Út', 'St', 'Čt', 'Pá', 'So', 'Ne'];
-        
-        function renderCalendar() {
-            const firstDay = new Date(currentYear, currentMonth, 1);
-            const lastDay = new Date(currentYear, currentMonth + 1, 0);
-            const daysInMonth = lastDay.getDate();
-            const startingDayOfWeek = (firstDay.getDay() + 6) % 7; // Pondělí = 0
-            
-            // Příklad událostí (v budoucnu lze načíst z API)
-            const events = {
-                14: { text: 'Tabulky a grafy má být...', color: '#ffc107' },
-                20: { text: 'Test - ukazatele, dynami...', color: '#ffc107' }
-            };
-            
-            let html = `
-                <div class="calendar-header">
-                    <button class="btn btn-sm btn-outline-secondary" onclick="changeMonth(-1)">‹</button>
-                    <strong>${monthNames[currentMonth]} ${currentYear}</strong>
-                    <button class="btn btn-sm btn-outline-secondary" onclick="changeMonth(1)">›</button>
-                </div>
-                <div class="calendar-grid">
-                    <div class="calendar-weekdays">
-                        ${dayNames.map(day => `<div class="calendar-weekday">${day}</div>`).join('')}
-                    </div>
-                    <div class="calendar-days">
-            `;
-            
-            // Prázdné buňky před prvním dnem
-            for (let i = 0; i < startingDayOfWeek; i++) {
-                html += '<div class="calendar-day empty"></div>';
-            }
-            
-            // Dny v měsíci
-            for (let day = 1; day <= daysInMonth; day++) {
-                const date = new Date(currentYear, currentMonth, day);
-                const isToday = date.toDateString() === now.toDateString();
-                const hasEvent = events[day];
-                let dayClass = 'calendar-day';
-                if (isToday) dayClass += ' today';
-                if (hasEvent) dayClass += ' has-event';
-                
-                html += `<div class="${dayClass}">`;
-                html += `<div class="calendar-day-number">${day}</div>`;
-                if (hasEvent) {
-                    html += `<div class="calendar-event"><span class="calendar-event-indicator"></span>${hasEvent.text}</div>`;
-                }
-                html += `</div>`;
-            }
-            
-            html += `
+    {% if subjects %}
+        <div class="row g-4">
+            {% for subject in subjects %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="subject-card">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div class="flex-grow-1">
+                                <h5 class="card-title mb-2">
+                                    <a href="{% url 'subjects:subject_detail' subject.slug %}">
+                                        <i class="bi bi-book text-primary me-2"></i>{{ subject.name }}
+                                    </a>
+                                </h5>
+                                {% if subject.topics_count %}
+                                    <span class="badge bg-info">
+                                        <i class="bi bi-list-ul"></i> {{ subject.topics_count }} okruh{{ subject.topics_count|pluralize:"ů" }}
+                                    </span>
+                                {% endif %}
+                            </div>
+                            {% if user.is_authenticated %}
+                                {% if user.is_teacher or user.is_admin %}
+                                <a href="{% url 'subjects:subject_delete' subject.slug %}" 
+                                   class="btn btn-sm btn-danger" 
+                                   onclick="return confirm('Opravdu chcete smazat předmět \"{{ subject.name }}\"? Tato akce je nevratná!');"
+                                   title="Smazat předmět">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                        {% if subject.description %}
+                            <p class="card-text text-muted mb-3">{{ subject.description|truncatewords:25 }}</p>
+                        {% endif %}
+                        <div class="mt-auto">
+                            <a href="{% url 'subjects:subject_detail' subject.slug %}" class="btn btn-primary w-100">
+                                <i class="bi bi-arrow-right-circle"></i> Zobrazit okruhy
+                            </a>
+                        </div>
                     </div>
                 </div>
-            `;
-            
-            calendarContainer.innerHTML = html;
-        }
-        
-        window.changeMonth = function(delta) {
-            currentMonth += delta;
-            if (currentMonth < 0) {
-                currentMonth = 11;
-                currentYear--;
-            } else if (currentMonth > 11) {
-                currentMonth = 0;
-                currentYear++;
-            }
-            renderCalendar();
-        };
-        
-        renderCalendar();
-    }
-    
-    createCompactCalendar();
-});
-</script>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <div class="empty-state-icon">
+                <i class="bi bi-inbox"></i>
+            </div>
+            <h3 class="text-muted">Zatím nejsou k dispozici žádné předměty</h3>
+            <p class="text-muted">Předměty budou zobrazeny, jakmile budou přidány do systému.</p>
+        </div>
+    {% endif %}
+</div>
 {% endblock %}
 
