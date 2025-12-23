@@ -24,6 +24,11 @@ class AccountAdapter(DefaultAccountAdapter):
         if not user.username:
             user.username = user.email
         
+        # Nastavit výchozí roli na studenta
+        from accounts.models import User
+        if not user.role:
+            user.role = User.Role.STUDENT
+        
         if commit:
             user.save()
         return user
@@ -91,7 +96,13 @@ class SocialAccountAdapter(DefaultSocialAccountAdapter):
             user.last_name = last_name
             logger.debug(f"Last name nastaven: {last_name}")
         
-        logger.info(f"Final user before return: email={user.email}, username={user.username}, first_name={user.first_name}, last_name={user.last_name}")
+        # Nastavit výchozí roli na studenta
+        from accounts.models import User
+        if not user.role:
+            user.role = User.Role.STUDENT
+            logger.debug(f"Role nastavena na: {user.role}")
+        
+        logger.info(f"Final user before return: email={user.email}, username={user.username}, first_name={user.first_name}, last_name={user.last_name}, role={user.role}")
         
         # Zajistit, že máme email a username
         if not user.email:

@@ -4,73 +4,91 @@
 {% block title %}{{ topic.name }} - {{ block.super }}{% endblock %}
 
 {% block content %}
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{% url 'subjects:subject_list' %}">Předměty</a></li>
-        <li class="breadcrumb-item"><a href="{% url 'subjects:subject_detail' subject.slug %}">{{ subject.name }}</a></li>
-        <li class="breadcrumb-item active">{{ topic.name }}</li>
-    </ol>
-</nav>
+<div class="fade-in">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'subjects:subject_list' %}"><i class="bi bi-house"></i> Předměty</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'subjects:subject_detail' subject.slug %}">{{ subject.name }}</a></li>
+            <li class="breadcrumb-item active">{{ topic.name }}</li>
+        </ol>
+    </nav>
 
-<h1>{{ topic.name }}</h1>
-
-{% if topic.description %}
-    <div class="mb-4">
-        {{ topic.description|safe }}
-    </div>
-{% endif %}
-
-<div class="row">
-    <div class="col-12">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2 class="mb-0">Úlohy</h2>
-            {% if user.is_authenticated %}
-                {% if user.is_teacher or user.is_admin %}
-                <div class="d-flex gap-2">
-                    <a href="{% url 'subjects:quiz_create' subject.slug topic.slug %}" class="btn btn-success">
-                        <i class="bi bi-plus-circle"></i> Přidat test
-                    </a>
-                    <a href="{% url 'subjects:material_create' subject.slug topic.slug %}" class="btn btn-success">
-                        <i class="bi bi-plus-circle"></i> Přidat materiál
-                    </a>
+    <div class="card shadow-soft mb-4">
+        <div class="card-body p-4">
+            <h1 class="text-gradient mb-3">{{ topic.name }}</h1>
+            {% if topic.description %}
+                <div class="text-muted">
+                    {{ topic.description|safe }}
                 </div>
-                {% endif %}
             {% endif %}
         </div>
-        
-        <!-- Container pro dynamické načítání úloh -->
-        <div id="dynamic-tasks-container" data-topic-id="{{ topic.id }}" data-is-teacher="{% if user.is_authenticated %}{% if user.is_teacher or user.is_admin %}true{% else %}false{% endif %}{% else %}false{% endif %}"></div>
     </div>
-</div>
 
-<!-- Sekce připomínek -->
-<div class="mt-5">
-    <h2>Připomínky a zpětná vazba</h2>
-    <div id="feedback-section" data-content-type="topic" data-object-id="{{ topic.id }}">
-        <!-- Formulář pro přidání připomínky -->
-        {% if user.is_authenticated %}
-        <div class="card mb-4">
-            <div class="card-body">
-                <h5 class="card-title">Přidat připomínku</h5>
-                <form id="feedback-form">
-                    <div class="mb-3">
-                        <textarea class="form-control" id="feedback-text" rows="3" placeholder="Napište svou připomínku nebo zpětnou vazbu..." required></textarea>
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="mb-0">
+                    <i class="bi bi-journal-text text-primary"></i> Úlohy
+                </h2>
+                {% if user.is_authenticated %}
+                    {% if user.is_teacher or user.is_admin %}
+                    <div class="d-flex gap-2">
+                        <a href="{% url 'subjects:quiz_create' subject.slug topic.slug %}" class="btn btn-success">
+                            <i class="bi bi-plus-circle"></i> Přidat test
+                        </a>
+                        <a href="{% url 'subjects:material_create' subject.slug topic.slug %}" class="btn btn-success">
+                            <i class="bi bi-plus-circle"></i> Přidat materiál
+                        </a>
                     </div>
-                    <button type="submit" class="btn btn-primary">Odeslat připomínku</button>
-                </form>
+                    {% endif %}
+                {% endif %}
+            </div>
+            
+            <!-- Container pro dynamické načítání úloh -->
+            <div id="dynamic-tasks-container" 
+                 data-topic-id="{{ topic.id }}" 
+                 data-is-teacher="{% if user.is_authenticated %}{% if user.is_teacher or user.is_admin %}true{% else %}false{% endif %}{% else %}false{% endif %}"
+                 data-is-student="{% if user.is_authenticated and user.is_student %}true{% else %}false{% endif %}"></div>
+        </div>
+    </div>
+
+    <!-- Sekce připomínek -->
+    <div class="mt-5">
+        <div class="card shadow-soft mb-4">
+            <div class="card-header">
+                <h2 class="mb-0"><i class="bi bi-chat-dots"></i> Připomínky a zpětná vazba</h2>
             </div>
         </div>
-        {% else %}
-        <div class="alert alert-info">
-            Pro přidání připomínky se musíte <a href="{% url 'account_login' %}">přihlásit</a>.
-        </div>
-        {% endif %}
-        
-        <!-- Seznam připomínek -->
-        <div id="feedback-list">
-            <div class="text-center">
-                <div class="spinner-border" role="status">
-                    <span class="visually-hidden">Načítání...</span>
+        <div id="feedback-section" data-content-type="topic" data-object-id="{{ topic.id }}">
+            <!-- Formulář pro přidání připomínky -->
+            {% if user.is_authenticated %}
+            <div class="card shadow-soft mb-4">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">
+                        <i class="bi bi-pencil-square text-primary"></i> Přidat připomínku
+                    </h5>
+                    <form id="feedback-form">
+                        <div class="mb-3">
+                            <textarea class="form-control" id="feedback-text" rows="4" placeholder="Napište svou připomínku nebo zpětnou vazbu..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-send"></i> Odeslat připomínku
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% else %}
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle"></i> Pro přidání připomínky se musíte <a href="{% url 'account_login' %}">přihlásit</a>.
+            </div>
+            {% endif %}
+            
+            <!-- Seznam připomínek -->
+            <div id="feedback-list">
+                <div class="text-center py-4">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Načítání...</span>
+                    </div>
                 </div>
             </div>
         </div>

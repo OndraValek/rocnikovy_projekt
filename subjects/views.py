@@ -6,7 +6,7 @@ from django.urls import reverse_lazy
 from django.shortcuts import redirect, get_object_or_404
 from django.contrib import messages
 from django.utils.text import slugify
-from .models import Subject, Topic, Feedback
+from .models import Subject, Topic, Feedback, CompletedTopic
 from quizzes.models import Quiz, QuizAttempt
 from materials.models import Material
 
@@ -19,10 +19,69 @@ class SubjectListView(ListView):
     ordering = ['name']
     
     def get_queryset(self):
-        """Vrátí předměty s počtem okruhů."""
-        return Subject.objects.annotate(
+        """Vrátí předměty s počtem okruhů, filtrované podle třídy uživatele."""
+        from accounts.models import User, StudentClass
+        
+        queryset = Subject.objects.annotate(
             topics_count=Count('topics')
-        ).all()
+        )
+        
+        # Pokud je uživatel přihlášen
+        if self.request.user.is_authenticated:
+            user = self.request.user
+            
+            # Debug print
+            print(f"=== SUBJECT LIST VIEW ===")
+            print(f"User: {user.email}")
+            print(f"Role: {getattr(user, 'role', 'N/A')}")
+            print(f"Is superuser: {user.is_superuser}")
+            
+            # Zkontrolovat roli - kontrola role má prioritu před superuser statusem
+            if hasattr(user, 'role'):
+                # Admin vidí všechny předměty (i když není superuser)
+                if user.role == User.Role.ADMIN:
+                    print("User is admin - returning all subjects")
+                    return queryset.all()
+                
+                # Student vidí jen předměty přiřazené k jeho třídám
+                elif user.role == User.Role.STUDENT:
+                    student_classes = user.student_classes.all()
+                    print(f"Student classes: {list(student_classes)}")
+                    if student_classes.exists():
+                        filtered = queryset.filter(classes__in=student_classes).distinct()
+                        print(f"Filtered subjects for student: {filtered.count()}")
+                        return filtered
+                    else:
+                        print("Student has no classes - returning none")
+                        return queryset.none()
+                
+                # Učitel vidí jen předměty přiřazené k třídám, které spravuje
+                # (i když je superuser, pokud má roli teacher, vidí jen předměty z jeho tříd)
+                elif user.role == User.Role.TEACHER:
+                    teacher_classes = user.managed_classes.all()
+                    print(f"Teacher managed classes: {list(teacher_classes)}")
+                    print(f"Teacher managed classes count: {teacher_classes.count()}")
+                    if teacher_classes.exists():
+                        filtered = queryset.filter(classes__in=teacher_classes).distinct()
+                        print(f"Filtered subjects for teacher: {filtered.count()}")
+                        print(f"All subjects count: {queryset.count()}")
+                        return filtered
+                    else:
+                        print("Teacher has no managed classes - returning none")
+                        return queryset.none()
+            
+            # Pokud nemá roli, ale je superuser, vidí všechny předměty
+            if user.is_superuser:
+                print("User is superuser (no role) - returning all subjects")
+                return queryset.all()
+            
+            # Jinak nevidí žádné předměty
+            print("User has no role and is not superuser - returning none")
+            return queryset.none()
+        
+        # Nepřihlášení uživatelé nevidí žádné předměty
+        print("User not authenticated - returning none")
+        return queryset.none()
 
 
 class SubjectDetailView(DetailView):
@@ -32,6 +91,48 @@ class SubjectDetailView(DetailView):
     context_object_name = 'subject'
     slug_url_kwarg = 'subject_slug'
     slug_field = 'slug'
+    
+    def dispatch(self, request, *args, **kwargs):
+        """Zkontrolovat, že uživatel má přístup k předmětu."""
+        from accounts.models import User, StudentClass
+        from django.http import Http404
+        
+        # Získat předmět
+        self.object = self.get_object()
+        
+        # Pokud je uživatel přihlášen
+        if request.user.is_authenticated:
+            user = request.user
+            
+            # Zkontrolovat roli - kontrola role má prioritu před superuser statusem
+            if hasattr(user, 'role'):
+                # Admin má přístup ke všem předmětům
+                if user.role == User.Role.ADMIN:
+                    return super().dispatch(request, *args, **kwargs)
+                
+                # Student má přístup jen k předmětům přiřazeným k jeho třídám
+                elif user.role == User.Role.STUDENT:
+                    student_classes = user.student_classes.all()
+                    if student_classes.exists():
+                        if self.object.classes.filter(id__in=student_classes.values_list('id', flat=True)).exists():
+                            return super().dispatch(request, *args, **kwargs)
+                    raise Http404("Nemáte přístup k tomuto předmětu")
+                
+                # Učitel má přístup jen k předmětům přiřazeným k třídám, které spravuje
+                # (i když je superuser, pokud má roli teacher, vidí jen předměty z jeho tříd)
+                elif user.role == User.Role.TEACHER:
+                    teacher_classes = user.managed_classes.all()
+                    if teacher_classes.exists():
+                        if self.object.classes.filter(id__in=teacher_classes.values_list('id', flat=True)).exists():
+                            return super().dispatch(request, *args, **kwargs)
+                    raise Http404("Nemáte přístup k tomuto předmětu")
+            
+            # Pokud nemá roli, ale je superuser, má přístup ke všem předmětům
+            if user.is_superuser:
+                return super().dispatch(request, *args, **kwargs)
+        
+        # Nepřihlášení uživatelé nemají přístup
+        raise Http404("Nemáte přístup k tomuto předmětu")
     
     def get_context_data(self, **kwargs):
         """Přidá okruhy, připomínky a statistiky do kontextu."""
@@ -47,6 +148,16 @@ class SubjectDetailView(DetailView):
             content_type=content_type,
             object_id=self.object.id
         ).count()
+        
+        # Přidat informace o dokončených okruzích pro studenty
+        if self.request.user.is_authenticated and hasattr(self.request.user, 'role') and self.request.user.role == 'student':
+            completed_topic_ids = CompletedTopic.objects.filter(
+                user=self.request.user,
+                topic__subject=self.object
+            ).values_list('topic_id', flat=True)
+            context['completed_topic_ids'] = list(completed_topic_ids)
+        else:
+            context['completed_topic_ids'] = []
         
         # Přidat statistiky pro přihlášené uživatele
         if self.request.user.is_authenticated:
@@ -357,9 +468,24 @@ class MaterialDeleteView(LoginRequiredMixin, DeleteView):
     
     def delete(self, request, *args, **kwargs):
         """Smazat materiál a zobrazit zprávu."""
+        from django.db import OperationalError
+        
         material = self.get_object()
-        messages.success(request, f'Materiál "{material.title}" byl úspěšně smazán.')
-        return super().delete(request, *args, **kwargs)
+        success_url = self.get_success_url()
+        
+        # Pokusit se smazat materiál
+        try:
+            result = super().delete(request, *args, **kwargs)
+            messages.success(request, f'Materiál "{material.title}" byl úspěšně smazán.')
+            return result
+        except OperationalError as e:
+            # Pokud tabulka CompletedMaterial neexistuje, smazat materiál bez cascade
+            if 'no such table: subjects_completedmaterial' in str(e):
+                # Smazat materiál přímo bez cascade na CompletedMaterial
+                material.delete()
+                messages.success(request, f'Materiál "{material.title}" byl úspěšně smazán.')
+                return redirect(success_url)
+            raise
 
 
 class StudentStatisticsView(LoginRequiredMixin, DetailView):

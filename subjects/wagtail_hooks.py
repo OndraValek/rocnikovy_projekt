@@ -14,7 +14,7 @@ class SubjectModelViewSet(ModelViewSet):
     menu_icon = 'folder'
     menu_order = 100
     add_to_admin_menu = True
-    list_display = ('name', 'slug', 'created_at')
+    list_display = ('name', 'slug', 'get_classes_display', 'created_at')
     search_fields = ('name', 'description')
     exclude_form_fields = ('created_at', 'updated_at')
 

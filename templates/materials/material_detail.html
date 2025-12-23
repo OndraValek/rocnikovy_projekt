@@ -1,79 +1,93 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}{{ material.title }} - {{ block.super }}{% endblock %}
 
 {% block content %}
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{% url 'subjects:subject_list' %}">Předměty</a></li>
-        <li class="breadcrumb-item"><a href="{% url 'subjects:subject_detail' material.topic.subject.slug %}">{{ material.topic.subject.name }}</a></li>
-        <li class="breadcrumb-item"><a href="{% url 'subjects:topic_detail' material.topic.subject.slug material.topic.slug %}">{{ material.topic.name }}</a></li>
-        <li class="breadcrumb-item active">{{ material.title }}</li>
-    </ol>
-</nav>
+<div class="fade-in">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'subjects:subject_list' %}"><i class="bi bi-house"></i> Předměty</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'subjects:subject_detail' material.topic.subject.slug %}">{{ material.topic.subject.name }}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'subjects:topic_detail' material.topic.subject.slug material.topic.slug %}">{{ material.topic.name }}</a></li>
+            <li class="breadcrumb-item active">{{ material.title }}</li>
+        </ol>
+    </nav>
 
-<h1>{{ material.title }}</h1>
+    <div class="card shadow-soft border-0 mb-4">
+        <div class="card-body p-4">
+            <h1 class="text-gradient mb-3">{{ material.title }}</h1>
+            {% if material.description %}
+                <p class="lead text-muted mb-3">{{ material.description }}</p>
+            {% endif %}
+            
+            <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
+                <span class="badge bg-secondary">
+                    <i class="bi bi-tag"></i> {{ material.get_material_type_display }}
+                </span>
+                {% if material.author %}
+                    <span class="text-muted">
+                        <i class="bi bi-person"></i> Autor: {{ material.author }}
+                    </span>
+                {% endif %}
+            </div>
 
-{% if material.description %}
-    <p class="lead">{{ material.description }}</p>
-{% endif %}
+            {% if material.material_type == 'pdf' and material.document %}
+                <div class="mb-4">
+                    <a href="{{ material.document.url }}" class="btn btn-primary btn-lg" target="_blank">
+                        <i class="bi bi-file-pdf"></i> Otevřít PDF dokument
+                    </a>
+                </div>
+            {% elif material.material_type == 'video' and material.external_url %}
+                <div class="mb-4">
+                    <div class="ratio ratio-16x9 rounded-soft overflow-hidden shadow-md">
+                        <iframe src="{{ material.external_url }}" allowfullscreen></iframe>
+                    </div>
+                </div>
+            {% elif material.material_type == 'link' and material.external_url %}
+                <div class="mb-4">
+                    <a href="{{ material.external_url }}" class="btn btn-primary btn-lg" target="_blank">
+                        <i class="bi bi-box-arrow-up-right"></i> Otevřít odkaz
+                    </a>
+                </div>
+            {% elif material.material_type == 'h5p' %}
+                {% if material.h5p_path %}
+                    {# H5P Standalone Player #}
+                    <div class="mb-4">
+                        <div id="h5p-container" class="rounded-soft overflow-hidden shadow-md" style="width: 100%; max-width: 100%;"></div>
+                    </div>
+                {% elif material.h5p_embed_code %}
+                    {# Starší způsob - embed kód #}
+                    <div class="mb-4">
+                        <div class="h5p-container rounded-soft overflow-hidden shadow-md" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%;">
+                            {{ material.h5p_embed_code|safe }}
+                        </div>
+                    </div>
+                {% endif %}
+            {% elif material.material_type == 'text' and material.content %}
+                <div class="mb-4">
+                    <div class="card shadow-soft">
+                        <div class="card-body p-4">
+                            {{ material.content|linebreaks }}
+                        </div>
+                    </div>
+                </div>
+            {% elif material.material_type == 'image' and material.image %}
+                <div class="mb-4">
+                    <div class="card shadow-soft overflow-hidden">
+                        <img src="{{ material.image.url }}" class="img-fluid w-100" alt="{{ material.title }}">
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
 
-<div class="mb-3">
-    <span class="badge bg-secondary">{{ material.get_material_type_display }}</span>
-    {% if material.author %}
-        <span class="text-muted">• Autor: {{ material.author }}</span>
-    {% endif %}
+    <div class="mt-4">
+        <a href="{% url 'subjects:topic_detail' material.topic.subject.slug material.topic.slug %}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Zpět na okruh
+        </a>
+    </div>
 </div>
-
-{% if material.material_type == 'pdf' and material.document %}
-    <div class="mb-4">
-        <a href="{{ material.document.url }}" class="btn btn-primary" target="_blank">
-            Otevřít PDF dokument
-        </a>
-    </div>
-{% elif material.material_type == 'video' and material.external_url %}
-    <div class="mb-4">
-        <div class="ratio ratio-16x9">
-            <iframe src="{{ material.external_url }}" allowfullscreen></iframe>
-        </div>
-    </div>
-{% elif material.material_type == 'link' and material.external_url %}
-    <div class="mb-4">
-        <a href="{{ material.external_url }}" class="btn btn-primary" target="_blank">
-            Otevřít odkaz
-        </a>
-    </div>
-{% elif material.material_type == 'h5p' %}
-    {% if material.h5p_path %}
-        {# H5P Standalone Player #}
-        <div class="mb-4">
-            <div id="h5p-container" style="width: 100%; max-width: 100%;"></div>
-        </div>
-    {% elif material.h5p_embed_code %}
-        {# Starší způsob - embed kód #}
-        <div class="mb-4">
-            <div class="h5p-container" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%;">
-                {{ material.h5p_embed_code|safe }}
-            </div>
-        </div>
-    {% endif %}
-{% elif material.material_type == 'text' and material.content %}
-    <div class="mb-4">
-        <div class="card">
-            <div class="card-body">
-                {{ material.content|linebreaks }}
-            </div>
-        </div>
-    </div>
-{% elif material.material_type == 'image' and material.image %}
-    <div class="mb-4">
-        <img src="{{ material.image.url }}" class="img-fluid" alt="{{ material.title }}">
-    </div>
-{% endif %}
-
-<a href="{% url 'subjects:topic_detail' material.topic.subject.slug material.topic.slug %}" class="btn btn-secondary">
-    Zpět na okruh
-</a>
 {% endblock %}
 
 {% block extra_js %}

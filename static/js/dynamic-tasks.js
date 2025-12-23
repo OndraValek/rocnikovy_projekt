@@ -23,16 +23,23 @@ class DynamicTasksLoader {
         // Zkontrolovat, jestli je uživatel učitel/admin
         // Zkusit získat atribut z containeru
         let isTeacherAttr = this.container ? this.container.getAttribute('data-is-teacher') : null;
+        let isStudentAttr = this.container ? this.container.getAttribute('data-is-student') : null;
         
         // Pokud není v containeru, zkusit najít dynamic-tasks-container
-        if (!isTeacherAttr) {
+        if (!isTeacherAttr || !isStudentAttr) {
             const dynamicContainer = document.getElementById('dynamic-tasks-container');
             if (dynamicContainer) {
-                isTeacherAttr = dynamicContainer.getAttribute('data-is-teacher');
+                if (!isTeacherAttr) {
+                    isTeacherAttr = dynamicContainer.getAttribute('data-is-teacher');
+                }
+                if (!isStudentAttr) {
+                    isStudentAttr = dynamicContainer.getAttribute('data-is-student');
+                }
             }
         }
         
         this.isTeacher = isTeacherAttr === 'true';
+        this.isStudent = isStudentAttr === 'true';
         
         this.currentPage = 1;
         this.currentFilters = {
@@ -240,8 +247,9 @@ class DynamicTasksLoader {
         const container = document.getElementById('tasks-container');
         if (!container) return;
         
-        // Použít uloženou hodnotu isTeacher
+        // Použít uložené hodnoty
         const isTeacher = this.isTeacher || false;
+        const isStudent = this.isStudent || false;
         
         if (tasks.length === 0) {
             container.innerHTML = `
@@ -257,12 +265,28 @@ class DynamicTasksLoader {
         tasks.forEach(task => {
             if (task.type === 'material' || !task.type) {
                 // Materiál
+                const isCompleted = task.is_completed || false;
                 html += `
                     <div class="col-md-6 col-lg-4">
-                        <div class="card h-100">
+                        <div class="card h-100 ${isCompleted ? 'task-completed' : ''}">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-start mb-2">
-                                    <h5 class="card-title mb-0">${this.escapeHtml(task.title)}</h5>
+                                    <div class="d-flex align-items-center gap-2">
+                                        ${isStudent ? `
+                                            <div class="form-check form-check-lg d-inline-flex align-items-center">
+                                                <input class="form-check-input task-checkbox material-checkbox" 
+                                                       type="checkbox" 
+                                                       data-material-id="${task.id}"
+                                                       id="material-checkbox-${task.id}"
+                                                       ${isCompleted ? 'checked' : ''}
+                                                       style="display: none;">
+                                                <label class="form-check-label mb-0" for="material-checkbox-${task.id}" title="Označit jako dokončený">
+                                                    <i class="bi ${isCompleted ? 'bi-check-circle-fill text-success' : 'bi-circle text-muted'}" style="font-size: 1.5rem;"></i>
+                                                </label>
+                                            </div>
+                                        ` : ''}
+                                        <h5 class="card-title mb-0">${this.escapeHtml(task.title)}</h5>
+                                    </div>
                                     <span class="badge bg-secondary">${this.escapeHtml(task.material_type || task.material_type_display || 'Materiál')}</span>
                                 </div>
                                 ${task.description ? `<p class="card-text text-muted small">${this.escapeHtml(task.description.substring(0, 100))}${task.description.length > 100 ? '...' : ''}</p>` : ''}
@@ -287,13 +311,29 @@ class DynamicTasksLoader {
                 // Test
                 const attemptsInfo = task.user_attempts || {};
                 const bestScore = attemptsInfo.best_score;
+                const isCompleted = task.is_completed || false;
                 
                 html += `
                     <div class="col-md-6 col-lg-4">
-                        <div class="card h-100">
+                        <div class="card h-100 ${isCompleted ? 'task-completed' : ''}">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-start mb-2">
-                                    <h5 class="card-title mb-0">${this.escapeHtml(task.title)}</h5>
+                                    <div class="d-flex align-items-center gap-2">
+                                        ${isStudent ? `
+                                            <div class="form-check form-check-lg d-inline-flex align-items-center">
+                                                <input class="form-check-input task-checkbox quiz-checkbox" 
+                                                       type="checkbox" 
+                                                       data-quiz-id="${task.id}"
+                                                       id="quiz-checkbox-${task.id}"
+                                                       ${isCompleted ? 'checked' : ''}
+                                                       style="display: none;">
+                                                <label class="form-check-label mb-0" for="quiz-checkbox-${task.id}" title="Označit jako dokončený">
+                                                    <i class="bi ${isCompleted ? 'bi-check-circle-fill text-success' : 'bi-circle text-muted'}" style="font-size: 1.5rem;"></i>
+                                                </label>
+                                            </div>
+                                        ` : ''}
+                                        <h5 class="card-title mb-0">${this.escapeHtml(task.title)}</h5>
+                                    </div>
                                     <span class="badge bg-primary">Test</span>
                                 </div>
                                 ${task.description ? `<p class="card-text text-muted small">${this.escapeHtml(task.description.substring(0, 100))}${task.description.length > 100 ? '...' : ''}</p>` : ''}
@@ -327,6 +367,130 @@ class DynamicTasksLoader {
         
         html += '</div>';
         container.innerHTML = html;
+        
+        // Nastavit event listeners pro checkboxy (pouze pro studenty)
+        if (isStudent) {
+            this.setupCheckboxListeners();
+        }
+    }
+    
+    setupCheckboxListeners() {
+        // Checkboxy pro materiály
+        document.querySelectorAll('.material-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', (e) => {
+                const materialId = parseInt(checkbox.getAttribute('data-material-id'));
+                const completed = checkbox.checked;
+                const card = checkbox.closest('.card');
+                const icon = checkbox.nextElementSibling.querySelector('i');
+                
+                // Zobrazit loading stav
+                const originalClass = icon.className;
+                icon.className = 'bi bi-hourglass-split text-warning';
+                checkbox.disabled = true;
+                
+                // Odeslat požadavek na API
+                fetch('/api/completed-material/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': this.getCookie('csrftoken')
+                    },
+                    body: JSON.stringify({
+                        material_id: materialId,
+                        completed: completed
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        if (completed) {
+                            card.classList.add('task-completed');
+                            icon.className = 'bi bi-check-circle-fill text-success';
+                        } else {
+                            card.classList.remove('task-completed');
+                            icon.className = 'bi bi-circle text-muted';
+                        }
+                    } else {
+                        checkbox.checked = !completed;
+                        alert('Chyba: ' + (data.error || 'Nepodařilo se aktualizovat stav materiálu'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    checkbox.checked = !completed;
+                    alert('Chyba při aktualizaci stavu materiálu');
+                })
+                .finally(() => {
+                    checkbox.disabled = false;
+                });
+            });
+        });
+        
+        // Checkboxy pro testy
+        document.querySelectorAll('.quiz-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', (e) => {
+                const quizId = parseInt(checkbox.getAttribute('data-quiz-id'));
+                const completed = checkbox.checked;
+                const card = checkbox.closest('.card');
+                const icon = checkbox.nextElementSibling.querySelector('i');
+                
+                // Zobrazit loading stav
+                const originalClass = icon.className;
+                icon.className = 'bi bi-hourglass-split text-warning';
+                checkbox.disabled = true;
+                
+                // Odeslat požadavek na API
+                fetch('/api/completed-quiz/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': this.getCookie('csrftoken')
+                    },
+                    body: JSON.stringify({
+                        quiz_id: quizId,
+                        completed: completed
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        if (completed) {
+                            card.classList.add('task-completed');
+                            icon.className = 'bi bi-check-circle-fill text-success';
+                        } else {
+                            card.classList.remove('task-completed');
+                            icon.className = 'bi bi-circle text-muted';
+                        }
+                    } else {
+                        checkbox.checked = !completed;
+                        alert('Chyba: ' + (data.error || 'Nepodařilo se aktualizovat stav testu'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    checkbox.checked = !completed;
+                    alert('Chyba při aktualizaci stavu testu');
+                })
+                .finally(() => {
+                    checkbox.disabled = false;
+                });
+            });
+        });
+    }
+    
+    getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
     }
     
     renderPagination(pagination) {

@@ -26,5 +26,8 @@ api_urlpatterns = [
     path('quizzes/', api_views.QuizzesAPIView.as_view(), name='api_quizzes'),
     path('tasks/', api_views.AllTasksAPIView.as_view(), name='api_tasks'),
     path('feedback/', api_views.FeedbackAPIView.as_view(), name='api_feedback'),
+    path('completed-topic/', api_views.CompletedTopicAPIView.as_view(), name='api_completed_topic'),
+    path('completed-material/', api_views.CompletedMaterialAPIView.as_view(), name='api_completed_material'),
+    path('completed-quiz/', api_views.CompletedQuizAPIView.as_view(), name='api_completed_quiz'),
 ]
 

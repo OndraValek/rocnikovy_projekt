@@ -1,32 +1,59 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Vytvořit nové vlákno - {{ block.super }}{% endblock %}
 
 {% block content %}
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{% url 'subjects:subject_list' %}">Předměty</a></li>
-        <li class="breadcrumb-item"><a href="{% url 'subjects:subject_detail' topic.subject.slug %}">{{ topic.subject.name }}</a></li>
-        <li class="breadcrumb-item"><a href="{% url 'subjects:topic_detail' topic.subject.slug topic.slug %}">{{ topic.name }}</a></li>
-        <li class="breadcrumb-item active">Nové vlákno</li>
-    </ol>
-</nav>
+<div class="fade-in">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'subjects:subject_list' %}"><i class="bi bi-house"></i> Předměty</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'subjects:subject_detail' topic.subject.slug %}">{{ topic.subject.name }}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'subjects:topic_detail' topic.subject.slug topic.slug %}">{{ topic.name }}</a></li>
+            <li class="breadcrumb-item active">Nové vlákno</li>
+        </ol>
+    </nav>
 
-<h1>Vytvořit nové diskusní vlákno</h1>
-<p class="lead">Okruh: {{ topic.name }}</p>
-
-<form method="post">
-    {% csrf_token %}
-    <div class="mb-3">
-        <label for="title" class="form-label">Nadpis</label>
-        <input type="text" class="form-control" id="title" name="title" required>
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+            <div class="card shadow-soft border-0">
+                <div class="card-header">
+                    <h1 class="mb-0 text-white">
+                        <i class="bi bi-chat-left-text"></i> Vytvořit nové diskusní vlákno
+                    </h1>
+                </div>
+                <div class="card-body p-4">
+                    <div class="alert alert-info mb-4">
+                        <i class="bi bi-info-circle"></i> Okruh: <strong>{{ topic.name }}</strong>
+                    </div>
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-4">
+                            <label for="title" class="form-label">
+                                <i class="bi bi-pencil text-primary"></i> Nadpis <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" class="form-control" id="title" name="title" required placeholder="Zadejte nadpis vlákna...">
+                        </div>
+                        <div class="mb-4">
+                            <label for="content" class="form-label">
+                                <i class="bi bi-text-paragraph text-primary"></i> Obsah <span class="text-danger">*</span>
+                            </label>
+                            <textarea class="form-control" id="content" name="content" rows="10" required placeholder="Napište obsah vašeho příspěvku..."></textarea>
+                        </div>
+                        <div class="d-flex gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i> Vytvořit vlákno
+                            </button>
+                            <a href="{% url 'subjects:topic_detail' topic.subject.slug topic.slug %}" class="btn btn-secondary">
+                                <i class="bi bi-x-circle"></i> Zrušit
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="mb-3">
-        <label for="content" class="form-label">Obsah</label>
-        <textarea class="form-control" id="content" name="content" rows="10" required></textarea>
-    </div>
-    <button type="submit" class="btn btn-primary">Vytvořit vlákno</button>
-    <a href="{% url 'subjects:topic_detail' topic.subject.slug topic.slug %}" class="btn btn-secondary">Zrušit</a>
-</form>
+</div>
 {% endblock %}
 
