@@ -82,6 +82,9 @@ openany
 \usepackage{fancyhdr}
 \pagestyle{fancy}
 \renewcommand{\headrulewidth}{0.025pt}
+\fancyhf{}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.025pt}
 
 \usepackage{booktabs}
 \usepackage{url}
@@ -230,7 +233,7 @@ openany
 	\clearpage
 
 %% Obsah
-	\thispagestyle{empty}
+	\pagestyle{fancy}
 	\vspace*{-1.5cm}
 	\begingroup
 	\renewcommand{\baselinestretch}{1.0}\normalsize
@@ -247,6 +250,7 @@ openany
 	
 	\pagenumbering{arabic}
 	\setcounter{page}{1}
+	\pagestyle{fancy}
 
 %% Úvod
 	\chapter*{Úvod}
@@ -420,19 +424,25 @@ openany
 
 	\section{Správa obsahu}
 	
-	Učitelé a~administrátoři mohou spravovat obsah aplikace pomocí intuitivního uživatelského rozhraní. Všechny CRUD operace jsou implementovány pomocí Django class-based views (CreateView, UpdateView, DeleteView) s~kontrolou oprávnění. Každá operace je chráněna kontrolou, zda má uživatel potřebná oprávnění pro~její provedení.
+	Aplikace poskytuje učitelům a~administrátorům komplexní systém pro~správu vzdělávacího obsahu. Všechny operace správy obsahu jsou implementovány pomocí Django class-based views (CreateView, UpdateView, DeleteView) s~důkladnou kontrolou oprávnění. Každá operace je chráněna kontrolou, zda má uživatel potřebná oprávnění pro~její provedení, což zajišťuje bezpečnost a~integritu dat v~aplikaci.
 
 	\subsection{Správa předmětů a~okruhů}
 	
-	Správa předmětů umožňuje vytváření nových předmětů s~automatickým vytvářením slugů z~názvu, což zajišťuje čisté URL adresy. Předměty mohou být mazány s~potvrzením uživatele, přičemž systém kontroluje, zda nejsou přidruženy žádné okruhy. Okruhy jsou vytvářeny v~rámci předmětu a~mají nastavení pořadí zobrazení, což umožňuje učitelům určit pořadí, v~jakém se okruhy zobrazí studentům. Učitelé mohou také přiřazovat předměty k~konkrétním třídám, což zajišťuje, že~studenti vidí pouze předměty, které jsou určeny pro~jejich třídu.
+	Správa předmětů umožňuje učitelům vytvářet nové předměty s~automatickým vytvářením slugů z~názvu, což zajišťuje čisté a~sémanticky správné URL adresy. Při~vytváření předmětu lze zadat název, popis a~přiřadit předmět k~konkrétním třídám. Předměty mohou být mazány pouze s~potvrzením uživatele, přičemž systém automaticky kontroluje, zda nejsou přidruženy žádné okruhy. Pokud jsou k~předmětu přiřazeny okruhy, systém zabrání smazání předmětu a~zobrazí uživateli varovnou zprávu.
+	
+	Okruhy jsou vytvářeny v~rámci konkrétního předmětu a~mají nastavení pořadí zobrazení, což umožňuje učitelům určit logické pořadí, v~jakém se okruhy zobrazí studentům. Každý okruh obsahuje název, popis a~může být přiřazen k~konkrétnímu předmětu. Učitelé mohou také přiřazovat předměty k~konkrétním třídám pomocí modelu StudentClass, což zajišťuje, že~studenti vidí pouze předměty, které jsou určeny pro~jejich třídu. Tato funkcionalita umožňuje personalizaci vzdělávacího obsahu podle tříd a~zajišťuje, že~studenti nejsou zahlceni informacemi, které se jich netýkají.
 
 	\subsection{Správa testů a~materiálů}
 	
-	Testy jsou vytvářeny s~možností nahrání H5P souboru nebo zadání iframe embed kódu. Při~vytváření testu lze nastavit parametry jako časový limit, maximální počet pokusů a~passing score (minimální skóre pro~úspěšné absolvování). Materiály mohou být různých typů (PDF, video, H5P, odkaz, text, obrázek), přičemž každý typ má specifické možnosti zobrazení a~zpracování. Mazání testů a~materiálů je chráněno kontrolou oprávnění a~vyžaduje potvrzení uživatele. Učitelé mohou také označovat materiály a~testy jako dokončené, což studentům pomáhá sledovat jejich pokrok.
+	Správa testů umožňuje učitelům vytvářet interaktivní testy s~možností nahrání H5P souboru nebo zadání iframe embed kódu pro~externí H5P obsah. Při~vytváření testu lze nastavit důležité parametry jako časový limit pro~vyplnění testu, maximální počet pokusů, které může student absolvovat, a~passing score (minimální procentuální skóre pro~úspěšné absolvování testu). Tyto parametry umožňují učitelům přizpůsobit testy podle jejich vzdělávacích cílů a~zajišťují, že~studenti mají jasně definovaná pravidla pro~absolvování testů.
+	
+	Materiály mohou být různých typů (PDF dokumenty, videa, H5P interaktivní obsah, externí odkazy, textové materiály, obrázky), přičemž každý typ má specifické možnosti zobrazení a~zpracování. PDF dokumenty jsou zobrazovány pomocí vestavěného prohlížeče, videa jsou přehrávána pomocí HTML5 video přehrávače, H5P obsah je zobrazován pomocí H5P Standalone Player a~externí odkazy jsou otevírány v~novém okně prohlížeče. Mazání testů a~materiálů je chráněno kontrolou oprávnění a~vyžaduje potvrzení uživatele, což zabraňuje náhodnému smazání důležitého obsahu. Učitelé mohou také označovat materiály a~testy jako dokončené, což studentům pomáhá sledovat jejich pokrok v~předmětu a~identifikovat oblasti, které ještě potřebují prostudovat.
 
 	\section{Diskusní fórum}
 	
-	Každý okruh má své vlastní diskusní fórum, kde studenti a~učitelé mohou komunikovat a~sdílet informace. Fórum umožňuje vytváření nových diskusních vláken, přidávání příspěvků do~vláken a~upravování a~mazání vlastních příspěvků. Učitelé mají navíc možnost připínat důležitá vlákna a~zamykat vlákna, která již nejsou relevantní. Fórum je implementováno pomocí modelů ForumThread a~ForumPost, které jsou propojeny s~modelem Topic. Každý příspěvek obsahuje informace o~autorovi, času vytvoření a~možnosti úpravy, což zajišťuje přehlednou komunikaci mezi studenty a~učiteli.
+	Každý okruh má své vlastní diskusní fórum, které slouží jako komunikační platforma mezi studenty a~učiteli. Fórum umožňuje vytváření nových diskusních vláken, přidávání příspěvků do~existujících vláken a~upravování a~mazání vlastních příspěvků. Tato funkcionalita podporuje aktivní diskusi o~učebních materiálech a~umožňuje studentům klást otázky a~sdílet poznatky s~ostatními.
+	
+	Učitelé mají navíc možnost připínat důležitá vlákna na~vrchol seznamu vláken, což zajišťuje, že~důležité informace jsou vždy snadno dostupné. Učitelé mohou také zamykat vlákna, která již nejsou relevantní nebo kde byla diskuse ukončena, což pomáhá udržovat fórum přehledné a~organizované. Fórum je implementováno pomocí modelů ForumThread a~ForumPost, které jsou propojeny s~modelem Topic pomocí cizích klíčů. Každý příspěvek obsahuje informace o~autorovi, času vytvoření a~poslední úpravy, což zajišťuje přehlednou komunikaci mezi studenty a~učiteli a~umožňuje sledovat historii diskusí.
 
 	\section{Představení projektu uživateli}
 	
@@ -440,24 +450,29 @@ openany
 	
 	\newgeometry{left=1.5cm, right=1.5cm, top=2.5cm, bottom=2.5cm}
 	
-	\FloatBarrier
-	\begin{figure}[H]
+	\subsection{Přihlašovací stránka}
+	
+	\begin{figure}[!htbp]
 		\centering
-		\includegraphics[width=\linewidth,keepaspectratio]{obrazky/prihlaseni.png}
+		\includegraphics[width=0.55\linewidth,keepaspectratio]{obrazky/prihlaseni.png}
 		\caption{Přihlašovací stránka s~možností OAuth2 autentizace (Google, GitHub, Microsoft) nebo klasického přihlášení}
 		\label{fig:prihlaseni}
 	\end{figure}
 	
 	Uživatel se může rychle přihlásit pomocí OAuth2 autentizace přes externí poskytovatele, konkrétně přes Google, GitHub nebo Microsoft. Alternativně se může registrovat nebo přihlásit pomocí klasického formuláře s~emailovou adresou a~heslem. OAuth2 přihlášení zjednodušuje proces registrace a~přihlášení, protože uživatel nemusí vytvářet nový účet~--~stačí použít existující účet od~jednoho z~podporovaných poskytovatelů.
 	
-	\begin{figure}[H]
+	\subsection{Domovská stránka -- pohled učitele}
+	
+	\begin{figure}[!htbp]
 		\centering
-		\includegraphics[width=\linewidth,keepaspectratio]{obrazky/uvod-U.png}
+		\includegraphics[width=0.95\linewidth,keepaspectratio]{obrazky/uvod-U.png}
 		\caption{Domovská stránka s~přehledem předmětů (pohled učitele)~--~učitel může přidávat a~odebírat předměty}
 		\label{fig:uvod-U}
 	\end{figure}
 	
 	Toto je pohled učitele na~seznam všech předmětů v~aplikaci. Učitel vidí všechny předměty v~systému a~má možnost je spravovat~--~může přidávat nové předměty pomocí tlačítka "Přidat předmět" a~mazat existující předměty pomocí ikony koše. Každý předmět je zobrazen jako karta s~názvem, popisem a~informací o~počtu okruhů. Učitel také vidí navigační menu s~přístupem k~administračním funkcím.
+	
+	\subsection{Domovská stránka -- pohled studenta}
 	
 	\begin{figure}[H]
 		\centering
@@ -468,6 +483,8 @@ openany
 	
 	Toto je pohled studenta na~seznam předmětů. Student vidí pouze předměty, které jsou přiřazené k~jeho třídě. Student nemá možnost vytvářet nebo upravovat předměty~--~může pouze prohlížet dostupné předměty a~pracovat s~jejich obsahem. Každý předmět je zobrazen jako karta s~názvem, popisem a~informací o~počtu okruhů. Student může kliknout na~předmět a~otevřít jeho detail.
 	
+	\subsection{Detail předmětu -- přehled okruhů (učitel)}
+	
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=\linewidth,keepaspectratio]{obrazky/predmet1-U.png}
@@ -477,14 +494,20 @@ openany
 	
 	Učitel je již v~konkrétním předmětu a~vidí seznam všech okruhů v~tomto předmětu. Učitel má možnost přidávat nové okruhy pomocí tlačítka "Přidat okruh" a~mazat existující okruhy pomocí ikony koše. Každý okruh je zobrazen jako karta s~názvem, popisem a~pořadím zobrazení. Učitel také vidí navigační breadcrumbs, které ukazují aktuální pozici v~aplikaci.
 	
-	\begin{figure}[H]
+	\newpage
+	\subsection{Detail předmětu -- statistiky studentů (učitel)}
+	
+	\begin{figure}[!htbp]
 		\centering
-		\includegraphics[width=\linewidth,keepaspectratio]{obrazky/predmet2-U.png}
+		\includegraphics[width=0.99\linewidth,keepaspectratio]{obrazky/predmet2-U.png}
 		\caption{Detail předmětu se statistikami studentů (pohled učitele)~--~učitel vidí přehled všech studentů a~jejich výsledků}
 		\label{fig:predmet2-U}
 	\end{figure}
 	
 	Zde učitel vidí statistiky všech studentů v~předmětu. Učitel má k~dispozici přehlednou tabulku všech studentů s~informacemi o~průměrném skóre, průměrné známce, počtu absolvovaných testů a~možností zobrazit detailní statistiky konkrétního studenta. Učitel také vidí sekci pro~připomínky a~zpětnou vazbu, kde může komunikovat se studenty.
+	
+	\newpage
+	\subsection{Detail předmětu -- přehled okruhů (student)}
 	
 	\begin{figure}[H]
 		\centering
@@ -495,14 +518,20 @@ openany
 	
 	Student vidí seznam všech okruhů v~předmětu. Student nemá možnost přidávat nebo mazat okruhy~--~může pouze prohlížet dostupné okruhy a~otevřít jejich detail. Student také může označovat okruhy jako dokončené pomocí checkboxů, což mu pomáhá sledovat svůj pokrok v~předmětu. Každý okruh je zobrazen jako karta s~názvem a~popisem.
 	
-	\begin{figure}[H]
+	\newpage
+	\subsection{Detail předmětu -- statistiky testů (student)}
+	
+	\begin{figure}[!htbp]
 		\centering
-		\includegraphics[width=\linewidth,keepaspectratio]{obrazky/predmet2-S.png}
+		\includegraphics[width=0.99\linewidth,keepaspectratio]{obrazky/predmet2-S.png}
 		\caption{Detail předmětu se statistikami testů (pohled studenta)~--~student vidí své skóre z~testů a~zpětnou vazbu ostatních}
 		\label{fig:predmet2-S}
 	\end{figure}
 	
 	Zde student vidí své vlastní statistiky z~testů v~předmětu. Student má k~dispozici přehlednou tabulku všech testů s~informacemi o~průměrném skóre, posledním výsledku a~automaticky vypočítané známce. Student také vidí sekci pro~připomínky a~zpětnou vazbu, kde může komunikovat s~učiteli a~ostatními studenty. Student může přidávat připomínky a~vidět připomínky ostatních uživatelů.
+	
+	\newpage
+	\subsection{Detail okruhu -- materiály a testy (učitel)}
 	
 	\begin{figure}[H]
 		\centering
@@ -513,6 +542,9 @@ openany
 	
 	Učitel vidí seznam všech materiálů a~testů v~okruhu. Učitel má možnost přidávat nové materiály pomocí tlačítka "Přidat materiál" a~nové testy pomocí tlačítka "Přidat test". Učitel také může mazat existující materiály a~testy pomocí ikony koše. Každý materiál a~test je zobrazen jako karta s~názvem, popisem, typem a~datem vytvoření. Učitel vidí také sekci pro~připomínky a~zpětnou vazbu.
 	
+	\newpage
+	\subsection{Detail okruhu -- materiály a testy (student)}
+	
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=\linewidth,keepaspectratio]{obrazky/okruh-S.png}
@@ -521,6 +553,9 @@ openany
 	\end{figure}
 	
 	Student vidí seznam všech materiálů a~testů v~okruhu. Student nemá možnost přidávat nebo mazat materiály a~testy~--~může pouze prohlížet dostupné materiály a~spouštět testy. Student také může označovat materiály, testy a~celý okruh jako dokončené pomocí checkboxů, což mu pomáhá sledovat svůj pokrok. Každý materiál a~test je zobrazen jako karta s~názvem, popisem a~typem.
+	
+	\newpage
+	\subsection{Detail testu -- pohled učitele}
 	
 	\begin{figure}[H]
 		\centering
@@ -531,6 +566,9 @@ openany
 	
 	Učitel vidí všechny informace o~testu, včetně názvu, popisu, úspěšnosti (passing score) a~možností správy. Učitel může upravovat test, mazat test a~zobrazovat statistiky studentů, kteří test absolvovali. Učitel také vidí seznam všech pokusů studentů o~vyplnění testu s~informacemi o~skóre a~datumu dokončení.
 	
+	\newpage
+	\subsection{Detail testu -- pohled studenta}
+	
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=\linewidth,keepaspectratio]{obrazky/test-S.png}
@@ -540,9 +578,12 @@ openany
 	
 	Student vidí informace o~testu, včetně názvu, popisu a~úspěšnosti (passing score). Student může spustit test kliknutím na~tlačítko "Spustit test" a~vidí své výsledky z~předchozích pokusů, pokud nějaké má. Student také může označit test jako dokončený pomocí checkboxu. Student nemá možnost upravovat nebo mazat test.
 	
-	\begin{figure}[H]
+	\newpage
+	\subsection{Administrační rozhraní Wagtail CMS}
+	
+	\begin{figure}[!htbp]
 		\centering
-		\includegraphics[width=\linewidth,keepaspectratio]{obrazky/admin-U.png}
+		\includegraphics[width=0.85\linewidth,keepaspectratio]{obrazky/admin-U.png}
 		\caption{Administrační rozhraní Wagtail CMS~--~dostupné pouze pro~učitele, pokročilá správa obsahu aplikace}
 		\label{fig:admin-U}
 	\end{figure}
@@ -570,29 +611,29 @@ openany
 	\addcontentsline{toc}{chapter}{Seznam použité literatury}
 	
 	\begin{enumerate}
-		\item Django: The web framework for perfectionists with deadlines. [online]. Dostupné z: \url{https://www.djangoproject.com/}
+		\item Django: The web framework for perfectionists with deadlines. [online]. [cit. 2025-01-15]. Dostupné z: \url{https://www.djangoproject.com/}
 		
-		\item Wagtail CMS: Enterprise Content Management with Django. [online]. Dostupné z: \url{https://www.wagtail.org/}
+		\item Wagtail CMS: Enterprise Content Management with Django. [online]. [cit. 2025-01-15]. Dostupné z: \url{https://www.wagtail.org/}
 		
-		\item PostgreSQL: The World's Most Advanced Open Source Relational Database. [online]. Dostupné z: \url{https://www.postgresql.org/}
+		\item PostgreSQL: The World's Most Advanced Open Source Relational Database. [online]. [cit. 2025-01-15]. Dostupné z: \url{https://www.postgresql.org/}
 		
-		\item Bootstrap: The most popular HTML, CSS, and JavaScript framework. [online]. Dostupné z: \url{https://getbootstrap.com/}
+		\item Bootstrap: The most popular HTML, CSS, and JavaScript framework. [online]. [cit. 2025-01-15]. Dostupné z: \url{https://getbootstrap.com/}
 		
-		\item Chart.js: Simple yet flexible JavaScript charting library. [online]. Dostupné z: \url{https://www.chartjs.org/}
+		\item Chart.js: Simple yet flexible JavaScript charting library. [online]. [cit. 2025-01-15]. Dostupné z: \url{https://www.chartjs.org/}
 		
-		\item H5P: Create, share and reuse interactive HTML5 content. [online]. Dostupné z: \url{https://h5p.org/}
+		\item H5P: Create, share and reuse interactive HTML5 content. [online]. [cit. 2025-01-15]. Dostupné z: \url{https://h5p.org/}
 		
-		\item Django-allauth: Integrated set of Django applications addressing authentication, registration, account management. [online]. Dostupné z: \url{https://django-allauth.readthedocs.io/}
+		\item Django-allauth: Integrated set of Django applications addressing authentication, registration, account management. [online]. [cit. 2025-01-15]. Dostupné z: \url{https://django-allauth.readthedocs.io/}
 		
-		\item Docker: Empowering App Development for Developers. [online]. Dostupné z: \url{https://www.docker.com/}
+		\item Docker: Empowering App Development for Developers. [online]. [cit. 2025-01-15]. Dostupné z: \url{https://www.docker.com/}
 		
-		\item MDN Web Docs: Django Web Framework (Python). [online]. Dostupné z: \url{https://developer.mozilla.org/en-US/docs/Learn/Server-side/Django}
+		\item MDN Web Docs: Django Web Framework (Python). [online]. [cit. 2025-01-15]. Dostupné z: \url{https://developer.mozilla.org/en-US/docs/Learn/Server-side/Django}
 		
-		\item W3Schools: Online Web Tutorials. [online]. Dostupné z: \url{https://www.w3schools.com/}
+		\item W3Schools: Online Web Tutorials. [online]. [cit. 2025-01-15]. Dostupné z: \url{https://www.w3schools.com/}
 		
-		\item Simple is Better Than Complex: Stories about Python, Django and Web Development. [online]. Dostupné z: \url{https://simpleisbetterthancomplex.com/}
+		\item Simple is Better Than Complex: Stories about Python, Django and Web Development. [online]. [cit. 2025-01-15]. Dostupné z: \url{https://simpleisbetterthancomplex.com/}
 		
-		\item Django REST Framework: Powerful and flexible toolkit for building Web APIs. [online]. Dostupné z: \url{https://www.django-rest-framework.org/}
+		\item Django REST Framework: Powerful and flexible toolkit for building Web APIs. [online]. [cit. 2025-01-15]. Dostupné z: \url{https://www.django-rest-framework.org/}
 	\end{enumerate}
 
 \end{document}
