@@ -52,7 +52,7 @@ rectangle "Maturitní projekt - vzdělávací platforma" {
     usecase "Přidat příspěvek" as UC26
     usecase "Upravit vlastní příspěvek" as UC27
     usecase "Smazat vlastní příspěvek" as UC28
-    usecase "Připnout/zamknout vlákno" as UC29
+    usecase "Připnout/zamykat vlákno" as UC29
     usecase "Moderovat fórum" as UC30
   }
   
@@ -188,4 +188,3 @@ admin --> UC41
 admin --> UC42
 
 @enduml
-
