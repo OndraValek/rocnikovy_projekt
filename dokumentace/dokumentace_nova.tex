@@ -245,8 +245,8 @@ openany
 	\renewcommand{\cftsecpagefont}{\normalsize}
 	\renewcommand{\cftsubsecpagefont}{\normalsize}
 	\renewcommand{\cftsubsubsecpagefont}{\normalsize}
-	\tableofcontents
 	\endgroup
+	\tableofcontents
 	
 	\pagenumbering{arabic}
 	\setcounter{page}{1}
@@ -375,9 +375,18 @@ openany
 
 	\subsection{Diagram oprávnění uživatelů}
 	
-	% TODO: Zde bude vložen diagram zobrazující, co může student a co může učitel
-	
 	Aplikace rozlišuje tři role uživatelů s~odpovídajícími oprávněními. Student může prohlížet materiály, řešit testy, účastnit se diskusí a~zobrazovat vlastní statistiky. Učitel má navíc možnost vytvářet a~spravovat obsah (předměty, okruhy, materiály, testy) a~zobrazovat statistiky všech studentů. Administrátor má plná oprávnění včetně správy uživatelů, přístupu do~Django adminu a~Wagtail CMS.
+	
+	\subsection{USE CASE diagram}
+	
+	\begin{figure}[!htbp]
+		\centering
+		\includegraphics[width=0.95\linewidth,keepaspectratio]{obrazky/diagram.PNG}
+		\caption{USE CASE diagram zobrazující všechny případy použití aplikace podle rolí uživatelů}
+		\label{fig:use_case_diagram}
+	\end{figure}
+	
+	USE CASE diagram zobrazuje všechny funkcionality aplikace a~jejich vztah k~jednotlivým rolím uživatelů (Student, Učitel, Administrátor). Diagram zahrnuje následující hlavní oblasti: předměty a~okruhy, výukové materiály, testy a~kvízy, diskusní fórum, autentizaci a~autorizaci, a~administraci. Každá role má definované oprávnění pro~přístup k~konkrétním funkcionalitám, což zajišťuje bezpečnost a~správné použití aplikace.
 
 	\subsection{Šablony a layout}
 	
@@ -420,11 +429,13 @@ openany
 	
 	Aplikace je připravena pro~snadné nasazení pomocí Dockeru, což zajišťuje konzistentní prostředí pro~vývoj i~produkci. Dockerizace umožňuje zabalit aplikaci a~všechny její závislosti do~kontejneru, který lze spustit na~jakémkoli systému s~Dockerem. V~projektu jsem vytvořil Dockerfile, který definuje image aplikace včetně Python prostředí, závislostí a~konfigurace. Docker Compose pak umožňuje spustit aplikaci spolu s~PostgreSQL databází v~jednom příkazu. Výhody Dockeru zahrnují snadné nasazení, konzistentní prostředí pro~všechny vývojáře a~zjednodušenou správu závislostí.
 
-	\chapter{Správa obsahu a diskusní fórum}
+	\chapter{Správa obsahu a uživatelské rozhraní}
 
 	\section{Správa obsahu}
 	
 	Aplikace poskytuje učitelům a~administrátorům komplexní systém pro~správu vzdělávacího obsahu. Všechny operace správy obsahu jsou implementovány pomocí Django class-based views (CreateView, UpdateView, DeleteView) s~důkladnou kontrolou oprávnění. Každá operace je chráněna kontrolou, zda má uživatel potřebná oprávnění pro~její provedení, což zajišťuje bezpečnost a~integritu dat v~aplikaci.
+	
+	Pro~správu obsahu aplikace je integrován Wagtail CMS, který poskytuje flexibilní systém pro~správu strukturovaného obsahu. Wagtail umožňuje vytvářet stránky s~různými typy bloků obsahu pomocí StreamField, což je ideální pro~vzdělávací obsah. Hlavní výhoda Wagtailu spočívá v~jeho flexibilním systému StreamField, který umožňuje vytvářet stránky s~různými typy bloků obsahu (text, obrázky, H5P obsah, videa atd.) bez~nutnosti programování. Wagtail také poskytuje integraci vlastních Django modelů do~redakčního rozhraní pomocí ModelViewSet API, což umožňuje správu těchto entit přímo z~Wagtail adminu. Wagtail tedy slouží jako vrstva mezi databázovými modely a~uživatelským rozhraním, která umožňuje neprogramátorům (učitelům) spravovat obsah aplikace pomocí intuitivního redakčního rozhraní. Wagtail poskytuje možnost filtrování, vyhledávání a~pokročilé možnosti správy obsahu, což zjednodušuje správu obsahu při~větším množství dat.
 
 	\subsection{Správa předmětů a~okruhů}
 	
@@ -444,7 +455,7 @@ openany
 	
 	Učitelé mají navíc možnost připínat důležitá vlákna na~vrchol seznamu vláken, což zajišťuje, že~důležité informace jsou vždy snadno dostupné. Učitelé mohou také zamykat vlákna, která již nejsou relevantní nebo kde byla diskuse ukončena, což pomáhá udržovat fórum přehledné a~organizované. Fórum je implementováno pomocí modelů ForumThread a~ForumPost, které jsou propojeny s~modelem Topic pomocí cizích klíčů. Každý příspěvek obsahuje informace o~autorovi, času vytvoření a~poslední úpravy, což zajišťuje přehlednou komunikaci mezi studenty a~učiteli a~umožňuje sledovat historii diskusí.
 
-	\section{Představení projektu uživateli}
+	\section{Uživatelské rozhraní aplikace}
 	
 	V~této sekci jsou představeny hlavní části aplikace z~pohledu různých typů uživatelů. Screenshoty ilustrují vzhled a~funkčnost aplikace a~ukazují, jaké možnosti má každý typ uživatele.
 	
@@ -588,7 +599,7 @@ openany
 		\label{fig:admin-U}
 	\end{figure}
 	
-	Toto je pokročilé redakční rozhraní pro~správu obsahu aplikace. Učitel zde může spravovat předměty, okruhy, materiály, testy, uživatele a~další entity pomocí intuitivního rozhraní. Wagtail poskytuje možnost filtrování, vyhledávání a~pokročilé možnosti správy obsahu. Do~tohoto rozhraní se může dostat pouze uživatel s~rolí učitele nebo administrátora.
+	Toto je pokročilé redakční rozhraní pro~správu obsahu aplikace. Učitel zde může spravovat předměty, okruhy, materiály, testy, uživatele a~další entity pomocí intuitivního rozhraní. Do~tohoto rozhraní se může dostat pouze uživatel s~rolí učitele nebo administrátora.
 	
 	\restoregeometry
 
@@ -605,7 +616,7 @@ openany
 	
 	Aplikace je zcela funkční a~připravená k~použití. Díky responzivnímu designu funguje na~všech zařízeních od~desktopových počítačů až po~mobilní telefony. Dockerizace zajišťuje snadné nasazení na~jakémkoli systému.
 	
-	Aplikace je zálohovaná na~GitHubu a~může být použita jako základ pro~další rozvoj vzdělávací platformy.
+	Aplikace je zálohovaná na~GitHubu a~může být použita jako základ pro~další rozvoj vzdělávací platformy. Zdrojový kód projektu je dostupný na~adrese: \url{https://github.com/OndraValek/rocnikovy_projekt}
 
 	\chapter*{Seznam použité literatury}
 	\addcontentsline{toc}{chapter}{Seznam použité literatury}
