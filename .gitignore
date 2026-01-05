@@ -50,3 +50,6 @@ Thumbs.db
 *.swo
 *~
 
+# Video folder
+/video/
+
