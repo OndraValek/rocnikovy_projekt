@@ -53,3 +53,28 @@ Thumbs.db
 # Video folder
 /video/
 
+# Documentation and guide files (návody a dokumentace mimo složku dokumentace/)
+DOCKER_README.md
+DOCKER.md
+H5P_POUZITI.md
+H5P_QUICK_START.md
+H5P_STANDALONE_SETUP.md
+INSTALACE_KOMPLETNI_NAVOD.md
+INSTALLATION.md
+MICROSOFT_GRAPH_403_FIX.md
+MICROSOFT_OAUTH_FIX.md
+MICROSOFT_OAUTH_NASTAVENI.md
+NAVOD_DRAWIO.md
+OAUTH_FIX.md
+OAUTH2_PODROBNY_NAVOD.md
+PRIKAZY_H5P.md
+/docs/
+
+# PlantUML diagram files
+*.puml
+
+# Debug and utility scripts
+check_oauth_urls.py
+create_completed_material_table.py
+create_table.py
+
