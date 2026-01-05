@@ -2,7 +2,8 @@ version: '3.8'
 
 services:
   db:
-    image: postgres:15
+    image: postgres:15-alpine
+    container_name: maturitni_projekt_db
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
@@ -16,9 +17,16 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 10s
+    restart: unless-stopped
+    networks:
+      - app-network
 
   web:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: maturitni_projekt_web
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/app
@@ -34,14 +42,30 @@ services:
       - DB_NAME=maturitni_projekt
       - DB_USER=postgres
       - DB_PASSWORD=postgres
+      - DB_PORT=5432
       - SECRET_KEY=dev-secret-key-change-in-production
       - DEBUG=1
       - ALLOWED_HOSTS=localhost,127.0.0.1,0.0.0.0
       - DJANGO_SETTINGS_MODULE=maturitni_projekt.settings.dev
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:8000/')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
     restart: unless-stopped
+    networks:
+      - app-network
 
 volumes:
   postgres_data:
+    driver: local
   static_volume:
+    driver: local
   media_volume:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge
 

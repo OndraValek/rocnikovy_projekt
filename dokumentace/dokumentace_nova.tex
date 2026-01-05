@@ -437,6 +437,19 @@ openany
 	
 	Pro~správu obsahu aplikace je integrován Wagtail CMS, který poskytuje flexibilní systém pro~správu strukturovaného obsahu. Wagtail umožňuje vytvářet stránky s~různými typy bloků obsahu pomocí StreamField, což je ideální pro~vzdělávací obsah. Hlavní výhoda Wagtailu spočívá v~jeho flexibilním systému StreamField, který umožňuje vytvářet stránky s~různými typy bloků obsahu (text, obrázky, H5P obsah, videa atd.) bez~nutnosti programování. Wagtail také poskytuje integraci vlastních Django modelů do~redakčního rozhraní pomocí ModelViewSet API, což umožňuje správu těchto entit přímo z~Wagtail adminu. Wagtail tedy slouží jako vrstva mezi databázovými modely a~uživatelským rozhraním, která umožňuje neprogramátorům (učitelům) spravovat obsah aplikace pomocí intuitivního redakčního rozhraní. Wagtail poskytuje možnost filtrování, vyhledávání a~pokročilé možnosti správy obsahu, což zjednodušuje správu obsahu při~větším množství dat.
 
+	\newpage
+	\subsection{Administrační rozhraní Wagtail CMS}
+	
+	Toto je pokročilé redakční rozhraní pro~správu obsahu aplikace. Učitel zde může spravovat předměty, okruhy, materiály, testy, uživatele a~další entity pomocí intuitivního rozhraní. Do~tohoto rozhraní se může dostat pouze uživatel s~rolí učitele nebo administrátora.
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.85\linewidth,keepaspectratio]{obrazky/admin-U.png}
+		\caption{Administrační rozhraní Wagtail CMS~--~dostupné pouze pro~učitele, pokročilá správa obsahu aplikace}
+		\label{fig:admin-U}
+	\end{figure}
+
+	\newpage
 	\subsection{Správa předmětů a~okruhů}
 	
 	Správa předmětů umožňuje učitelům vytvářet nové předměty s~automatickým vytvářením slugů z~názvu, což zajišťuje čisté a~sémanticky správné URL adresy. Při~vytváření předmětu lze zadat název, popis a~přiřadit předmět k~konkrétním třídám. Předměty mohou být mazány pouze s~potvrzením uživatele, přičemž systém automaticky kontroluje, zda nejsou přidruženy žádné okruhy. Pokud jsou k~předmětu přiřazeny okruhy, systém zabrání smazání předmětu a~zobrazí uživateli varovnou zprávu.
@@ -449,6 +462,7 @@ openany
 	
 	Materiály mohou být různých typů (PDF dokumenty, videa, H5P interaktivní obsah, externí odkazy, textové materiály, obrázky), přičemž každý typ má specifické možnosti zobrazení a~zpracování. PDF dokumenty jsou zobrazovány pomocí vestavěného prohlížeče, videa jsou přehrávána pomocí HTML5 video přehrávače, H5P obsah je zobrazován pomocí H5P Standalone Player a~externí odkazy jsou otevírány v~novém okně prohlížeče. Mazání testů a~materiálů je chráněno kontrolou oprávnění a~vyžaduje potvrzení uživatele, což zabraňuje náhodnému smazání důležitého obsahu. Učitelé mohou také označovat materiály a~testy jako dokončené, což studentům pomáhá sledovat jejich pokrok v~předmětu a~identifikovat oblasti, které ještě potřebují prostudovat.
 
+	\newpage
 	\section{Diskusní fórum}
 	
 	Každý okruh má své vlastní diskusní fórum, které slouží jako komunikační platforma mezi studenty a~učiteli. Fórum umožňuje vytváření nových diskusních vláken, přidávání příspěvků do~existujících vláken a~upravování a~mazání vlastních příspěvků. Tato funkcionalita podporuje aktivní diskusi o~učebních materiálech a~umožňuje studentům klást otázky a~sdílet poznatky s~ostatními.
@@ -588,18 +602,6 @@ openany
 	\end{figure}
 	
 	Student vidí informace o~testu, včetně názvu, popisu a~úspěšnosti (passing score). Student může spustit test kliknutím na~tlačítko "Spustit test" a~vidí své výsledky z~předchozích pokusů, pokud nějaké má. Student také může označit test jako dokončený pomocí checkboxu. Student nemá možnost upravovat nebo mazat test.
-	
-	\newpage
-	\subsection{Administrační rozhraní Wagtail CMS}
-	
-	\begin{figure}[!htbp]
-		\centering
-		\includegraphics[width=0.85\linewidth,keepaspectratio]{obrazky/admin-U.png}
-		\caption{Administrační rozhraní Wagtail CMS~--~dostupné pouze pro~učitele, pokročilá správa obsahu aplikace}
-		\label{fig:admin-U}
-	\end{figure}
-	
-	Toto je pokročilé redakční rozhraní pro~správu obsahu aplikace. Učitel zde může spravovat předměty, okruhy, materiály, testy, uživatele a~další entity pomocí intuitivního rozhraní. Do~tohoto rozhraní se může dostat pouze uživatel s~rolí učitele nebo administrátora.
 	
 	\restoregeometry
 

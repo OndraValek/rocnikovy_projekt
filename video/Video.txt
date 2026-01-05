@@ -1,0 +1,26 @@
+Video
+
+takže tady můžeme vidět registraci uživatele, kde v prvním pokusu zadám moc krátké heslo takže mě to nepustí registrovat 
+a až se přihlásím tak mě to dá roli studenta, který zatím není v žádné třídě takže proto nevidí žádné předměty 
+potom tu mám přihlášení přes github, google a microsoft
+
+
+první bude ukázka učitele, co vidí ve webovce, učitel může upravovat stránku, tak že třeba přidá předmět a nebo ho odstraní 
+
+
+dále se podíváme do konkrétního předmětu, kde učitel může vidět statistiky studentů 
+dále se podíváme do okruhů předmětů, kde jsou testy a materiály k danému okruhu a u testů můžeme vidět tabulku studentů, kteří absolvovali test
+dále můžeme filtrovat materiály nebo testy 
+
+
+potom se přihlásím na studenta, samozřejmě vás to nepustí když zadáte špatné údaje
+takže zase vidíme předměty, ale student nemůže nic upravovat 
+
+
+dále se podíváme do předmětů kde student může si zaškrtnout to co už třeba udělal a může vidět svoje statistky u testů 
+dále v okruzích můžeme zase vidět testy a materiály, které zase můžeme filtrovat a u testů můžeme vidět naše předešlé skore 
+a ještě můžeme přidávat nějakou zpětnou vazbu, co by třeba studenti chtěli nebo co se jim nelíbí a tu připomínku vidí všichni
+
+
+a na konec tu máme admina do kterého se dostane jenom učitel nebo správce, nemůže se zde dostat student
+slouží to prostě na nějakou uprávu

@@ -96,9 +96,14 @@ class SubjectDetailView(DetailView):
         """Zkontrolovat, že uživatel má přístup k předmětu."""
         from accounts.models import User, StudentClass
         from django.http import Http404
+        from django.core.exceptions import ObjectDoesNotExist
         
-        # Získat předmět
-        self.object = self.get_object()
+        # Nejdřív zkontrolovat, jestli předmět existuje
+        try:
+            self.object = self.get_object()
+        except Http404:
+            # Předmět neexistuje
+            raise Http404("Předmět nenalezen")
         
         # Pokud je uživatel přihlášen
         if request.user.is_authenticated:
@@ -116,7 +121,8 @@ class SubjectDetailView(DetailView):
                     if student_classes.exists():
                         if self.object.classes.filter(id__in=student_classes.values_list('id', flat=True)).exists():
                             return super().dispatch(request, *args, **kwargs)
-                    raise Http404("Nemáte přístup k tomuto předmětu")
+                    # Student nemá přístup - buď nemá třídy, nebo předmět není přiřazen k jeho třídám
+                    raise Http404("Nemáte přístup k tomuto předmětu. Předmět není přiřazen k vašim třídám.")
                 
                 # Učitel má přístup jen k předmětům přiřazeným k třídám, které spravuje
                 # (i když je superuser, pokud má roli teacher, vidí jen předměty z jeho tříd)
@@ -125,7 +131,8 @@ class SubjectDetailView(DetailView):
                     if teacher_classes.exists():
                         if self.object.classes.filter(id__in=teacher_classes.values_list('id', flat=True)).exists():
                             return super().dispatch(request, *args, **kwargs)
-                    raise Http404("Nemáte přístup k tomuto předmětu")
+                    # Učitel nemá přístup - buď nemá spravované třídy, nebo předmět není přiřazen k jeho třídám
+                    raise Http404("Nemáte přístup k tomuto předmětu. Předmět není přiřazen k třídám, které spravujete.")
             
             # Pokud nemá roli, ale je superuser, má přístup ke všem předmětům
             if user.is_superuser:
@@ -260,11 +267,23 @@ class SubjectCreateView(LoginRequiredMixin, CreateView):
         return super().dispatch(request, *args, **kwargs)
     
     def form_valid(self, form):
-        """Automaticky vytvořit slug z názvu."""
+        """Automaticky vytvořit slug z názvu a přiřadit k třídám učitele."""
         subject = form.save(commit=False)
         subject.slug = slugify(subject.name)
         subject.save()
-        messages.success(self.request, f'Předmět "{subject.name}" byl úspěšně vytvořen.')
+        
+        # Pokud je uživatel učitel, automaticky přiřadit předmět k jeho třídám
+        if self.request.user.is_teacher:
+            teacher_classes = self.request.user.managed_classes.all()
+            if teacher_classes.exists():
+                subject.classes.set(teacher_classes)
+                messages.success(self.request, f'Předmět "{subject.name}" byl úspěšně vytvořen a přiřazen k vašim třídám.')
+            else:
+                messages.success(self.request, f'Předmět "{subject.name}" byl úspěšně vytvořen.')
+        else:
+            # Admin může přiřadit třídy později
+            messages.success(self.request, f'Předmět "{subject.name}" byl úspěšně vytvořen.')
+        
         return redirect('subjects:subject_detail', subject_slug=subject.slug)
 
 
