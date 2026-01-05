@@ -96,6 +96,7 @@ class SubjectDetailView(DetailView):
         """Zkontrolovat, že uživatel má přístup k předmětu."""
         from accounts.models import User, StudentClass
         from django.http import Http404
+<<<<<<< HEAD
         from django.core.exceptions import ObjectDoesNotExist
         
         # Nejdřív zkontrolovat, jestli předmět existuje
@@ -104,6 +105,11 @@ class SubjectDetailView(DetailView):
         except Http404:
             # Předmět neexistuje
             raise Http404("Předmět nenalezen")
+=======
+        
+        # Získat předmět
+        self.object = self.get_object()
+>>>>>>> d49239758c9f71a9b45b574e0baecd61ecef7b9c
         
         # Pokud je uživatel přihlášen
         if request.user.is_authenticated:
@@ -121,8 +127,12 @@ class SubjectDetailView(DetailView):
                     if student_classes.exists():
                         if self.object.classes.filter(id__in=student_classes.values_list('id', flat=True)).exists():
                             return super().dispatch(request, *args, **kwargs)
+<<<<<<< HEAD
                     # Student nemá přístup - buď nemá třídy, nebo předmět není přiřazen k jeho třídám
                     raise Http404("Nemáte přístup k tomuto předmětu. Předmět není přiřazen k vašim třídám.")
+=======
+                    raise Http404("Nemáte přístup k tomuto předmětu")
+>>>>>>> d49239758c9f71a9b45b574e0baecd61ecef7b9c
                 
                 # Učitel má přístup jen k předmětům přiřazeným k třídám, které spravuje
                 # (i když je superuser, pokud má roli teacher, vidí jen předměty z jeho tříd)
@@ -131,8 +141,12 @@ class SubjectDetailView(DetailView):
                     if teacher_classes.exists():
                         if self.object.classes.filter(id__in=teacher_classes.values_list('id', flat=True)).exists():
                             return super().dispatch(request, *args, **kwargs)
+<<<<<<< HEAD
                     # Učitel nemá přístup - buď nemá spravované třídy, nebo předmět není přiřazen k jeho třídám
                     raise Http404("Nemáte přístup k tomuto předmětu. Předmět není přiřazen k třídám, které spravujete.")
+=======
+                    raise Http404("Nemáte přístup k tomuto předmětu")
+>>>>>>> d49239758c9f71a9b45b574e0baecd61ecef7b9c
             
             # Pokud nemá roli, ale je superuser, má přístup ke všem předmětům
             if user.is_superuser:
