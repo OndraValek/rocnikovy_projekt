@@ -219,4 +219,4 @@ Pro školní projekt.
 
 ---
 
-**Poznámka:** Tento projekt byl vytvořen jako maturitní práce pro předmět Programové vybavení.
+**Video-prezentace:** https://www.youtube.com/watch?v=9XCEAN3dTI0&t=13s
